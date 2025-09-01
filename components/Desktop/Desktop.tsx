@@ -1,0 +1,125 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import DesktopIcon from "./DesktopIcon";
+import Window from "./Window";
+import Taskbar from "./Taskbar";
+import { useDesktopStore } from "@/lib/desktop-store";
+import { WindowData, IconData } from "@/types/desktop";
+
+// Desktop Icons Configuration
+const desktopIcons: IconData[] = [
+  { id: "terminal", name: "Terminal", icon: "🖥️", position: { x: 50, y: 50 } },
+  { id: "projects", name: "Projects", icon: "📁", position: { x: 50, y: 150 } },
+  { id: "about", name: "About Me", icon: "👤", position: { x: 50, y: 250 } },
+  { id: "skills", name: "Skills", icon: "⚡", position: { x: 50, y: 350 } },
+  { id: "contact", name: "Contact", icon: "📧", position: { x: 50, y: 450 } },
+  { id: "github", name: "GitHub", icon: "🐙", position: { x: 170, y: 50 } },
+  { id: "resume", name: "Resume", icon: "📄", position: { x: 170, y: 150 } },
+  { id: "blog", name: "Blog", icon: "📝", position: { x: 170, y: 250 } },
+];
+
+export default function Desktop() {
+  const { windows, openWindow, closeWindow, focusWindow, minimizeWindow } =
+    useDesktopStore();
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+
+  const handleDesktopClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setContextMenu(null);
+      // Click on empty desktop removes focus from all windows
+      focusWindow(null);
+    }
+  };
+
+  const handleDesktopRightClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setContextMenu({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleIconDoubleClick = (iconId: string) => {
+    const iconConfig = desktopIcons.find((icon) => icon.id === iconId);
+    if (!iconConfig) return;
+
+    // Check if window is already open
+    const existingWindow = windows.find((w) => w.id === iconId);
+    if (existingWindow) {
+      focusWindow(iconId);
+      return;
+    }
+
+    // Create new window
+    const newWindow: WindowData = {
+      id: iconId,
+      title: iconConfig.name,
+      content: iconId,
+      position: { x: 200 + windows.length * 30, y: 100 + windows.length * 30 },
+      size: { width: 800, height: 600 },
+      isMinimized: false,
+      isMaximized: false,
+      zIndex: windows.length + 1,
+    };
+
+    openWindow(newWindow);
+  };
+
+  return (
+    <div
+      className="h-screen w-screen overflow-hidden relative bg-gradient-to-br from-blue-900 via-purple-900 to-blue-800"
+      onClick={handleDesktopClick}
+      onContextMenu={handleDesktopRightClick}
+      style={{
+        backgroundImage: `url('/wallpaper.jpg')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* Desktop Icons */}
+      {desktopIcons.map((icon) => (
+        <DesktopIcon
+          key={icon.id}
+          icon={icon}
+          onDoubleClick={() => handleIconDoubleClick(icon.id)}
+        />
+      ))}
+
+      {/* Windows */}
+      {windows.map((window) => (
+        <Window
+          key={window.id}
+          window={window}
+          onClose={() => closeWindow(window.id)}
+          onMinimize={() => minimizeWindow(window.id)}
+          onFocus={() => focusWindow(window.id)}
+        />
+      ))}
+
+      {/* Context Menu */}
+      {contextMenu && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="absolute bg-gray-800 border border-gray-600 rounded-lg shadow-xl py-2 z-50"
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+        >
+          <button className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition-colors">
+            🔄 Refresh Desktop
+          </button>
+          <button className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition-colors">
+            🎨 Change Wallpaper
+          </button>
+          <button className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition-colors">
+            ⚙️ Desktop Settings
+          </button>
+        </motion.div>
+      )}
+
+      {/* Taskbar */}
+      <Taskbar windows={windows} onWindowClick={focusWindow} />
+    </div>
+  );
+}
