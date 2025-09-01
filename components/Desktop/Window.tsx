@@ -13,6 +13,7 @@ import About from "@/components/Applications/About";
 import Skills from "@/components/Applications/Skills";
 import Contact from "@/components/Applications/Contact";
 import GitHub from "@/components/Applications/GitHub";
+import Resume from "@/components/Applications/Resume";
 
 interface WindowProps {
   window: WindowData;
@@ -64,6 +65,8 @@ export default function Window({
         return <Contact />;
       case "github":
         return <GitHub />;
+      case "resume":
+        return <Resume />;
       default:
         return <div className="p-4 text-white">Application not found</div>;
     }
