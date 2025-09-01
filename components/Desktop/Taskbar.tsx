@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { WindowData } from "@/types/desktop";
+import Image from "next/image";
+import GifWindow from "../Utilities/GifWindow";
 
 interface TaskbarProps {
   windows: WindowData[];
@@ -22,14 +24,14 @@ export default function Taskbar({ windows, onWindowClick }: TaskbarProps) {
 
   const getWindowIcon = (windowId: string) => {
     const icons: Record<string, string> = {
-      terminal: "🖥️",
-      projects: "📁",
-      about: "👤",
-      skills: "⚡",
-      contact: "📧",
-      github: "🐙",
-      resume: "📄",
-      blog: "📝",
+      terminal: "terminal1.svg",
+      projects: "folder.svg",
+      about: "about.svg",
+      skills: "skills.svg",
+      contact: "contact.svg",
+      github: "githubIcon.svg",
+      resume: "resume.svg",
+      blog: "blog.svg",
     };
     return icons[windowId] || "🪟";
   };
@@ -43,14 +45,7 @@ export default function Taskbar({ windows, onWindowClick }: TaskbarProps) {
     >
       {/* Start Menu */}
       <div className="flex items-center space-x-4">
-        <motion.button
-          className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded text-white text-sm font-medium transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <span>🐧</span>
-          <span>Portfolio OS</span>
-        </motion.button>
+        <GifWindow />
       </div>
 
       {/* Open Windows */}
@@ -67,7 +62,13 @@ export default function Taskbar({ windows, onWindowClick }: TaskbarProps) {
               exit={{ opacity: 0, x: -20 }}
               whileHover={{ scale: 1.02 }}
             >
-              <span>{getWindowIcon(window.id)}</span>
+              <Image
+                src={`/icons/breeze/${getWindowIcon(window.id)}`}
+                alt={window.title}
+                width={24}
+                height={24}
+                className="w-6 h-6"
+              />
               <span className="truncate">{window.title}</span>
             </motion.button>
           ))}

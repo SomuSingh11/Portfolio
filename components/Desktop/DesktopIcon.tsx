@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { IconData } from "@/types/desktop";
+import Image from "next/image";
 
 interface DesktopIconProps {
   icon: IconData;
@@ -32,7 +33,12 @@ export default function DesktopIcon({ icon, onDoubleClick }: DesktopIconProps) {
       whileTap={{ scale: 0.95 }}
     >
       <div className="flex flex-col items-center space-y-1">
-        <div className="text-4xl">{icon.icon}</div>
+        <Image
+          src={`/icons/breeze/${icon.icon}`}
+          alt={icon.name}
+          width={46}
+          height={46}
+        />
         <span className="text-white text-sm font-medium text-center drop-shadow-lg">
           {icon.name}
         </span>

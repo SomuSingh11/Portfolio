@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import DesktopIcon from "./DesktopIcon";
 import Window from "./Window";
 import Taskbar from "./Taskbar";
@@ -10,14 +10,49 @@ import { WindowData, IconData } from "@/types/desktop";
 
 // Desktop Icons Configuration
 const desktopIcons: IconData[] = [
-  { id: "terminal", name: "Terminal", icon: "🖥️", position: { x: 50, y: 50 } },
-  { id: "projects", name: "Projects", icon: "📁", position: { x: 50, y: 150 } },
-  { id: "about", name: "About Me", icon: "👤", position: { x: 50, y: 250 } },
-  { id: "skills", name: "Skills", icon: "⚡", position: { x: 50, y: 350 } },
-  { id: "contact", name: "Contact", icon: "📧", position: { x: 50, y: 450 } },
-  { id: "github", name: "GitHub", icon: "🐙", position: { x: 170, y: 50 } },
-  { id: "resume", name: "Resume", icon: "📄", position: { x: 170, y: 150 } },
-  { id: "blog", name: "Blog", icon: "📝", position: { x: 170, y: 250 } },
+  {
+    id: "terminal",
+    name: "Terminal",
+    icon: "terminal1.svg",
+    position: { x: 50, y: 50 },
+  },
+  {
+    id: "projects",
+    name: "Projects",
+    icon: "folder.svg",
+    position: { x: 50, y: 150 },
+  },
+  {
+    id: "about",
+    name: "About Me",
+    icon: "about.svg",
+    position: { x: 50, y: 250 },
+  },
+  {
+    id: "skills",
+    name: "Skills",
+    icon: "skills.svg",
+    position: { x: 50, y: 350 },
+  },
+  {
+    id: "contact",
+    name: "Contact",
+    icon: "contact.svg",
+    position: { x: 50, y: 450 },
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    icon: "githubIcon.svg",
+    position: { x: 170, y: 50 },
+  },
+  {
+    id: "resume",
+    name: "Resume",
+    icon: "resume.svg",
+    position: { x: 170, y: 150 },
+  },
+  { id: "blog", name: "Blog", icon: "blog.svg", position: { x: 170, y: 250 } },
 ];
 
 export default function Desktop() {
@@ -27,6 +62,7 @@ export default function Desktop() {
     x: number;
     y: number;
   } | null>(null);
+  const constraintsRef = useRef<HTMLDivElement>(null);
 
   const handleDesktopClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -72,6 +108,7 @@ export default function Desktop() {
       className="h-screen w-screen overflow-hidden relative bg-gradient-to-br from-blue-900 via-purple-900 to-blue-800"
       onClick={handleDesktopClick}
       onContextMenu={handleDesktopRightClick}
+      ref={constraintsRef}
       style={{
         backgroundImage: `url('/wallpaper.jpg')`,
         backgroundSize: "cover",
@@ -88,15 +125,18 @@ export default function Desktop() {
       ))}
 
       {/* Windows */}
-      {windows.map((window) => (
-        <Window
-          key={window.id}
-          window={window}
-          onClose={() => closeWindow(window.id)}
-          onMinimize={() => minimizeWindow(window.id)}
-          onFocus={() => focusWindow(window.id)}
-        />
-      ))}
+      <AnimatePresence>
+        {windows.map((window) => (
+          <Window
+            key={window.id}
+            window={window}
+            onClose={() => closeWindow(window.id)}
+            onMinimize={() => minimizeWindow(window.id)}
+            onFocus={() => focusWindow(window.id)}
+            constraintsRef={constraintsRef}
+          />
+        ))}
+      </AnimatePresence>
 
       {/* Context Menu */}
       {contextMenu && (

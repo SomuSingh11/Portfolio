@@ -19,6 +19,7 @@ interface WindowProps {
   onClose: () => void;
   onMinimize: () => void;
   onFocus: () => void;
+  constraintsRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function Window({
@@ -26,6 +27,7 @@ export default function Window({
   onClose,
   onMinimize,
   onFocus,
+  constraintsRef,
 }: WindowProps) {
   const { updateWindow } = useDesktopStore();
   const [isDragging, setIsDragging] = useState(false);
@@ -38,10 +40,11 @@ export default function Window({
       isMaximized: !window.isMaximized,
       position: window.isMaximized ? { x: 200, y: 100 } : { x: 0, y: 0 },
       size: window.isMaximized
-        ? { width: 800, height: 600 }
+        ? { width: 800, height: 600 } // This is for RESTORING the window
         : {
-            width: window.innerWidth || 1200,
-            height: (window.innerHeight || 800) - 60,
+            // This is for MAXIMIZING the window
+            width: globalThis.innerWidth,
+            height: globalThis.innerHeight - 50,
           },
     };
     updateWindow(newWindow);
@@ -73,28 +76,30 @@ export default function Window({
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        x: window.position.x,
+        y: window.position.y,
+        width: window.size.width,
+        height: window.size.height,
+      }}
       exit={{ opacity: 0, scale: 0.8 }}
       className="absolute bg-gray-900 border border-gray-600 rounded-lg shadow-2xl overflow-hidden"
       style={{
-        left: window.position.x,
-        top: window.position.y,
-        width: window.size.width,
-        height: window.size.height,
-        zIndex: window.zIndex,
+        zIndex: window.zIndex, // Keep static styles here
       }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }} // Optional: for a nice animation
       onClick={onFocus}
       drag
       dragMomentum={false}
-      dragConstraints={{
-        left: 0,
-        right: (window.innerWidth || 1200) - window.size.width,
-        top: 0,
-        bottom: (window.innerHeight || 800) - window.size.height - 60,
-      }}
+      dragConstraints={constraintsRef}
       onDragStart={() => setIsDragging(true)}
       onDragEnd={(e, info) => {
         setIsDragging(false);
+        // ✅ FIX: Do not update position if maximized
+        if (window.isMaximized) return;
+
         updateWindow({
           ...window,
           position: {
