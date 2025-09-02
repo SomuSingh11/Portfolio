@@ -66,10 +66,11 @@ export default function Desktop() {
 
   // Wallpaper state
   const wallpapers = [
-    "/wallpaper.jpg",
-    "/wallpaper2.jpg",
-    "/wallpaper3.jpg",
-    "/wallpaper4.jpg",
+    "/wallpaper/redHair.jpg",
+    "/wallpaper/penguin.jpg",
+    "/wallpaper/pain.jpg",
+    "/wallpaper/goldFish.jpg",
+    "/wallpaper/groot.jpg",
   ];
   const [wallpaperIndex, setWallpaperIndex] = useState(0);
 
