@@ -13,6 +13,8 @@ import {
   Music,
 } from "lucide-react";
 
+import TechStackBox from "../Utilities/TechStack";
+
 export default function About() {
   const educationHistory = [
     {
@@ -288,6 +290,23 @@ export default function About() {
     ],
   };
 
+  const certifications = [
+    {
+      name: "Postman API Fundamentals Student Expert",
+      issuer: "Postman",
+      year: "2024",
+      image: "/about/media/postmanBadge.png",
+      url: "https://badgr.com/public/assertions/sZLW6V5oT5yAgMJfU5RDSw?identity__email=somusingh0110@gmail.com",
+    },
+    {
+      name: "Networking Basics Badge",
+      issuer: "Cisco",
+      year: "2024",
+      image: "/about/media/NetworkingBadge.png",
+      url: "https://www.credly.com/badges/0e59880f-0776-4a7d-b3e4-fedb415862dc/public_url",
+    },
+  ];
+
   return (
     <div className="h-full bg-gray-900 text-white overflow-y-auto p-4 md:p-6 font-sans">
       <div className="space-y-8 max-w-4xl mx-auto">
@@ -371,6 +390,57 @@ export default function About() {
           </div>
         </motion.div>
 
+        {/* Certifications Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+        >
+          <div className="font-mono text-green-400 mb-2">
+            <span className="text-blue-400">somu@desktop</span>:
+            <span className="text-gray-400">~</span>$ cat
+            /var/log/certifications.log
+          </div>
+          <div className="space-y-6">
+            {certifications.map((cert, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 + idx * 0.1 }}
+                className="bg-gray-800 border border-blue-700 rounded-lg p-4 flex flex-col md:flex-row items-center gap-4"
+              >
+                <img
+                  src={cert.image}
+                  alt={cert.name}
+                  className="w-full md:w-32 h-24 object-contain rounded shrink-0"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <Award className="w-5 h-5 text-yellow-400" />
+                    <h3 className="font-bold text-lg">
+                      <a
+                        href={cert.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline text-blue-300"
+                      >
+                        {cert.name}
+                      </a>
+                    </h3>
+                  </div>
+                  <p className="text-gray-400 text-sm flex items-center space-x-2">
+                    <span>{cert.issuer}</span>
+                    <span className="ml-2 text-xs text-blue-400">
+                      {cert.year}
+                    </span>
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
         {/* Hobbies and Interests Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -379,7 +449,8 @@ export default function About() {
         >
           <div className="font-mono text-green-400 mb-2">
             <span className="text-blue-400">somu@desktop</span>:
-            <span className="text-gray-400">~</span>$ ls -a /home/somu/interests
+            <span className="text-gray-400">~</span>$ ls -a
+            /home/somu/interests.log
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {interests.map((interest, index) => (
@@ -404,6 +475,21 @@ export default function About() {
               </motion.div>
             ))}
           </div>
+        </motion.div>
+
+        {/* Tech Stack Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <div className="font-mono text-green-400 mb-2">
+            <span className="text-blue-400">somu@desktop</span>:
+            <span className="text-gray-400">~</span>$ ls -a
+            /home/somu/techStack.log
+          </div>
+
+          <TechStackBox />
         </motion.div>
 
         {/* Media Log Section */}

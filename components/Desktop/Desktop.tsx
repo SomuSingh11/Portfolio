@@ -64,6 +64,15 @@ export default function Desktop() {
   } | null>(null);
   const constraintsRef = useRef<HTMLDivElement>(null);
 
+  // Wallpaper state
+  const wallpapers = [
+    "/wallpaper.jpg",
+    "/wallpaper2.jpg",
+    "/wallpaper3.jpg",
+    "/wallpaper4.jpg",
+  ];
+  const [wallpaperIndex, setWallpaperIndex] = useState(0);
+
   const handleDesktopClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       setContextMenu(null);
@@ -103,6 +112,17 @@ export default function Desktop() {
     openWindow(newWindow);
   };
 
+  // Change wallpaper handler
+  const handleChangeWallpaper = () => {
+    setWallpaperIndex((prev) => (prev + 1) % wallpapers.length);
+    setContextMenu(null);
+  };
+
+  const handleRefreshWallpaper = () => {
+    setWallpaperIndex(0);
+    setContextMenu(null);
+  };
+
   return (
     <div
       className="h-screen w-screen overflow-hidden relative bg-gradient-to-br from-blue-900 via-purple-900 to-blue-800"
@@ -110,7 +130,7 @@ export default function Desktop() {
       onContextMenu={handleDesktopRightClick}
       ref={constraintsRef}
       style={{
-        backgroundImage: `url('/wallpaper.jpg')`,
+        backgroundImage: `url('${wallpapers[wallpaperIndex]}')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -146,10 +166,16 @@ export default function Desktop() {
           className="absolute bg-gray-800 border border-gray-600 rounded-lg shadow-xl py-2 z-50"
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
-          <button className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition-colors">
+          <button
+            className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition-colors"
+            onClick={handleRefreshWallpaper}
+          >
             🔄 Refresh Desktop
           </button>
-          <button className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition-colors">
+          <button
+            className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition-colors"
+            onClick={handleChangeWallpaper}
+          >
             🎨 Change Wallpaper
           </button>
           <button className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition-colors">
