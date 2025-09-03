@@ -12,40 +12,34 @@ interface Command {
 const commands = {
   help: [
     "Available commands:",
-    "  whoami      - Display user information",
-    "  ls          - List available applications",
-    "  cat about   - Show about information",
-    "  ps          - Show running processes",
-    "  neofetch    - Display system information",
-    "  clear       - Clear terminal",
-    "  exit        - Close terminal",
-    "  sudo hire   - Download resume",
+    "  whoami",
+    "  ls",
+    "  ps",
+    "  neofetch",
+    "  matrix",
+    "  joke",
+    "  coffee",
+    "  clear",
+
     "",
-    "Portfolio OS v1.0 - Developer Edition",
+    "Easter eggs: Try 'sl', 'cowsay', 'figlet', 'rm -rf /' or find more!",
+    "",
+    "Codex OS v1.0 - Developer Edition",
   ],
   whoami: [
-    "john_doe",
+    "Somu Singh",
     "",
-    "Full Stack Developer | San Francisco, CA",
-    "Specializing in React, Next.js, and Node.js",
+    "Full Stack Developer | Indore, Madhya Pradesh",
+    "Specializing in React, Next.js, Generative AI and Frontend Technologies",
   ],
   ls: [
     "Applications:",
-    "drwxr-xr-x  2 john_doe staff   64 Sep  1 10:30 Projects/",
-    "drwxr-xr-x  2 john_doe staff   64 Sep  1 10:30 About/",
-    "drwxr-xr-x  2 john_doe staff   64 Sep  1 10:30 Skills/",
-    "drwxr-xr-x  2 john_doe staff   64 Sep  1 10:30 Contact/",
-    "drwxr-xr-x  2 john_doe staff   64 Sep  1 10:30 GitHub/",
-    "-rw-r--r--  1 john_doe staff 2048 Sep  1 10:30 resume.pdf",
-  ],
-  "cat about": [
-    "# About John Doe",
-    "",
-    "Passionate full-stack developer with 3+ years of experience",
-    "building modern web applications. I love creating efficient,",
-    "scalable solutions and exploring new technologies.",
-    "",
-    "Currently focused on React ecosystem and serverless architectures.",
+    "drwxr-xr-x  2 somu_singh staff   64 Sep  1 10:30 Projects/",
+    "drwxr-xr-x  2 somu_singh staff   64 Sep  1 10:30 About/",
+    "drwxr-xr-x  2 somu_singh staff   64 Sep  1 10:30 Skills/",
+    "drwxr-xr-x  2 somu_singh staff   64 Sep  1 10:30 Contact/",
+    "drwxr-xr-x  2 somu_singh staff   64 Sep  1 10:30 GitHub/",
+    "drwxr-xr-x  1 somu_singh staff 2048 Sep  1 10:30 Resume/",
   ],
   ps: [
     "PID    NAME              CPU   MEMORY",
@@ -56,16 +50,16 @@ const commands = {
   ],
   neofetch: [
     "                   -`",
-    "                  .o+`                 john_doe@portfolio-os",
+    "                  .o+`                 somu_singh@codex-os",
     "                 `ooo/                 ----------------------",
-    "                `+oooo:                OS: Portfolio OS 1.0",
+    "                `+oooo:                OS: Codex OS 1.0",
     "               `+oooooo:               Host: Developer Workstation",
     "               -+oooooo+:              Kernel: React 18.2.0",
     "             `/:-:++oooo+:             Uptime: 2 years, 156 days",
     "            `/++++/+++++++:            Packages: 847 (npm)",
     "           `/++++++++++++++:           Shell: zsh 5.8.1",
     "          `/+++ooooooooo+++/           Resolution: 1920x1080",
-    "         ./ooosssso++osssssso+`        Terminal: portfolio-terminal",
+    "         ./ooosssso++osssssso+`        Terminal: codex-terminal",
     "        .oossssso-````/ossssss+`       CPU: M1 Pro (8) @ 3.20GHz",
     "       -osssssso.      :ssssssso.      Memory: 2048MiB / 16384MiB",
     "      :osssssss/        osssso+++.",
@@ -75,20 +69,93 @@ const commands = {
     " `++:.                           `-/+/",
     " .`                                 `/",
   ],
-  "sudo hire": [
-    "[sudo] password for john_doe: ********",
+  matrix: [
+    "Entering the Matrix...",
+    "01001000 01100101 01101100 01101100 01101111",
+    "Wake up, Neo...",
+    "The Matrix has you...",
+    "Follow the white rabbit 🐰",
     "",
-    "Initiating hire process...",
-    "█████████████████████████████ 100%",
+    "Red pill or blue pill? 💊",
+    "There is no spoon 🥄",
+  ],
+  joke: [
+    "Why do programmers prefer dark mode?",
     "",
-    "✅ Resume package downloaded successfully!",
-    "📄 john_doe_resume_2025.pdf",
-    "💼 portfolio_examples.zip",
-    "🔗 references_contact_list.txt",
+    "Because light attracts bugs! 🐛",
     "",
-    "Thank you for considering me! 🚀",
+    "😄 *ba dum tss* 🥁",
+  ],
+  coffee: [
+    "Brewing coffee... ☕",
     "",
-    "Contact: john@example.com",
+    "      (  )   (   )  )",
+    "       ) (   )  (  (",
+    "       ( )  (    ) )",
+    "       _____________",
+    "      <_____________> ___",
+    "      |             |/ _ \\",
+    "      |               | | |",
+    "      |               |_| |",
+    "   ___|             |\\___/",
+    "  /    \\___________/    \\",
+    "  \\_____________________/",
+    "",
+    "☕ Your coffee is ready! Stay caffeinated, keep coding! 💻",
+  ],
+
+  // Easter eggs
+  sl: [
+    "                      (@@) (  ) (@)  ( )  @@    ()    @     O     @     O      @",
+    "                 (   )",
+    "             (@@@@)",
+    "          (    )",
+    "",
+    "        (@@@)",
+    "    ====        ________                ___________",
+    "_D _|  |_______/        \\__I_I_____===__|_________|",
+    " |(_)---  |   H\\________/ |   |        =|___ ___|      _________________",
+    " /     |  |   H  |  |     |   |         ||_| |_||     _|                \\_____A",
+    "|      |  |   H  |__--------------------| [___] |   =|                        |",
+    "| ________|___H__/__|_____/[][]~\\_______|       |   -|                        |",
+    "|/ |   |-----------I_____I [][] []  D   |=======|____|________________________|_",
+    "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__|__________________________|_",
+    " |/-=|___|=    ||    ||    ||    |_____/~\\___/          |_D__D__D_|  |_D__D__D_|",
+    "  \\_/      \\O=====O=====O=====O_/      \\_/               \\_/   \\_/    \\_/   \\_/",
+    "",
+    "🚂 You meant 'ls', right? Here's a train instead!",
+  ],
+
+  cowsay: [
+    " _________________",
+    "< Hello from Somu! >",
+    " -----------------",
+    "        \\   ^__^",
+    "         \\  (oo)\\_______",
+    "            (__)\\       )\\/\\",
+    "                ||----w |",
+    "                ||     ||",
+    "",
+    "🐄 Moo-velous portfolio, isn't it?",
+  ],
+
+  figlet: [
+    " ____                          ____  _             _     ",
+    "/ ___|  ___  _ __ ___  _   _  / ___|(_)_ __   __ _| |__  ",
+    "\\___ \\ / _ \\| '_ ` _ \\| | | | \\___ \\| | '_ \\ / _` | '_ \\ ",
+    " ___) | (_) | | | | | | |_| |  ___) | | | | | (_| | | | |",
+    "|____/ \\___/|_| |_| |_|\\__,_| |____/|_|_| |_|\\__, |_| |_|",
+    "                                             |___/       ",
+    "",
+    "✨ ASCII Art is cool, right?",
+  ],
+  "rm -rf /": [
+    "⚠️  WHOA THERE! ⚠️",
+    "",
+    "Nice try, but this terminal is read-only! 😄",
+    "Your portfolio is safe from destructive commands.",
+    "",
+    "However, I can help you remove bugs from your code! 🐛➡️🗑️",
   ],
 };
 
@@ -97,8 +164,8 @@ export default function Terminal() {
     {
       input: "",
       output: [
-        "Welcome to Portfolio OS Terminal",
-        "Copyright (c) 2025 John Doe. All rights reserved.",
+        "Welcome to Codex OS Terminal",
+        "Copyright (c) 2025 Somu Singh. All rights reserved.",
         "",
         'Type "help" for available commands.',
         "",
@@ -107,9 +174,10 @@ export default function Terminal() {
     },
   ]);
   const [currentInput, setCurrentInput] = useState("");
-  const [currentPath] = useState("~/portfolio");
+  const [currentPath] = useState("~/codex");
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -155,10 +223,21 @@ export default function Terminal() {
     }
   };
 
+  // Focus input when main div is clicked
+  const handleMainClick = () => {
+    inputRef.current?.focus();
+  };
+
   return (
-    <div className="h-full bg-black text-green-400 font-mono flex flex-col">
+    <div
+      className="h-full bg-black text-green-400 font-mono flex flex-col"
+      onClick={handleMainClick}
+      tabIndex={0}
+      role="presentation"
+      style={{ outline: "none", height: "calc(100% - 5rem)" }}
+    >
       {/* Terminal Content */}
-      <div ref={terminalRef} className="flex-1 p-4 overflow-y-auto">
+      <div ref={terminalRef} className="flex-1 overflow-y-auto px-1">
         {history.map((command, index) => (
           <motion.div
             key={index}
@@ -168,7 +247,7 @@ export default function Terminal() {
           >
             {command.input && (
               <div className="flex items-center space-x-2 mb-1">
-                <span className="text-blue-400">john_doe@portfolio-os</span>
+                <span className="text-blue-400">somu_singh@codex-os</span>
                 <span className="text-white">:</span>
                 <span className="text-purple-400">{currentPath}</span>
                 <span className="text-white">$</span>
@@ -182,7 +261,7 @@ export default function Terminal() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: lineIndex * 0.03 }}
-                  className="text-green-400 leading-relaxed"
+                  className="text-green-400 leading-relaxed whitespace-pre-wrap"
                 >
                   {line}
                 </motion.div>
@@ -193,19 +272,31 @@ export default function Terminal() {
 
         {/* Current Input */}
         <form onSubmit={handleSubmit} className="flex items-center space-x-2">
-          <span className="text-blue-400">john_doe@portfolio-os</span>
+          <span className="text-blue-400">somu_singh@codex-os</span>
           <span className="text-white">:</span>
           <span className="text-purple-400">{currentPath}</span>
           <span className="text-white">$</span>
-          <input
-            ref={inputRef}
-            type="text"
-            value={currentInput}
-            onChange={(e) => setCurrentInput(e.target.value)}
-            className="flex-1 bg-transparent outline-none text-white"
-            autoComplete="off"
-          />
-          <span className="text-white terminal-cursor">█</span>
+          <div className="flex-1 flex items-center relative">
+            <span className="text-white">{currentInput}</span>
+            <span
+              className={`text-white ${
+                isInputFocused ? "terminal-cursor" : ""
+              }`}
+            >
+              ▌
+            </span>
+            <input
+              ref={inputRef}
+              type="text"
+              value={currentInput}
+              onChange={(e) => setCurrentInput(e.target.value)}
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setIsInputFocused(false)}
+              className="absolute inset-0 opacity-0 cursor-default"
+              autoComplete="off"
+              autoFocus
+            />
+          </div>
         </form>
       </div>
     </div>
