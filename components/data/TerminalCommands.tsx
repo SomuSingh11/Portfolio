@@ -24,7 +24,7 @@ Codex OS v1.0 - Help
   whoami: `Somu Singh
 
 Full Stack Developer | Indore, Madhya Pradesh
-Specializing in React, Next.js, Generative AI and Frontend Technologies`,
+Specializing in React, Next.js, Generative AI and Full Stack Technologies`,
 
   ls: `Applications:
 drwxr-xr-x  2 somu_singh staff   64 Sep  1 10:30 Projects/
@@ -45,13 +45,13 @@ drwxr-xr-x  1 somu_singh staff 2048 Sep  1 10:30 Resume/`,
                  'ooo/                 ----------------------
                 '+oooo:                OS: Codex OS 1.0
                '+oooooo:               Host: Developer Workstation
-               -+oooooo+:              Kernel: React 18.2.0
-             '/:--++oooo+:             Uptime: 2 years, 156 days
-            '/++++/+++++++:            Packages: 847 (npm)
-           '/++++++++++++++:           Shell: zsh 5.8.1
+               -+oooooo+:              Kernel: Blink (Chromium)
+             '/:--++oooo+:             Uptime: 3 hours, 15 minutes
+            '/++++/+++++++:            Packages: 56 (npm)
+           '/++++++++++++++:           Shell: /bin/zsh
           '/+++ooooooooo+++/           Resolution: 1920x1080
          ./ooosssso++osssssso+'        Terminal: codex-terminal
-        .oossssso-''''/ossssss+'       CPU: M1 Pro (8) @ 3.20GHz
+        .oossssso-''''/ossssss+'       CPU: AMD Ryzen 5 5600H (12) @ 4.2GHz
        -osssssso.      :ssssssso.      Memory: 2048MiB / 16384MiB
       :osssssss/        osssso+++.
      /ossssssss/        +ssssooo/-

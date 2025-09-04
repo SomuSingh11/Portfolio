@@ -189,7 +189,7 @@ export default function Desktop() {
             className="w-full px-4 py-2 text-left text-white hover:cursor-pointer hover:bg-gray-700 transition-colors"
             onClick={handleShowGuidance}
           >
-            ❓ Website Guide
+            ❓ codex-OS Guide
           </button>
         </motion.div>
       )}
