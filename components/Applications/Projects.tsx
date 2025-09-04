@@ -22,11 +22,11 @@ export default function Projects() {
 
   return (
     <div
-      className="bg-gray-900 text-white flex"
-      style={{ height: "calc(100% - 5rem)" }} // Adjust 5rem to your navbar's height
+      className="bg-gray-900 text-white flex h-screen"
+      style={{ outline: "none", height: "calc(100% - 1rem)" }}
     >
       {/* Left Sidebar - Projects List */}
-      <div className="w-70 bg-gray-800 border-r border-gray-700 flex flex-col">
+      <div className="w-70 bg-gray-800 border-r border-gray-700 flex flex-col h-full">
         <div className="p-4 border-b border-gray-700">
           <h2 className="text-lg font-semibold flex items-center space-x-2">
             <FolderOpen className="w-5 h-5 text-blue-400" />
@@ -92,7 +92,7 @@ export default function Projects() {
       </div>
 
       {/* Right Content Area - Project Details */}
-      <div className="flex-1 flex flex-col min-h-0">
+      <div className="flex-1 flex flex-col h-full min-h-0 pb-16">
         {selectedProject ? (
           <>
             {/* Header */}

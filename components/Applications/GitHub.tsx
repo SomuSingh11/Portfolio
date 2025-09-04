@@ -9,7 +9,6 @@ import {
   Star,
   GitFork,
   ExternalLink,
-  Activity,
   Calendar,
   BarChart,
   Search,
