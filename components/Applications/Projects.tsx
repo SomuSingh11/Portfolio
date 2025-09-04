@@ -1,146 +1,225 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Github, Star, Folder, Calendar } from "lucide-react";
-
-const projects = [
-  {
-    id: 1,
-    name: "E-commerce Platform",
-    description:
-      "Full-stack e-commerce solution with payment integration, inventory management, and analytics dashboard.",
-    tech: ["Next.js", "Stripe", "PostgreSQL", "Prisma", "TailwindCSS"],
-    image: "/projects/ecommerce.png",
-    demo: "https://demo.example.com",
-    repo: "https://github.com/username/ecommerce",
-    status: "Completed",
-    date: "2024-12",
-  },
-  {
-    id: 2,
-    name: "Real-time Chat Application",
-    description:
-      "Modern chat app with real-time messaging, file sharing, emoji reactions, and voice messages.",
-    tech: ["React", "Socket.io", "MongoDB", "Express", "WebRTC"],
-    image: "/projects/chat.png",
-    demo: "https://chat.example.com",
-    repo: "https://github.com/username/chat-app",
-    status: "In Progress",
-    date: "2025-01",
-  },
-  {
-    id: 3,
-    name: "AI-Powered Task Manager",
-    description:
-      "Intelligent project management tool with AI suggestions, automated scheduling, and team collaboration.",
-    tech: ["Vue.js", "OpenAI API", "MySQL", "Docker", "Redis"],
-    image: "/projects/tasks.png",
-    demo: "https://tasks.example.com",
-    repo: "https://github.com/username/task-manager",
-    status: "Completed",
-    date: "2024-11",
-  },
-];
+import {
+  ExternalLink,
+  Github,
+  Folder,
+  Calendar,
+  ImageIcon,
+  FolderOpen,
+} from "lucide-react";
+import { ProjectImageCarousel } from "@/components/Utilities/ProjectImageCarosel";
+import projects from "@/components/data/projectsData";
 
 export default function Projects() {
+  const [selectedProject, setSelectedProject] = useState(projects[0]);
+
+  const selectProject = (project: (typeof projects)[number]) => {
+    setSelectedProject(project);
+  };
+
   return (
-    <div className="h-full bg-gray-900 text-white overflow-y-auto">
-      {/* Header */}
-      <div className="bg-gray-800 border-b border-gray-700 p-4">
-        <div className="flex items-center space-x-3">
-          <Folder className="w-6 h-6 text-blue-400" />
-          <h1 className="text-xl font-bold">Projects Portfolio</h1>
-          <span className="text-sm text-gray-400">
-            ({projects.length} projects)
-          </span>
+    <div
+      className="bg-gray-900 text-white flex"
+      style={{ height: "calc(100% - 5rem)" }} // Adjust 5rem to your navbar's height
+    >
+      {/* Left Sidebar - Projects List */}
+      <div className="w-70 bg-gray-800 border-r border-gray-700 flex flex-col">
+        <div className="p-4 border-b border-gray-700">
+          <h2 className="text-lg font-semibold flex items-center space-x-2">
+            <FolderOpen className="w-5 h-5 text-blue-400" />
+            <span>Projects</span>
+          </h2>
+        </div>
+
+        <div className="flex-1 overflow-auto">
+          {/* Projects */}
+          <div className="p-2">
+            {projects.map((project, index) => (
+              <motion.button
+                key={project.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
+                onClick={() => selectProject(project)}
+                className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-left transition-colors group ${
+                  selectedProject?.id === project.id
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-300 hover:bg-gray-700"
+                }`}
+              >
+                <div className="relative">
+                  <Folder
+                    className={`w-5 h-5 ${
+                      selectedProject?.id === project.id
+                        ? "text-blue-200"
+                        : "text-blue-400"
+                    }`}
+                  />
+                  {project.status === "In Progress" && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-500 rounded-full"></div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm truncate">
+                    {project.name}
+                  </div>
+                  <div
+                    className={`text-xs truncate ${
+                      selectedProject?.id === project.id
+                        ? "text-blue-100"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {project.category}
+                  </div>
+                </div>
+                <div
+                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                    project.status === "Completed"
+                      ? "bg-green-600/20 text-green-400"
+                      : "bg-yellow-600/20 text-yellow-400"
+                  }`}
+                >
+                  {project.status === "Completed" ? "✓" : "⋯"}
+                </div>
+              </motion.button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Projects Grid */}
-      <div className="p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden hover:border-blue-500 transition-all duration-300"
-            >
-              {/* Project Header */}
-              <div className="h-32 bg-gradient-to-br from-blue-500 to-purple-600 relative">
-                <div className="absolute top-3 right-3">
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-medium ${
-                      project.status === "Completed"
-                        ? "bg-green-600 text-white"
-                        : "bg-yellow-600 text-white"
-                    }`}
-                  >
-                    {project.status}
-                  </span>
-                </div>
-                <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                  <h3 className="text-white text-lg font-bold text-center px-4">
-                    {project.name}
-                  </h3>
+      {/* Right Content Area - Project Details */}
+      <div className="flex-1 flex flex-col min-h-0">
+        {selectedProject ? (
+          <>
+            {/* Header */}
+            <div className="bg-gray-800 border-b border-gray-700 p-3">
+              <div className="flex items-start justify-between">
+                <div className="w-full">
+                  <div className="flex justify-between w-full">
+                    <h1 className="text-2xl font-bold text-white mb-2">
+                      {selectedProject.name}
+                    </h1>
+                    <div className="flex space-x-3">
+                      {/* Live Demo Button */}
+                      <a
+                        href={selectedProject.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-8 h-8 rounded-full bg-blue-600/90 hover:bg-blue-500 text-white transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                        title="Live Demo"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+
+                      {/* GitHub Source Button */}
+                      <a
+                        href={selectedProject.repo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-8 h-8 rounded-full border border-gray-600 bg-gray-500/10 hover:border-gray-500 hover:bg-gray-500/20 text-gray-300 transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                        title="Source Code"
+                      >
+                        <Github className="w-3 h-3" />
+                      </a>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4 text-sm text-gray-400">
+                    <span className="flex items-center space-x-1">
+                      <Calendar className="w-4 h-4" />
+                      <span>{selectedProject.date}</span>
+                    </span>
+                    <span className="flex items-center space-x-1">
+                      <span>{selectedProject.category}</span>
+                    </span>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        selectedProject.status === "Completed"
+                          ? "bg-green-600/20 text-green-400 border border-green-600/30"
+                          : "bg-yellow-600/20 text-yellow-400 border border-yellow-600/30"
+                      }`}
+                    >
+                      {selectedProject.status}
+                    </span>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              <div className="p-4">
-                <p className="text-gray-300 text-sm mb-4 leading-relaxed">
-                  {project.description}
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-8 min-h-0">
+              {/* Image Carousel */}
+              {/* === Image Carousel Integration === */}
+              {selectedProject.images && selectedProject.images.length > 0 ? (
+                <ProjectImageCarousel
+                  images={selectedProject.images}
+                  projectName={selectedProject.name}
+                />
+              ) : (
+                <div className="bg-gray-800 rounded-lg p-8 aspect-video flex items-center justify-center">
+                  <div className="text-center">
+                    <ImageIcon className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                    <p className="text-gray-400">
+                      No images available for this project
+                    </p>
+                  </div>
+                </div>
+              )}
+              {/* Description */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">
+                  About This Project
+                </h3>
+                <p className="text-gray-300 leading-relaxed">
+                  {selectedProject.description}
                 </p>
+              </div>
 
-                {/* Tech Stack */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tech.map((tech) => (
+              {/* Tech Stack */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Technology Stack</h3>
+                <div className="flex flex-wrap gap-3">
+                  {selectedProject.tech.map((tech) => (
                     <span
                       key={tech}
-                      className="px-2 py-1 bg-blue-600/20 text-blue-400 text-xs rounded border border-blue-600/30"
+                      className="px-4 py-2 bg-blue-600/20 text-blue-400 rounded-lg border border-blue-600/30 font-medium"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
+              </div>
 
-                {/* Project Info */}
-                <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
-                  <div className="flex items-center space-x-1">
-                    <Calendar className="w-3 h-3" />
-                    <span>{project.date}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Star className="w-3 h-3" />
-                    <span>Featured</span>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex space-x-2">
-                  <a
-                    href={project.demo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm font-medium transition-colors text-center flex items-center justify-center space-x-1"
-                  >
-                    <ExternalLink className="w-3 h-3" />
-                    <span>Live Demo</span>
-                  </a>
-
-                  <a
-                    href={project.repo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-gray-700 hover:bg-gray-600 text-gray-300 py-2 px-3 rounded transition-colors flex items-center justify-center"
-                  >
-                    <Github className="w-4 h-4" />
-                  </a>
+              {/* Features */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Key Features</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {selectedProject.features.map((feature) => (
+                    <div
+                      key={feature}
+                      className="flex items-center space-x-3 bg-gray-800 p-3 rounded-lg"
+                    >
+                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                      <span className="text-gray-300">{feature}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </motion.div>
-          ))}
-        </div>
+            </div>
+          </>
+        ) : (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <FolderOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+              <p className="text-gray-400 text-lg">
+                Select a project to view details
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

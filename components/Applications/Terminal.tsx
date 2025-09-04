@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import LinkRenderer from "@/components/Utilities/LinkRenderer";
-import commands from "@/components/Utilities/TerminalCommands";
+import commands from "@/components/data/TerminalCommands";
 
 interface Command {
   input: string;
