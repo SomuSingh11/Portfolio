@@ -134,7 +134,7 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "Next.js",
         proficiency: "Intermediate",
-        projects: 4,
+        projects: 6,
         icon: SiNextdotjs,
         status: "Production Use",
         color: "text-white",
@@ -142,7 +142,7 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "JavaScript (ES6+)",
         proficiency: "Intermediate",
-        projects: 12,
+        projects: 8,
         icon: SiJavascript,
         status: "Comfortable",
         color: "text-yellow-400",
@@ -150,7 +150,7 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "TypeScript",
         proficiency: "Learning",
-        projects: 4,
+        projects: 5,
         icon: SiTypescript,
         status: "Adopted in Projects",
         color: "text-blue-500",
@@ -182,7 +182,7 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "shadcn / DaisyUI",
         proficiency: "Learning",
-        projects: 2,
+        projects: 6,
         icon: GalleryVerticalEnd,
         status: "Used in UI Systems",
         color: "text-gray-300",
@@ -223,7 +223,7 @@ export const skillCategories: SkillCategory[] = [
       },
       {
         name: "Prisma ORM",
-        proficiency: "Learning",
+        proficiency: "Intermediate",
         projects: 2,
         icon: SiPrisma,
         status: "Used in Huddle",
@@ -231,7 +231,7 @@ export const skillCategories: SkillCategory[] = [
       },
       {
         name: "Convex",
-        proficiency: "Exploring",
+        proficiency: "Learning",
         projects: 1,
         icon: DatabaseZap,
         status: "Hackathon Project",
@@ -323,7 +323,7 @@ export const skillCategories: SkillCategory[] = [
       },
       {
         name: "Clerk",
-        proficiency: "Learning",
+        proficiency: "Comfortable",
         projects: 2,
         icon: SiClerk,
         status: "Auth Management",

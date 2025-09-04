@@ -132,16 +132,28 @@ export default function Desktop() {
 
   return (
     <div
-      className="h-screen w-screen overflow-hidden relative bg-gradient-to-br from-blue-900 via-purple-900 to-blue-800"
+      className="h-screen w-screen overflow-hidden relative"
       onClick={handleDesktopClick}
       onContextMenu={handleDesktopRightClick}
       ref={constraintsRef}
-      style={{
-        backgroundImage: `url('${wallpapers[wallpaperIndex]}')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
     >
+      {/* Wallpaper */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={wallpapers[wallpaperIndex]}
+          initial={{ opacity: 0, filter: "blur(20px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
+          exit={{ opacity: 0, filter: "blur(20px)" }}
+          transition={{ duration: 1, ease: "easeInOut" }}
+          className="absolute inset-0 -z-10"
+          style={{
+            backgroundImage: `url('${wallpapers[wallpaperIndex]}')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+      </AnimatePresence>
+
       {/* Desktop Icons */}
       {desktopIcons.map((icon) => (
         <DesktopIcon

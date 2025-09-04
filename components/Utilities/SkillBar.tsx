@@ -74,9 +74,9 @@ export default function SkillBar({ skill, index }: SkillBarProps) {
             {proficiencyData.description}
           </div>
           {/* You could also add the project count to the tooltip */}
-          <div className="text-xs text-gray-400 mt-1">
+          {/* <div className="text-xs text-gray-400 mt-1">
             {skill.projects} practice projects
-          </div>
+          </div> */}
         </div>
       </div>
     </motion.div>

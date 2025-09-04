@@ -22,17 +22,6 @@ export default function Skills() {
     [selectedCategory]
   );
 
-  const totalProjects = useMemo(
-    () =>
-      skillCategories.reduce(
-        (acc, cat) =>
-          acc +
-          cat.skills.reduce((skillAcc, skill) => skillAcc + skill.projects, 0),
-        0
-      ),
-    []
-  );
-
   return (
     <div className="h-full bg-gray-900 text-white">
       {/* Header */}
@@ -43,10 +32,6 @@ export default function Skills() {
               <div className="flex items-center space-x-1">
                 <BookOpen className="w-4 h-4 text-green-400" />
                 <span>Learning Journey</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Target className="w-4 h-4 text-blue-400" />
-                <span>{totalProjects} Projects Built</span>
               </div>
               <div className="flex items-center space-x-1">
                 <Rocket className="w-4 h-4 text-purple-400" />
