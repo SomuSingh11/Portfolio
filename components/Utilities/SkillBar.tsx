@@ -30,7 +30,9 @@ export default function SkillBar({ skill, index }: SkillBarProps) {
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-3">
           <div className="w-8 flex items-center justify-center">
-            <IconComponent className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors" />
+            <IconComponent
+              className={`w-6 h-6 transition-colors ${skill.color}`}
+            />
           </div>
           <span className="font-bold text-white">{skill.name}</span>
         </div>

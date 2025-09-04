@@ -3,37 +3,18 @@
 import type { FC, SVGProps } from "react";
 import {
   Brain,
-  BrainCircuit,
-  Cloud,
   Code,
-  Component,
   Database,
-  DatabaseBackup,
   DatabaseZap,
-  FileCode,
   FileSearch,
   GalleryVerticalEnd,
-  GitBranch,
   GraduationCap,
-  HeartHandshake,
-  KeyRound,
-  Leaf,
-  Lightbulb,
-  Link,
+  ListVideo,
   Map,
-  Network,
-  Palette,
-  Plug,
   Rocket,
-  Router,
-  Send,
   Shield,
-  ShieldCheck,
   ToolCase,
-  Triangle,
   Trophy,
-  Video,
-  Wind,
 } from "lucide-react";
 
 // Import brand icons from react-icons
@@ -54,12 +35,10 @@ import {
   SiReact,
   SiJavascript,
   SiHtml5,
-  SiCss3,
+  SiCss3, // Added for individual coloring
   SiNodedotjs,
   SiExpress,
-  SiGit,
   SiGithub,
-  SiLivechat,
 } from "react-icons/si";
 
 // --- INTERFACE AND TYPE DEFINITIONS ---
@@ -86,6 +65,7 @@ export interface Skill {
   projects: number;
   icon: IconType;
   status: string;
+  color: string; // <-- Property added for individual icon color
 }
 
 export interface SkillCategory {
@@ -101,6 +81,7 @@ export interface SkillCategory {
 // --- DATA EXPORTS ---
 
 export const proficiencyLevels: Record<string, ProficiencyDetail> = {
+  // ... (this data remains the same)
   Exploring: {
     level: 25,
     color: "from-gray-400 to-gray-500",
@@ -148,6 +129,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 6,
         icon: SiReact,
         status: "Actively Building",
+        color: "text-sky-400",
       },
       {
         name: "Next.js",
@@ -155,6 +137,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 4,
         icon: SiNextdotjs,
         status: "Production Use",
+        color: "text-white",
       },
       {
         name: "JavaScript (ES6+)",
@@ -162,6 +145,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 12,
         icon: SiJavascript,
         status: "Comfortable",
+        color: "text-yellow-400",
       },
       {
         name: "TypeScript",
@@ -169,13 +153,23 @@ export const skillCategories: SkillCategory[] = [
         projects: 4,
         icon: SiTypescript,
         status: "Adopted in Projects",
+        color: "text-blue-500",
       },
       {
-        name: "HTML5 & CSS3",
+        name: "HTML5",
         proficiency: "Advanced",
         projects: 15,
         icon: SiHtml5,
         status: "Confident",
+        color: "text-orange-500",
+      },
+      {
+        name: "CSS3",
+        proficiency: "Advanced",
+        projects: 15,
+        icon: SiCss3,
+        status: "Confident",
+        color: "text-blue-600",
       },
       {
         name: "TailwindCSS",
@@ -183,20 +177,23 @@ export const skillCategories: SkillCategory[] = [
         projects: 8,
         icon: SiTailwindcss,
         status: "Daily Use",
+        color: "text-cyan-400",
       },
       {
         name: "shadcn / DaisyUI",
         proficiency: "Learning",
         projects: 2,
-        icon: GalleryVerticalEnd, // Lucide icon as a proxy
+        icon: GalleryVerticalEnd,
         status: "Used in UI Systems",
+        color: "text-gray-300",
       },
       {
         name: "Leaflet.js",
         proficiency: "Exploring",
         projects: 1,
-        icon: Map, // Lucide icon
+        icon: Map,
         status: "Geospatial Maps",
+        color: "text-green-500",
       },
     ],
   },
@@ -214,6 +211,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 6,
         icon: SiNodedotjs,
         status: "Building APIs",
+        color: "text-green-400",
       },
       {
         name: "Express.js",
@@ -221,6 +219,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 4,
         icon: SiExpress,
         status: "API Development",
+        color: "text-gray-300",
       },
       {
         name: "Prisma ORM",
@@ -228,6 +227,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 2,
         icon: SiPrisma,
         status: "Used in Huddle",
+        color: "text-teal-500",
       },
       {
         name: "Convex",
@@ -235,6 +235,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 1,
         icon: DatabaseZap,
         status: "Hackathon Project",
+        color: "text-purple-400",
       },
       {
         name: "Socket.IO",
@@ -242,13 +243,15 @@ export const skillCategories: SkillCategory[] = [
         projects: 3,
         icon: SiSocketdotio,
         status: "Real-time Messaging",
+        color: "text-white",
       },
       {
         name: "LiveKit",
         proficiency: "Learning",
         projects: 2,
-        icon: SiLivechat,
+        icon: ListVideo,
         status: "Video/Audio Integration",
+        color: "text-purple-500",
       },
     ],
   },
@@ -266,6 +269,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 4,
         icon: SiMongodb,
         status: "Used in Full-Stack Apps",
+        color: "text-green-500",
       },
       {
         name: "PostgreSQL",
@@ -273,13 +277,15 @@ export const skillCategories: SkillCategory[] = [
         projects: 2,
         icon: SiPostgresql,
         status: "Used in Huddle",
+        color: "text-blue-500",
       },
       {
         name: "SQL",
         proficiency: "Intermediate",
         projects: 3,
-        icon: FileSearch, // Lucide icon
+        icon: FileSearch,
         status: "Academic & Projects",
+        color: "text-gray-300",
       },
     ],
   },
@@ -297,6 +303,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 20,
         icon: SiGithub,
         status: "Daily Use",
+        color: "text-white",
       },
       {
         name: "Postman",
@@ -304,6 +311,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 6,
         icon: SiPostman,
         status: "API Testing",
+        color: "text-orange-500",
       },
       {
         name: "Vercel",
@@ -311,6 +319,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 4,
         icon: SiVercel,
         status: "Deployments",
+        color: "text-white",
       },
       {
         name: "Clerk",
@@ -318,6 +327,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 2,
         icon: SiClerk,
         status: "Auth Management",
+        color: "text-indigo-400",
       },
     ],
   },
@@ -335,6 +345,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 3,
         icon: SiGooglegemini,
         status: "Catalyst / AI Tools",
+        color: "text-blue-400",
       },
       {
         name: "LangChain",
@@ -342,6 +353,7 @@ export const skillCategories: SkillCategory[] = [
         projects: 2,
         icon: SiLangchain,
         status: "RAG & AI Workflows",
+        color: "text-lime-400",
       },
       {
         name: "Hugging Face",
@@ -349,12 +361,14 @@ export const skillCategories: SkillCategory[] = [
         projects: 1,
         icon: SiHuggingface,
         status: "Model Experimentation",
+        color: "text-yellow-400",
       },
     ],
   },
 ];
 
 export const achievements: Achievement[] = [
+  // ... (this data remains the same)
   {
     title: "HackByte 3.0 Finalist",
     description:

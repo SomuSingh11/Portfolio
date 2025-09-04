@@ -7,6 +7,7 @@ import Window from "./Window";
 import Taskbar from "./Taskbar";
 import { useDesktopStore } from "@/lib/desktop-store";
 import { WindowData, IconData } from "@/types/desktop";
+import GuidanceModal from "../Utilities/GuidanceModal";
 
 // Desktop Icons Configuration
 const desktopIcons: IconData[] = [
@@ -52,7 +53,6 @@ const desktopIcons: IconData[] = [
     icon: "resume.svg",
     position: { x: 170, y: 150 },
   },
-  { id: "blog", name: "Blog", icon: "blog.svg", position: { x: 170, y: 250 } },
 ];
 
 export default function Desktop() {
@@ -63,6 +63,7 @@ export default function Desktop() {
     y: number;
   } | null>(null);
   const constraintsRef = useRef<HTMLDivElement>(null);
+  const [showGuidance, setShowGuidance] = useState(false);
 
   // Wallpaper state
   const wallpapers = [
@@ -111,6 +112,11 @@ export default function Desktop() {
     };
 
     openWindow(newWindow);
+  };
+
+  const handleShowGuidance = () => {
+    setShowGuidance(true);
+    setContextMenu(null);
   };
 
   // Change wallpaper handler
@@ -168,25 +174,29 @@ export default function Desktop() {
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
           <button
-            className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition-colors"
+            className="w-full px-4 py-2 text-left text-white hover:cursor-pointer hover:bg-gray-700 transition-colors"
             onClick={handleRefreshWallpaper}
           >
             🔄 Refresh Desktop
           </button>
           <button
-            className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition-colors"
+            className="w-full px-4 py-2 text-left text-white hover:cursor-pointer hover:bg-gray-700 transition-colors"
             onClick={handleChangeWallpaper}
           >
             🎨 Change Wallpaper
           </button>
-          <button className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition-colors">
-            ⚙️ Desktop Settings
+          <button
+            className="w-full px-4 py-2 text-left text-white hover:cursor-pointer hover:bg-gray-700 transition-colors"
+            onClick={handleShowGuidance}
+          >
+            ❓ Website Guide
           </button>
         </motion.div>
       )}
 
       {/* Taskbar */}
       <Taskbar windows={windows} onWindowClick={focusWindow} />
+      <GuidanceModal open={showGuidance} onOpenChange={setShowGuidance} />
     </div>
   );
 }

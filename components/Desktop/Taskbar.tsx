@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { WindowData } from "@/types/desktop";
 import Image from "next/image";
 import GifWindow from "../Utilities/GifWindow";
+import { BatteryFull, Volume2, Wifi } from "lucide-react";
 
 interface TaskbarProps {
   windows: WindowData[];
@@ -31,22 +32,24 @@ export default function Taskbar({ windows, onWindowClick }: TaskbarProps) {
       contact: "contact.svg",
       github: "githubIcon.svg",
       resume: "resume.svg",
-      blog: "blog.svg",
     };
     return icons[windowId] || "🪟";
   };
 
   return (
     <motion.div
-      className="absolute bottom-0 left-0 right-0 h-12 bg-gray-800 border-t border-gray-600 flex items-center justify-between px-4 z-50"
-      initial={{ y: 100 }}
-      animate={{ y: 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      className="absolute bottom-0 left-0 right-0 h-14 bg-black/30 backdrop-blur-lg border-t border-white/20 flex items-center justify-between px-4 z-50"
+      initial={{ y: "100%" }}
+      animate={{ y: "0%" }}
+      transition={{ type: "spring", stiffness: 400, damping: 40 }}
     >
       {/* Start Menu */}
-      <div className="flex items-center space-x-4">
+      <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
         <GifWindow />
-      </div>
+      </motion.div>
+
+      {/* Vertical Divider */}
+      <div className="h-8 w-px bg-white/20 mx-4" />
 
       {/* Open Windows */}
       <div className="flex items-center space-x-2 flex-1 mx-4">
@@ -75,14 +78,20 @@ export default function Taskbar({ windows, onWindowClick }: TaskbarProps) {
       </div>
 
       {/* System Tray */}
-      <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-2 text-gray-300 text-sm">
-          <span>🔊</span>
-          <span>📶</span>
-          <span>🔋</span>
+      <div className="flex items-center space-x-4 h-full bg-white/10 px-4 rounded-md">
+        <div className="flex items-center space-x-3 text-gray-300">
+          <motion.div whileHover={{ scale: 1.2, color: "#fff" }}>
+            <Wifi size={18} />
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.2, color: "#fff" }}>
+            <Volume2 size={18} />
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.2, color: "#fff" }}>
+            <BatteryFull size={18} />
+          </motion.div>
         </div>
 
-        <div className="text-white text-sm font-mono">
+        <div className="text-white text-sm font-semibold">
           {currentTime.toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",

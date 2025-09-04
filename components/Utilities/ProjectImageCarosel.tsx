@@ -65,8 +65,9 @@ export function ProjectImageCarousel({
                   alt={`${projectName} screenshot ${index + 1}`}
                   width={1280}
                   height={720}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                   priority={index === 0}
+                  quality={90}
                 />
               </div>
             </CarouselItem>

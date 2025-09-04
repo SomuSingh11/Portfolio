@@ -32,7 +32,7 @@ export default function Window({
 }: WindowProps) {
   const { updateWindow } = useDesktopStore();
   const [isDragging, setIsDragging] = useState(false);
-  const [isResizing, setIsResizing] = useState(false);
+  // const [isResizing, setIsResizing] = useState(false);
   const dragRef = useRef<HTMLDivElement>(null);
 
   const handleMaximize = () => {

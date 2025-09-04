@@ -5,15 +5,21 @@ const projects = [
     type: "folder",
     description:
       "An integrated AI-driven productivity platform to empower developers with GitHub repository analytics, AI-powered commit summaries, and intelligent quizzes for interview preparation and concept reinforcement.",
-    tech: ["Next.js", "LangChain", "GitHub API", "RAG", "Gemini"],
-    demo: "https://catalyst-demo.example.com", // replace with actual link if available
-    repo: "https://github.com/SomuSingh11", // update to specific repo
-    status: "Completed",
-    date: "2024-12-15",
+    tech: ["Next.js", "LangChain", "GitHub API", "RAG", "Gemini", "trpc"],
+    demo: "https://catalyst-lac.vercel.app/",
+    repo: "https://github.com/SomuSingh11/Catalyst",
+    status: "In Progress",
+    date: "2025-01-28",
     images: [
-      "/projects/catalyst-1.jpg",
-      "/projects/catalyst-2.jpg",
-      "/projects/catalyst-3.jpg",
+      "/projectPhotos/Catalyst/1.png",
+      "/projectPhotos/Catalyst/2.png",
+      "/projectPhotos/Catalyst/3.png",
+      "/projectPhotos/Catalyst/4.png",
+      "/projectPhotos/Catalyst/5.png",
+      "/projectPhotos/Catalyst/6.png",
+      "/projectPhotos/Catalyst/7.png",
+      "/projectPhotos/Catalyst/8.png",
+      "/projectPhotos/Catalyst/9.png",
     ],
     features: [
       "GitWhiz: AI-powered commit summaries",
@@ -30,14 +36,16 @@ const projects = [
     description:
       "A centralized collaboration platform for government departments designed to prevent resource wastage and project conflicts through real-time coordination, AI-powered conflict detection, and geospatial awareness.",
     tech: ["Next.js", "Convex", "Dialogflow CX", "Google Vertex AI"],
-    demo: "https://sync-city-demo.example.com", // replace with actual link if available
-    repo: "https://github.com/SomuSingh11", // update to specific repo
+    demo: "https://devfolio.co/projects/synccity-a778", // replace with actual link if available
+    repo: "https://github.com/SomuSingh11/syncV1", // update to specific repo
     status: "Hackathon Finalist",
-    date: "2024-11-20",
+    date: "2025-04-11",
     images: [
-      "/projects/synccity-1.jpg",
-      "/projects/synccity-2.jpg",
-      "/projects/synccity-3.jpg",
+      "/projectPhotos/Synccity/1.jpeg",
+      "/projectPhotos/Synccity/2.jpeg",
+      "/projectPhotos/Synccity/3.jpeg",
+      "/projectPhotos/Synccity/4.jpeg",
+      "/projectPhotos/Synccity/5.jpeg",
     ],
     features: [
       "AI-powered conflict detection",
@@ -63,14 +71,20 @@ const projects = [
       "Zustand",
       "React Query",
     ],
-    demo: "https://huddle-demo.example.com", // replace with actual link if available
-    repo: "https://github.com/SomuSingh11", // update to specific repo
-    status: "In Progress",
+    demo: "https://huddle-mb7x.onrender.com/", // replace with actual link if available
+    repo: "https://github.com/SomuSingh11/Huddle", // update to specific repo
+    status: "Completed",
     date: "2025-01-10",
     images: [
-      "/projects/huddle-1.jpg",
-      "/projects/huddle-2.jpg",
-      "/projects/huddle-3.jpg",
+      "/projectPhotos/Huddle/1.jpg",
+      "/projectPhotos/Huddle/2.jpg",
+      "/projectPhotos/Huddle/3.jpg",
+      "/projectPhotos/Huddle/4.jpg",
+      "/projectPhotos/Huddle/5.jpg",
+      "/projectPhotos/Huddle/6.jpg",
+      "/projectPhotos/Huddle/7.jpg",
+      "/projectPhotos/Huddle/8.jpg",
+      "/projectPhotos/Huddle/9.jpg",
     ],
     features: [
       "Real-time messaging with Socket.IO",

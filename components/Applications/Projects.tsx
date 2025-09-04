@@ -30,7 +30,7 @@ export default function Projects() {
         <div className="p-4 border-b border-gray-700">
           <h2 className="text-lg font-semibold flex items-center space-x-2">
             <FolderOpen className="w-5 h-5 text-blue-400" />
-            <span>Projects</span>
+            <span>Featured Projects</span>
           </h2>
         </div>
 
