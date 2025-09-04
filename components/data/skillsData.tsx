@@ -1,16 +1,70 @@
-import type { LucideIcon } from "lucide-react";
+// src/components/data/skillsData.ts
+
+import type { FC, SVGProps } from "react";
 import {
-  BookOpen,
   Brain,
+  BrainCircuit,
+  Cloud,
   Code,
+  Component,
   Database,
+  DatabaseBackup,
+  DatabaseZap,
+  FileCode,
+  FileSearch,
+  GalleryVerticalEnd,
+  GitBranch,
   GraduationCap,
+  HeartHandshake,
+  KeyRound,
+  Leaf,
   Lightbulb,
+  Link,
+  Map,
+  Network,
+  Palette,
+  Plug,
   Rocket,
+  Router,
+  Send,
+  Shield,
+  ShieldCheck,
   ToolCase,
+  Triangle,
+  Trophy,
+  Video,
+  Wind,
 } from "lucide-react";
 
+// Import brand icons from react-icons
+import {
+  SiPrisma,
+  SiSocketdotio,
+  SiMongodb,
+  SiPostgresql,
+  SiPostman,
+  SiVercel,
+  SiClerk,
+  SiGooglegemini,
+  SiLangchain,
+  SiHuggingface,
+  SiNextdotjs,
+  SiTypescript,
+  SiTailwindcss,
+  SiReact,
+  SiJavascript,
+  SiHtml5,
+  SiCss3,
+  SiNodedotjs,
+  SiExpress,
+  SiGit,
+  SiGithub,
+  SiLivechat,
+} from "react-icons/si";
+
 // --- INTERFACE AND TYPE DEFINITIONS ---
+export type IconType = FC<SVGProps<SVGSVGElement>>;
+
 export interface ProficiencyDetail {
   level: number;
   color: string;
@@ -20,7 +74,7 @@ export interface ProficiencyDetail {
 export interface Achievement {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: IconType;
   color: string;
 }
 
@@ -30,14 +84,14 @@ export interface Skill {
   name: string;
   proficiency: ProficiencyLevelName;
   projects: number;
-  icon: string;
+  icon: IconType;
   status: string;
 }
 
 export interface SkillCategory {
   id: string;
   category: string;
-  icon: LucideIcon;
+  icon: IconType;
   color: string;
   bgGradient: string;
   description: string;
@@ -67,15 +121,15 @@ export const proficiencyLevels: Record<string, ProficiencyDetail> = {
     color: "from-green-400 to-green-500",
     description: "Can work independently",
   },
-  Advanced: {
-    level: 85,
-    color: "from-purple-400 to-purple-500",
-    description: "Strong proficiency",
-  },
   Comfortable: {
     level: 75,
     color: "from-emerald-400 to-emerald-500",
     description: "Confident in usage",
+  },
+  Advanced: {
+    level: 85,
+    color: "from-purple-400 to-purple-500",
+    description: "Strong proficiency",
   },
 };
 
@@ -89,46 +143,60 @@ export const skillCategories: SkillCategory[] = [
     description: "Building interactive and responsive user interfaces",
     skills: [
       {
-        name: "React",
+        name: "React.js",
         proficiency: "Intermediate",
         projects: 6,
-        icon: "⚛️",
-        status: "Actively Learning",
+        icon: SiReact,
+        status: "Actively Building",
       },
       {
         name: "Next.js",
-        proficiency: "Beginner",
-        projects: 3,
-        icon: "▲",
-        status: "Exploring",
+        proficiency: "Intermediate",
+        projects: 4,
+        icon: SiNextdotjs,
+        status: "Production Use",
       },
       {
-        name: "JavaScript",
+        name: "JavaScript (ES6+)",
         proficiency: "Intermediate",
         projects: 12,
-        icon: "🟨",
+        icon: SiJavascript,
         status: "Comfortable",
       },
       {
-        name: "HTML/CSS",
+        name: "TypeScript",
+        proficiency: "Learning",
+        projects: 4,
+        icon: SiTypescript,
+        status: "Adopted in Projects",
+      },
+      {
+        name: "HTML5 & CSS3",
         proficiency: "Advanced",
         projects: 15,
-        icon: "🎨",
+        icon: SiHtml5,
         status: "Confident",
       },
       {
         name: "TailwindCSS",
         proficiency: "Intermediate",
         projects: 8,
-        icon: "🎨",
-        status: "Learning",
+        icon: SiTailwindcss,
+        status: "Daily Use",
       },
       {
-        name: "TypeScript",
-        proficiency: "Beginner",
-        projects: 4,
-        icon: "🔷",
-        status: "Exploring",
+        name: "shadcn / DaisyUI",
+        proficiency: "Learning",
+        projects: 2,
+        icon: GalleryVerticalEnd, // Lucide icon as a proxy
+        status: "Used in UI Systems",
+      },
+      {
+        name: "Leaflet.js",
+        proficiency: "Exploring",
+        projects: 1,
+        icon: Map, // Lucide icon
+        status: "Geospatial Maps",
       },
     ],
   },
@@ -142,45 +210,76 @@ export const skillCategories: SkillCategory[] = [
     skills: [
       {
         name: "Node.js",
-        proficiency: "Beginner",
-        projects: 5,
-        icon: "🟢",
-        status: "Learning",
+        proficiency: "Intermediate",
+        projects: 6,
+        icon: SiNodedotjs,
+        status: "Building APIs",
       },
       {
-        name: "Express",
-        proficiency: "Beginner",
+        name: "Express.js",
+        proficiency: "Intermediate",
         projects: 4,
-        icon: "🚄",
-        status: "Practicing",
+        icon: SiExpress,
+        status: "API Development",
       },
+      {
+        name: "Prisma ORM",
+        proficiency: "Learning",
+        projects: 2,
+        icon: SiPrisma,
+        status: "Used in Huddle",
+      },
+      {
+        name: "Convex",
+        proficiency: "Exploring",
+        projects: 1,
+        icon: DatabaseZap,
+        status: "Hackathon Project",
+      },
+      {
+        name: "Socket.IO",
+        proficiency: "Intermediate",
+        projects: 3,
+        icon: SiSocketdotio,
+        status: "Real-time Messaging",
+      },
+      {
+        name: "LiveKit",
+        proficiency: "Learning",
+        projects: 2,
+        icon: SiLivechat,
+        status: "Video/Audio Integration",
+      },
+    ],
+  },
+  {
+    id: "databases",
+    category: "Databases",
+    icon: Database,
+    color: "from-orange-400 to-red-500",
+    bgGradient: "from-orange-900/20 to-red-900/20",
+    description: "Relational and non-relational databases",
+    skills: [
       {
         name: "MongoDB",
-        proficiency: "Beginner",
-        projects: 3,
-        icon: "🍃",
-        status: "Exploring",
+        proficiency: "Intermediate",
+        projects: 4,
+        icon: SiMongodb,
+        status: "Used in Full-Stack Apps",
       },
       {
-        name: "Python",
+        name: "PostgreSQL",
         proficiency: "Intermediate",
-        projects: 8,
-        icon: "🐍",
-        status: "Academic",
+        projects: 2,
+        icon: SiPostgresql,
+        status: "Used in Huddle",
       },
       {
         name: "SQL",
-        proficiency: "Beginner",
-        projects: 2,
-        icon: "🗄️",
-        status: "Learning",
-      },
-      {
-        name: "APIs",
-        proficiency: "Beginner",
-        projects: 6,
-        icon: "🔗",
-        status: "Practicing",
+        proficiency: "Intermediate",
+        projects: 3,
+        icon: FileSearch, // Lucide icon
+        status: "Academic & Projects",
       },
     ],
   },
@@ -190,94 +289,66 @@ export const skillCategories: SkillCategory[] = [
     icon: ToolCase,
     color: "from-purple-400 to-pink-500",
     bgGradient: "from-purple-900/20 to-pink-900/20",
-    description: "Essential development and design tools",
+    description: "Essential development and collaboration tools",
     skills: [
       {
         name: "Git & GitHub",
-        proficiency: "Intermediate",
+        proficiency: "Comfortable",
         projects: 20,
-        icon: "📊",
+        icon: SiGithub,
         status: "Daily Use",
       },
       {
-        name: "VS Code",
-        proficiency: "Advanced",
-        projects: 25,
-        icon: "💻",
-        status: "Primary Editor",
+        name: "Postman",
+        proficiency: "Intermediate",
+        projects: 6,
+        icon: SiPostman,
+        status: "API Testing",
       },
       {
-        name: "Figma",
-        proficiency: "Beginner",
+        name: "Vercel",
+        proficiency: "Learning",
         projects: 4,
-        icon: "🎨",
-        status: "Learning",
+        icon: SiVercel,
+        status: "Deployments",
       },
       {
-        name: "Terminal",
-        proficiency: "Intermediate",
-        projects: 15,
-        icon: "⌨️",
-        status: "Comfortable",
-      },
-      {
-        name: "Chrome DevTools",
-        proficiency: "Intermediate",
-        projects: 18,
-        icon: "🔧",
-        status: "Regular Use",
-      },
-      {
-        name: "npm/yarn",
-        proficiency: "Intermediate",
-        projects: 12,
-        icon: "📦",
-        status: "Familiar",
+        name: "Clerk",
+        proficiency: "Learning",
+        projects: 2,
+        icon: SiClerk,
+        status: "Auth Management",
       },
     ],
   },
   {
-    id: "learning",
-    category: "Currently Learning",
-    icon: BookOpen,
-    color: "from-yellow-400 to-orange-500",
-    bgGradient: "from-yellow-900/20 to-orange-900/20",
-    description: "Technologies I'm actively studying and exploring",
+    id: "ai-ml",
+    category: "AI & ML",
+    icon: Brain,
+    color: "from-pink-400 to-red-500",
+    bgGradient: "from-pink-900/20 to-red-900/20",
+    description: "AI-powered tools and frameworks",
     skills: [
       {
-        name: "Docker",
-        proficiency: "Exploring",
-        projects: 1,
-        icon: "🐳",
-        status: "Tutorial Phase",
-      },
-      {
-        name: "GraphQL",
-        proficiency: "Learning",
-        projects: 2,
-        icon: "📊",
-        status: "Understanding Basics",
-      },
-      {
-        name: "Testing (Jest)",
-        proficiency: "Beginner",
+        name: "Gemini API",
+        proficiency: "Intermediate",
         projects: 3,
-        icon: "🧪",
-        status: "Writing First Tests",
+        icon: SiGooglegemini,
+        status: "Catalyst / AI Tools",
       },
       {
-        name: "AWS Basics",
-        proficiency: "Exploring",
-        projects: 1,
-        icon: "☁️",
-        status: "Free Tier",
-      },
-      {
-        name: "Redux",
+        name: "LangChain",
         proficiency: "Learning",
         projects: 2,
-        icon: "🔄",
-        status: "State Management",
+        icon: SiLangchain,
+        status: "RAG & AI Workflows",
+      },
+      {
+        name: "Hugging Face",
+        proficiency: "Exploring",
+        projects: 1,
+        icon: SiHuggingface,
+        status: "Model Experimentation",
       },
     ],
   },
@@ -285,27 +356,30 @@ export const skillCategories: SkillCategory[] = [
 
 export const achievements: Achievement[] = [
   {
-    title: "Quick Learner",
-    description: "Rapidly picking up new technologies",
-    icon: Brain,
-    color: "text-purple-400",
+    title: "HackByte 3.0 Finalist",
+    description:
+      "Top 10 finalist among 120+ teams for Sync-City, an AI-powered collaboration platform",
+    icon: Trophy,
+    color: "text-yellow-400",
+  },
+  {
+    title: "Strong Academics",
+    description: "Maintained 9.04 GPA in Computer Engineering at IET DAVV",
+    icon: GraduationCap,
+    color: "text-blue-400",
   },
   {
     title: "Project Builder",
-    description: "Completed multiple personal projects",
+    description:
+      "Developed AI-powered and real-time applications like Catalyst and Huddle",
     icon: Rocket,
     color: "text-green-400",
   },
   {
-    title: "Problem Solver",
-    description: "Enjoys tackling coding challenges",
-    icon: Lightbulb,
-    color: "text-yellow-400",
-  },
-  {
-    title: "Future Developer",
-    description: "Committed to continuous learning",
-    icon: GraduationCap,
-    color: "text-blue-400",
+    title: "Certified",
+    description:
+      "Earned Postman API Fundamentals & Cisco Networking Basics certifications",
+    icon: Shield,
+    color: "text-purple-400",
   },
 ];

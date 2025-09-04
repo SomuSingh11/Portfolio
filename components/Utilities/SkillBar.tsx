@@ -10,8 +10,12 @@ interface SkillBarProps {
 }
 
 export default function SkillBar({ skill, index }: SkillBarProps) {
-  // This now works safely because your 'Skill' type is correctly defined
-  const proficiencyData = proficiencyLevels[skill.proficiency];
+  // 1. Safer data access with a type assertion
+  const proficiencyData =
+    proficiencyLevels[skill.proficiency as keyof typeof proficiencyLevels];
+
+  // This is correct!
+  const IconComponent = skill.icon;
 
   return (
     <motion.div
@@ -25,7 +29,9 @@ export default function SkillBar({ skill, index }: SkillBarProps) {
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-3">
-          <span className="text-2xl w-8 text-center">{skill.icon}</span>
+          <div className="w-8 flex items-center justify-center">
+            <IconComponent className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors" />
+          </div>
           <span className="font-bold text-white">{skill.name}</span>
         </div>
         <div className="flex items-center space-x-3">
@@ -48,7 +54,6 @@ export default function SkillBar({ skill, index }: SkillBarProps) {
           <div className="absolute inset-0 bg-white/10 animate-pulse"></div>
         </motion.div>
 
-        {/* Progress markers */}
         <div className="absolute top-0 left-0 w-full h-full flex items-center">
           {[25, 50, 75].map((threshold) => (
             <div
@@ -60,12 +65,15 @@ export default function SkillBar({ skill, index }: SkillBarProps) {
         </div>
       </div>
 
-      {/* Hover tooltip */}
       <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-black/90 text-white px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 w-max">
         <div className="text-center">
           <div className="font-bold">{skill.name}</div>
           <div className="text-xs text-gray-300">
             {proficiencyData.description}
+          </div>
+          {/* You could also add the project count to the tooltip */}
+          <div className="text-xs text-gray-400 mt-1">
+            {skill.projects} practice projects
           </div>
         </div>
       </div>

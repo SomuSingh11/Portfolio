@@ -34,7 +34,7 @@ export default function Skills() {
   );
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-900 text-white">
+    <div className="h-full bg-gray-900 text-white">
       {/* Header */}
       <div className="bg-gradient-to-r from-gray-800 to-gray-900 border-b border-gray-700 p-4">
         <div className="flex items-center justify-between">
@@ -67,11 +67,13 @@ export default function Skills() {
         </div>
       </div>
 
-      <div className="flex h-[calc(100vh-8rem)]">
-        {" "}
+      <div
+        className="bg-gray-900 text-white flex h-screen"
+        style={{ outline: "none", height: "calc(100% - 1rem)" }}
+      >
         {/* Adjusted height for header */}
         {/* Category Selector */}
-        <div className="w-70 bg-gray-800 border-r border-gray-700 p-4 overflow-y-auto min-h-0">
+        <div className="w-70 bg-gray-800 border-r border-gray-700 p-4 overflow-auto h-full">
           <h3 className="text-lg font-bold mb-4 flex items-center space-x-2">
             <Brain className="w-5 h-5 text-purple-400" />
             <span>Skill Areas</span>
@@ -116,7 +118,7 @@ export default function Skills() {
           </div>
         </div>
         {/* Skills Display */}
-        <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="flex-1 overflow-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={selectedCategory}
