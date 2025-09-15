@@ -123,7 +123,7 @@ export default function SetupScreen({ onComplete }: SetupScreenProps) {
 
       <motion.button
         onClick={onComplete}
-        className="absolute bottom-5 right-5 text-xs text-gray-500 hover:text-white hover:underline transition-colors"
+        className="absolute bottom-15 right-15 hover:cursor-pointer text-xs text-gray-500 hover:text-white hover:underline transition-colors"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { delay: 1 } }}
       >

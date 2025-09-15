@@ -16,11 +16,10 @@ import {
 const contactConfig = {
   web3formsAccessKey: process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY,
   email: "somusingh0110@gmail.com",
-  phone: "+91 80858 57189",
   location: "Indore, MP, India",
   timezone: "IST (UTC+5:30)",
-  resumePath: "/SomuSingh_Resume.pdf", // Place your resume in the 'public' folder
-  calendlyLink: "https://calendly.com/your-username", // Optional: link to your Calendly
+  resumePath: "/SomuSingh_Resume.pdf",
+  calendlyLink: "https://calendly.com/your-username",
   socials: {
     github: "https://github.com/SomuSingh11",
     linkedin: "https://www.linkedin.com/in/somusingh11/",
@@ -128,7 +127,6 @@ export default function Contact() {
 
   return (
     <div className="h-full bg-gray-900 text-white overflow-y-auto">
-      {/* NEW: Add Toaster for notifications */}
       <Toaster
         position="top-center"
         toastOptions={{
@@ -144,6 +142,66 @@ export default function Contact() {
 
       <div className="p-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="space-y-6"
+          >
+            <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+              <div className="space-y-3">
+                {quickActions.map((action) => (
+                  <button
+                    key={action.label}
+                    onClick={action.action}
+                    className="w-full flex items-center space-x-3 p-3 bg-gray-700 hover:cursor-pointer hover:bg-gray-600 rounded transition-colors text-left"
+                  >
+                    <action.icon className="w-5 h-5 text-blue-400" />
+                    <span>{action.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Connect Online</h3>
+              <div className="space-y-3">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-3 p-3 bg-gray-700 hover:bg-gray-600 rounded transition-colors group"
+                  >
+                    <link.icon className={`w-5 h-5 ${link.color}`} />
+                    <span className="flex-1">{link.label}</span>
+                    <span className="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Open in new tab
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Contact Details</h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center space-x-3">
+                  <Mail className="w-4 h-4 text-blue-400" />
+                  <span>{contactConfig.email}</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <span className="w-4 h-4 text-center">📍</span>
+                  <span>{contactConfig.location}</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <span className="w-4 h-4 text-center">🕐</span>
+                  <span>{contactConfig.timezone}</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -219,70 +277,6 @@ export default function Contact() {
                 )}
               </motion.button>
             </form>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-            className="space-y-6"
-          >
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                {quickActions.map((action) => (
-                  <button
-                    key={action.label}
-                    onClick={action.action}
-                    className="w-full flex items-center space-x-3 p-3 bg-gray-700 hover:cursor-pointer hover:bg-gray-600 rounded transition-colors text-left"
-                  >
-                    <action.icon className="w-5 h-5 text-blue-400" />
-                    <span>{action.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Connect Online</h3>
-              <div className="space-y-3">
-                {socialLinks.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center space-x-3 p-3 bg-gray-700 hover:bg-gray-600 rounded transition-colors group"
-                  >
-                    <link.icon className={`w-5 h-5 ${link.color}`} />
-                    <span className="flex-1">{link.label}</span>
-                    <span className="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Open in new tab
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </div>
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Contact Details</h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center space-x-3">
-                  <Mail className="w-4 h-4 text-blue-400" />
-                  <span>{contactConfig.email}</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Phone className="w-4 h-4 text-green-400" />
-                  <span>{contactConfig.phone}</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <span className="w-4 h-4 text-center">📍</span>
-                  <span>{contactConfig.location}</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <span className="w-4 h-4 text-center">🕐</span>
-                  <span>{contactConfig.timezone}</span>
-                </div>
-              </div>
-            </div>
           </motion.div>
         </div>
       </div>

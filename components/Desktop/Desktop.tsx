@@ -45,13 +45,13 @@ const desktopIcons: IconData[] = [
     id: "github",
     name: "GitHub",
     icon: "githubIcon.svg",
-    position: { x: 170, y: 50 },
+    position: { x: 170, y: 52 },
   },
   {
     id: "resume",
     name: "Resume",
-    icon: "resume.svg",
-    position: { x: 170, y: 150 },
+    icon: "resume2.svg",
+    position: { x: 165, y: 150 },
   },
 ];
 
@@ -67,8 +67,9 @@ export default function Desktop() {
 
   // Wallpaper state
   const wallpapers = [
-    "/wallpaper/redHair.jpg",
+    "/wallpaper/windowsXp.jpg",
     "/wallpaper/penguin.jpg",
+    "/wallpaper/redHair.jpg",
     "/wallpaper/pain.jpg",
     "/wallpaper/goldFish.jpg",
     "/wallpaper/groot.jpg",
