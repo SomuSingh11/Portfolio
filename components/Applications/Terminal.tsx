@@ -152,11 +152,11 @@ Type "help" for available commands.`,
 
   return (
     <div
-      className="h-full bg-black text-green-400 font-mono flex flex-col"
+      className="h-full bg-black text-green-400 font-mono flex flex-col px-1"
       onClick={handleMainClick}
       tabIndex={0}
       role="presentation"
-      style={{ outline: "none", height: "calc(100% - 5rem)" }}
+      style={{ outline: "none", height: "calc(100% - 3.5rem)" }}
     >
       <div
         ref={terminalRef}

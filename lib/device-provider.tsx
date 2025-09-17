@@ -1,5 +1,34 @@
 "use client";
+import { motion } from "framer-motion";
+
+import About from "@/components/Applications/About";
+import Contact from "@/components/Applications/Contact";
+import GitHub from "@/components/Applications/GitHub";
+import Projects from "@/components/Applications/Projects";
+import Resume from "@/components/Applications/Resume";
+import Skills from "@/components/Applications/Skills";
+import Terminal from "@/components/Applications/Terminal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import GifWindow from "@/components/Utilities/GifWindow";
 import { createContext, useContext, useEffect, useState } from "react";
+import Achievements from "@/components/Utilities/Achievements";
+
+// type
+type Section =
+  | "terminal"
+  | "about"
+  | "skills"
+  | "projects"
+  | "contact"
+  | "github"
+  | "resume"
+  | "achievements";
 
 // Context
 interface DeviceContextProps {
@@ -10,7 +39,9 @@ const DeviceContext = createContext<DeviceContextProps | undefined>(undefined);
 
 // Provider
 export function DeviceProvider({ children }: { children: React.ReactNode }) {
+  const [currentTime, setCurrentTime] = useState(new Date());
   const [isMobile, setIsMobile] = useState(false);
+  const [currentSection, setCurrentSection] = useState<Section>("about");
 
   useEffect(() => {
     const checkMobile = () => {
@@ -22,61 +53,82 @@ export function DeviceProvider({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const renderSection = () => {
+    switch (currentSection) {
+      case "terminal":
+        return <Terminal />;
+      case "about":
+        return <About />;
+      case "skills":
+        return <Skills />;
+      case "projects":
+        return <Projects />;
+      case "contact":
+        return <Contact />;
+      case "github":
+        return <GitHub />;
+      case "resume":
+        return <Resume />;
+      case "achievements":
+        return <Achievements />;
+      default:
+        return <About />;
+    }
+  };
+
   if (isMobile) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-black via-gray-900 to-black text-gray-200 px-6 text-center">
-        {/* Icon */}
-        <div className="mb-6">
-          <span className="text-5xl animate-pulse">📱</span>
+      <div className="h-screen flex flex-col">
+        <div className="flex-1 overflow-y-auto">{renderSection()}</div>
+        <div className="fixed bottom-0 left-0 right-0 h-14 bg-black/30 backdrop-blur-lg border-t border-white/20 flex items-center justify-between px-4 z-50">
+          {/* Start Menu */}
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <GifWindow />
+          </motion.div>
+
+          {/* Vertical Divider */}
+          <div className="h-8 w-px bg-white/20 mx-4" />
+
+          <div>
+            <Select
+              value={currentSection}
+              onValueChange={(value: Section) => setCurrentSection(value)}
+            >
+              <SelectTrigger className="w-[120px] text-gray-300 text-sm bg-white/10 border-white/20 backdrop-blur-sm shadow-lg rounded-full ">
+                <SelectValue placeholder="Select Section" />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-900 text-white  border-white/20 backdrop-blur-md rounded-lg">
+                <SelectItem value="about">About</SelectItem>
+                <SelectItem value="terminal">Terminal</SelectItem>
+                <SelectItem value="resume">Resume</SelectItem>
+                <SelectItem value="github">GitHub</SelectItem>
+                <SelectItem value="projects">Projects</SelectItem>
+                <SelectItem value="skills">Skills</SelectItem>
+                <SelectItem value="contact">Contact</SelectItem>
+                <SelectItem value="achievements">Achievements</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Vertical Divider */}
+          <div className="h-8 w-px bg-white/20 mx-4" />
+
+          {/* System Tray */}
+          <div className="text-white text-sm font-semibold">
+            {currentTime.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </div>
         </div>
-
-        {/* Title */}
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-wide bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-4">
-          Best Viewed on Larger Screens
-        </h1>
-
-        {/* Message */}
-        <p className="text-gray-400 max-w-md mb-6 leading-relaxed">
-          Hey there 👋, my portfolio is currently designed as a{" "}
-          <strong className="text-white">desktop OS–style experience</strong>{" "}
-          and isn’t fully optimized for smaller screens yet.
-          <br />
-          For the best experience, please check it out on a laptop or desktop.
-        </p>
-
-        {/* Quick Links */}
-        <div className="flex space-x-6">
-          <a
-            href="https://github.com/SomuSingh11"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2 rounded-lg bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-400 transition"
-          >
-            GitHub
-          </a>
-          <a
-            href="https://linkedin.com/in/somusingh11"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 transition"
-          >
-            LinkedIn
-          </a>
-          <a
-            href="/Resume_Somu11.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-400 transition"
-          >
-            Resume
-          </a>
-        </div>
-
-        {/* Footer Note */}
-        <p className="text-xs text-gray-600 mt-8">
-          A portfolio by Somu Singh • Designed with a desktop-first mindset
-        </p>
-        <p>Codex OS</p>
       </div>
     );
   }

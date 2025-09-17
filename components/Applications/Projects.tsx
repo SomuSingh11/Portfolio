@@ -22,7 +22,7 @@ export default function Projects() {
 
   return (
     <div
-      className="bg-gray-900 text-white flex h-screen"
+      className="bg-gray-900 text-white flex h-full"
       style={{ outline: "none", height: "calc(100% - 1rem)" }}
     >
       {/* Left Sidebar - Projects List */}
@@ -92,7 +92,7 @@ export default function Projects() {
       </div>
 
       {/* Right Content Area - Project Details */}
-      <div className="flex-1 flex flex-col h-full min-h-0 pb-16">
+      <div className="flex-1 bg-gray-900 text-white flex flex-col h-full min-h-0 min-w-100 pb-16">
         {selectedProject ? (
           <>
             {/* Header */}
