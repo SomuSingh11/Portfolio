@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Skeleton } from "../ui/skeleton";
 
 export default function GifWindow() {
   const gifs = [
@@ -12,6 +13,11 @@ export default function GifWindow() {
   ];
 
   const [currentGif, setCurrentGif] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+  }, [currentGif]);
 
   const handleClick = () => {
     setCurrentGif((prev) => (prev + 1) % gifs.length);
@@ -24,10 +30,15 @@ export default function GifWindow() {
       whileTap={{ scale: 0.9 }}
       onClick={handleClick}
     >
+      {isLoading && <Skeleton className="w-full h-full rounded" />}
       <img
         src={gifs[currentGif]}
         alt="OS Icon"
-        className="w-full h-full object-cover"
+        className={`w-full h-full object-cover ${
+          isLoading ? "hidden" : "block"
+        }`}
+        onLoad={() => setIsLoading(false)}
+        onError={() => setIsLoading(false)}
       />
     </motion.div>
   );

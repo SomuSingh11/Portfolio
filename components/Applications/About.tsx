@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 
 import TechStackBox from "../Utilities/TechStack";
+import { useState } from "react";
+import { Skeleton } from "../ui/skeleton";
 
 export default function About() {
   const educationHistory = [
@@ -307,6 +309,7 @@ export default function About() {
     },
   ];
 
+  const [isImageLoading, setIsImageLoading] = useState(true);
   return (
     <div className="h-full bg-gray-900 text-white overflow-y-auto p-4 md:p-6 font-sans">
       <div className="space-y-8 max-w-4xl mx-auto">
@@ -322,10 +325,17 @@ export default function About() {
           </div>
           <div className="p-6">
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
+              {isImageLoading && (
+                <Skeleton className="w-32 h-32 rounded-full border-4 border-gray-700" />
+              )}
               <img
                 src="https://avatars.githubusercontent.com/u/170082343?v=4"
                 alt="Profile Picture"
-                className="w-32 h-32 rounded-full border-4 border-gray-700 shrink-0"
+                className={`w-32 h-32 rounded-full border-4 border-gray-700 shrink-0 ${
+                  isImageLoading ? "hidden" : "block"
+                }`}
+                onLoad={() => setIsImageLoading(false)}
+                onError={() => setIsImageLoading(false)}
               />
               <div className="flex-1 text-center sm:text-left">
                 <h1 className="text-3xl font-bold mb-1">Somu Singh</h1>
