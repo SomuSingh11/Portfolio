@@ -18,6 +18,16 @@ import {
 import GifWindow from "@/components/Utilities/GifWindow";
 import { createContext, useContext, useEffect, useState } from "react";
 import Achievements from "@/components/Utilities/Achievements";
+import {
+  Briefcase,
+  Code,
+  FileText,
+  GithubIcon,
+  Mail,
+  TerminalSquare,
+  Trophy,
+  User,
+} from "lucide-react";
 
 // type
 type Section =
@@ -102,18 +112,44 @@ export function DeviceProvider({ children }: { children: React.ReactNode }) {
               value={currentSection}
               onValueChange={(value: Section) => setCurrentSection(value)}
             >
-              <SelectTrigger className="w-[120px] text-gray-300 text-sm bg-white/10 border-white/20 backdrop-blur-sm shadow-lg rounded-full ">
+              <SelectTrigger className="w-[135px] text-gray-300 text-sm bg-white/10 border-white/20 backdrop-blur-sm shadow-lg rounded-lg ">
                 <SelectValue placeholder="Select Section" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 text-white  border-white/20 backdrop-blur-md rounded-lg">
-                <SelectItem value="about">About</SelectItem>
-                <SelectItem value="terminal">Terminal</SelectItem>
-                <SelectItem value="resume">Resume</SelectItem>
-                <SelectItem value="github">GitHub</SelectItem>
-                <SelectItem value="projects">Projects</SelectItem>
-                <SelectItem value="skills">Skills</SelectItem>
-                <SelectItem value="contact">Contact</SelectItem>
-                <SelectItem value="achievements">Achievements</SelectItem>
+              <SelectContent className="bg-gray-900 text-white border-white/20 backdrop-blur-md rounded-lg">
+                <SelectItem value="about">
+                  <User className="w-4 h-4" />
+                  <span className="mt-0.5 font-medium text-sm">whoami</span>
+                </SelectItem>
+                <SelectItem value="terminal">
+                  <TerminalSquare className="w-4 h-4" />
+                  <span className="mt-0.5 font-medium text-sm">Terminal</span>
+                </SelectItem>
+                <SelectItem value="resume">
+                  <FileText className="w-4 h-4" />
+                  <span className="mt-0.5 font-medium text-sm">Resume</span>
+                </SelectItem>
+                <SelectItem value="github">
+                  <GithubIcon className="w-4 h-4" />
+                  <span className="mt-0.5 font-medium text-sm">GitHub</span>
+                </SelectItem>
+                <SelectItem value="projects">
+                  <Briefcase className="w-4 h-4" />
+                  <span className="mt-0.5 font-medium text-sm">Projects</span>
+                </SelectItem>
+                <SelectItem value="skills">
+                  <Code className="w-4 h-4" />
+                  <span className="mt-0.5 font-medium text-sm">Skills</span>
+                </SelectItem>
+                <SelectItem value="contact">
+                  <Mail className="w-4 h-4" />
+                  <span className="mt-0.5 font-medium text-sm">Contact</span>
+                </SelectItem>
+                <SelectItem value="achievements">
+                  <Trophy className="w-4 h-4" />
+                  <span className="mt-0.5 font-medium text-sm">
+                    Achievements
+                  </span>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -122,11 +158,23 @@ export function DeviceProvider({ children }: { children: React.ReactNode }) {
           <div className="h-8 w-px bg-white/20 mx-4" />
 
           {/* System Tray */}
-          <div className="text-white text-sm font-semibold">
-            {currentTime.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+          <div className="flex items-center">
+            {/* Time & Date Stack */}
+            <div className="flex flex-col items-end">
+              <span className="font-semibold text-white">
+                {currentTime.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+              <span className="text-xs text-gray-400">
+                {currentTime.toLocaleDateString([], {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </span>
+            </div>
           </div>
         </div>
       </div>
