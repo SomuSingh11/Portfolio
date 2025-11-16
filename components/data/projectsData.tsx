@@ -6,7 +6,7 @@ const projects = [
     description:
       "An integrated AI-driven productivity platform to empower developers with GitHub repository analytics, AI-powered commit summaries, and intelligent quizzes for interview preparation and concept reinforcement.",
     tech: ["Next.js", "LangChain", "GitHub API", "RAG", "Gemini", "trpc"],
-    demo: "https://catalyst-lac.vercel.app/",
+    demo: "https://catalyst-t1ft.onrender.com/",
     repo: "https://github.com/SomuSingh11/Catalyst",
     status: "In Progress",
     date: "2025-01-28",

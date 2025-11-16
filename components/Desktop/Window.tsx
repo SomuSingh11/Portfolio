@@ -14,6 +14,7 @@ import Skills from "@/components/Applications/Skills";
 import Contact from "@/components/Applications/Contact";
 import GitHub from "@/components/Applications/GitHub";
 import Resume from "@/components/Applications/Resume";
+import HashNode from "@/components/Applications/HashNode";
 
 interface WindowProps {
   window: WindowData;
@@ -67,6 +68,8 @@ export default function Window({
         return <GitHub />;
       case "resume":
         return <Resume />;
+      case "hashnode":
+        return <HashNode />;
       default:
         return <div className="p-4 text-white">Application not found</div>;
     }

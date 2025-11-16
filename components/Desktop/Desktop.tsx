@@ -53,6 +53,12 @@ const desktopIcons: IconData[] = [
     icon: "resume2.svg",
     position: { x: 165, y: 150 },
   },
+  {
+    id: "hashnode",
+    name: "Hashnode",
+    icon: "hashnode-solid.svg",
+    position: { x: 158, y: 247 },
+  },
 ];
 
 export default function Desktop() {

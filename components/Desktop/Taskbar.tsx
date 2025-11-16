@@ -32,6 +32,7 @@ export default function Taskbar({ windows, onWindowClick }: TaskbarProps) {
       contact: "contact.svg",
       github: "githubIcon.svg",
       resume: "resume.svg",
+      hashnode: "hashnode.svg",
     };
     return icons[windowId] || "🪟";
   };

@@ -19,6 +19,7 @@ import GifWindow from "@/components/Utilities/GifWindow";
 import { createContext, useContext, useEffect, useState } from "react";
 import Achievements from "@/components/Utilities/Achievements";
 import {
+  Book,
   Briefcase,
   Code,
   FileText,
@@ -28,6 +29,7 @@ import {
   Trophy,
   User,
 } from "lucide-react";
+import HashNode from "@/components/Applications/HashNode";
 
 // type
 type Section =
@@ -35,6 +37,7 @@ type Section =
   | "about"
   | "skills"
   | "projects"
+  | "hashnode"
   | "contact"
   | "github"
   | "resume"
@@ -81,6 +84,8 @@ export function DeviceProvider({ children }: { children: React.ReactNode }) {
         return <Skills />;
       case "projects":
         return <Projects />;
+      case "hashnode":
+        return <HashNode />;
       case "contact":
         return <Contact />;
       case "github":
@@ -135,6 +140,10 @@ export function DeviceProvider({ children }: { children: React.ReactNode }) {
                 <SelectItem value="projects">
                   <Briefcase className="w-4 h-4" />
                   <span className="mt-0.5 font-medium text-sm">Projects</span>
+                </SelectItem>
+                <SelectItem value="hashnode">
+                  <Book className="w-4 h-4" />
+                  <span className="mt-0.5 font-medium text-sm">Blogs</span>
                 </SelectItem>
                 <SelectItem value="skills">
                   <Code className="w-4 h-4" />
