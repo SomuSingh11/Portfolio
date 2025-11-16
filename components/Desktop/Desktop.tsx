@@ -82,7 +82,7 @@ export default function Desktop() {
     "/wallpaper/groot.jpg",
     "/wallpaper/windowsXp.jpg",
   ];
-  const [wallpaperIndex, setWallpaperIndex] = useState(0);
+  const [wallpaperIndex, setWallpaperIndex] = useState(3);
 
   const handleDesktopClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
