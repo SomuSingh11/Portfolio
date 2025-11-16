@@ -73,16 +73,16 @@ export default function Desktop() {
 
   // Wallpaper state
   const wallpapers = [
-    "/wallpaper/ubuntu.jpg",
-    "/wallpaper/ubuntu1.jpg",
-    "/wallpaper/penguin.jpg",
     "/wallpaper/redHair.jpg",
     "/wallpaper/pain.jpg",
+    "/wallpaper/ubuntu.jpg",
+    "/wallpaper/penguin.jpg",
+    "/wallpaper/windowsXp.jpg",
     "/wallpaper/goldFish.jpg",
     "/wallpaper/groot.jpg",
-    "/wallpaper/windowsXp.jpg",
+    "/wallpaper/ubuntu1.jpg",
   ];
-  const [wallpaperIndex, setWallpaperIndex] = useState(3);
+  const [wallpaperIndex, setWallpaperIndex] = useState(0);
 
   const handleDesktopClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
