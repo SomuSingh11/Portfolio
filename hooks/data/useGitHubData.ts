@@ -85,7 +85,7 @@ function processLanguageData(repos: GitHubRepo[]): LanguageChartData {
   };
 }
 
-export function useGithubData(): GitHubState {
+export function useGitHubData(): GitHubState {
   const [state, setState] = useState<Omit<GitHubState, "refetch">>({
     profile: githubCache?.profile ?? null,
     repos: githubCache?.repos ?? [],
