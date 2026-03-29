@@ -1,0 +1,89 @@
+/* ─── Mobile OS specific styles ─────────────────────────────────────────────── */
+
+/* Safe area padding for notch/home indicator */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 8px);
+}
+
+.safe-area-pt {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Hide scrollbars but keep scrollable */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Prevent text selection during swipe gestures */
+.select-none {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Prevent tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Frosted glass utility */
+.glass {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* App icon press effect */
+.app-icon-press:active {
+  transform: scale(0.88);
+  transition: transform 0.1s ease;
+}
+
+/* Smooth momentum scrolling on iOS */
+.momentum-scroll {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: scroll;
+}
+
+/* Lock screen time font — system font with thin weight looks very iOS */
+.lock-time {
+  font-weight: 100;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Prevent bounce scroll on mobile */
+html,
+body {
+  overscroll-behavior: none;
+}
+
+/* Dynamic island */
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: black;
+  border-radius: 20px;
+  z-index: 100;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dynamic-island.expanded {
+  width: 240px;
+  height: 56px;
+}
