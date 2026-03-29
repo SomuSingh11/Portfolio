@@ -1,92 +1,87 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import LinkRenderer from "@/components/Utilities/LinkRenderer";
-import commands from "@/components/data/TerminalCommands";
+import commands from "@/data/TerminalCommands";
+import { useCommandHistory } from "@/hooks/system/useCommandHistory";
 
-interface Command {
+interface HistoryEntry {
   input: string;
   output: string;
-  timestamp: Date;
 }
 
-const matrixArt = `
+const MATRIX_ART = `
 ⠀⠀⠀⠀⠀⠀⠀⢀⠀⠔⡀⠀⢀⠞⢰⠂⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⢸⠘⢰⡃⠔⠩⠤⠦⠤⢀⡀⠀⠀⠀⠀⠀
 ⠀⠀⠀⢀⠄⢒⠒⠺⠆⠈⠀⠀⢐⣂⠤⠄⡀⠯⠕⣒⣒⡀⠀
 ⠀⠀⢐⡡⠔⠁⠆⠀⠀⠀⠀⠀⢀⠠⠙⢆⠀⠈⢁⠋⠥⣀⣀
 ⠈⠉⠀⣰⠀⠀⠀⠀⡀⠀⢰⣆⢠⠠⢡⡀⢂⣗⣖⢝⡎⠉⠀
-⢠⡴⠛⡇⠀⠐⠀⡄⣡⢇⠸⢸⢸⡇⠂⡝⠌⢷⢫⢮⡜⡀⠀
-⠀⠀⢰⣜⠘⡀⢡⠰⠳⣎⢂⣟⡎⠘⣬⡕⣈⣼⠢⠹⡟⠇⠀
-⠀⠠⢋⢿⢳⢼⣄⣆⣦⣱⣿⣿⣿⣷⠬⣿⣿⣿⣿⠑⠵⠀⠀
-⠀⠀⠀⡜⢩⣯⢝⡀⠁⠀⠙⠛⠛⠃⠀⠈⠛⠛⡿⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⣿⠢⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀
-⠀⠀⠀⠀⢀⣀⡇⠀⠑⠀⠀⠀⠀⠐⢄⠄⢀⡼⠃⠀⠀⠀⠀
-⠀⠀⠀⠀⢸⣿⣷⣤⣀⠈⠲⡤⣀⣀⠀⡰⠋⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿⣶⣤⣙⣷⣅⡀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⢀⣾⣿⣿⣿⣿⣻⢿⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀
-⠀⡠⠟⠁⠙⠟⠛⠛⢿⣿⣾⣿⣿⣿⣿⣧⡀⠀⠀⠀⠀⠀⠀`;
+⢠⡴⠛⡇⠀⠐⠀⡄⣡⢇⠸⢸⢸⡇⠂⡝⠌⢷⢫⢮⡜⡀⠀`;
+
+const BOOT_MESSAGES = [
+  "Initializing Codex OS v1.0...",
+  "Mounting virtual environment... ✓",
+  "System ready.",
+  "",
+  `Welcome to Codex OS Terminal\nCopyright (c) 2025 Somu Singh. All rights reserved.\n\nType "help" for available commands.`,
+];
 
 export default function Terminal() {
-  const [history, setHistory] = useState<Command[]>([]);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [currentInput, setCurrentInput] = useState("");
-  const [currentPath] = useState("~/codex");
   const [isBooting, setIsBooting] = useState(true);
-  const effectRan = useRef(false);
-  const terminalRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const [isInputFocused, setIsInputFocused] = useState(false);
 
-  // Scroll to bottom on history update
+  const terminalRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const hasBooted = useRef(false);
+
+  const { addToHistory, navigateHistory } = useCommandHistory();
+
+  // Scroll to bottom whenever history changes
   useEffect(() => {
     if (terminalRef.current) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
   }, [history]);
 
-  // This useEffect handles the entire welcome animation
+  // Boot sequence — guard with ref so StrictMode double-invoke doesn't double-run
   useEffect(() => {
-    if (effectRan.current === false) {
-      const runWelcomeAnimation = async () => {
-        const addHistory = (output: string) => {
-          setHistory((prev) => [
-            ...prev,
-            { input: "", output, timestamp: new Date() },
-          ]);
-        };
+    if (hasBooted.current) return;
+    hasBooted.current = true;
 
-        const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
+    let cancelled = false;
 
-        // Using the shorter, faster boot sequence
-        const matrixLoadProcess = [
-          "Initializing Codex OS v1.0...",
-          "Mounting virtual environment... ✓",
-          "System ready.",
-          "",
-          `Welcome to Codex OS Terminal
-Copyright (c) 2025 Somu Singh. All rights reserved.
+    const boot = async () => {
+      const sleep = (ms: number) =>
+        new Promise<void>((res) => {
+          const t = setTimeout(res, ms);
+          if (cancelled) clearTimeout(t);
+        });
 
-Type "help" for available commands.`,
-        ];
-
-        addHistory(matrixArt);
-        await sleep(800);
-
-        for (const process of matrixLoadProcess) {
-          addHistory(process);
-          await sleep(400);
-        }
-
-        setIsBooting(false);
+      const addLine = (output: string) => {
+        if (cancelled) return;
+        setHistory((prev) => [...prev, { input: "", output }]);
       };
 
-      runWelcomeAnimation();
+      addLine(MATRIX_ART);
+      await sleep(600);
 
-      return () => {
-        effectRan.current = true;
-      };
-    }
+      for (const msg of BOOT_MESSAGES) {
+        if (cancelled) return;
+        addLine(msg);
+        await sleep(350);
+      }
+
+      if (!cancelled) setIsBooting(false);
+    };
+
+    boot();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -95,119 +90,115 @@ Type "help" for available commands.`,
     }
   }, [isBooting]);
 
-  const executeCommand = (input: string) => {
-    const trimmedInput = input.trim().toLowerCase();
+  const executeCommand = useCallback(
+    (input: string) => {
+      const trimmed = input.trim();
+      if (!trimmed) return;
 
-    // Logic to download the resume
-    if (trimmedInput === "resume") {
-      const link = document.createElement("a");
-      link.href = "/Resume_Somu11.pdf";
-      link.download = "SomuSingh_Resume.pdf";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      addToHistory(trimmed);
+      const lower = trimmed.toLowerCase();
 
-      const newCommand: Command = {
-        input,
-        output: "✅ Resume download initiated successfully!",
-        timestamp: new Date(),
-      };
-      setHistory((prev) => [...prev, newCommand]);
+      if (lower === "clear") {
+        setHistory([]);
+        setCurrentInput("");
+        return;
+      }
+
+      if (lower === "resume") {
+        const link = document.createElement("a");
+        link.href = "/Resume_Somu11.pdf";
+        link.download = "SomuSingh_Resume.pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setHistory((prev) => [
+          ...prev,
+          { input: trimmed, output: "✅ Resume download initiated!" },
+        ]);
+        setCurrentInput("");
+        return;
+      }
+
+      const output =
+        commands[lower as keyof typeof commands] ??
+        `bash: ${trimmed}: command not found\nType "help" to see available commands.`;
+
+      setHistory((prev) => [...prev, { input: trimmed, output }]);
       setCurrentInput("");
-      return;
-    }
+    },
+    [addToHistory],
+  );
 
-    if (trimmedInput === "clear") {
-      setHistory([]);
-      setCurrentInput("");
-      return;
-    }
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        executeCommand(currentInput);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        const prev = navigateHistory("up");
+        if (prev !== null) setCurrentInput(prev);
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        const next = navigateHistory("down");
+        if (next !== null) setCurrentInput(next);
+      }
+    },
+    [currentInput, executeCommand, navigateHistory],
+  );
 
-    const output =
-      commands[trimmedInput as keyof typeof commands] ||
-      `bash: ${input}: command not found\nType "help" to see available commands.`;
-
-    const newCommand: Command = {
-      input,
-      output,
-      timestamp: new Date(),
-    };
-
-    setHistory((prev) => [...prev, newCommand]);
-    setCurrentInput("");
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (currentInput.trim()) {
-      executeCommand(currentInput);
-    }
-  };
-
-  const handleMainClick = () => {
-    if (!isBooting) {
-      inputRef.current?.focus();
-    }
-  };
+  const PROMPT = (
+    <span className="flex items-center space-x-1 flex-shrink-0">
+      <span className="text-blue-400">somu@codex</span>
+      <span className="text-white">:</span>
+      <span className="text-purple-400">~/codex</span>
+      <span className="text-white">$</span>
+    </span>
+  );
 
   return (
     <div
-      className="h-full bg-black text-green-400 font-mono flex flex-col px-1"
-      onClick={handleMainClick}
-      tabIndex={0}
-      role="presentation"
-      style={{ outline: "none", height: "calc(100% - 3.5rem)" }}
+      className="h-full bg-black text-green-400 font-mono text-sm flex flex-col"
+      onClick={() => inputRef.current?.focus()}
+      style={{ height: "calc(100% - 2.5rem)" }}
     >
       <div
         ref={terminalRef}
-        className="flex-1 overflow-y-auto px-1 scrollbar-gutter-stable"
+        className="flex-1 overflow-y-auto px-3 py-2 space-y-0.5"
       >
-        {history.map((command, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.1 }}
-          >
-            {command.input && (
-              <div className="flex items-center space-x-2 mb-1">
-                <span className="text-blue-400">somu_singh@codex-os</span>
-                <span className="text-white">:</span>
-                <span className="text-purple-400">{currentPath}</span>
-                <span className="text-white">$</span>
-                <span className="text-white">{command.input}</span>
+        {history.map((entry, i) => (
+          <div key={i}>
+            {entry.input && (
+              <div className="flex items-center space-x-2 flex-wrap">
+                {PROMPT}
+                <span className="text-white">{entry.input}</span>
               </div>
             )}
-            <div className="mb-4">
-              {command.output.split("\n").map((line, lineIndex) => (
+            <div className="text-green-400">
+              {entry.output.split("\n").map((line, li) => (
                 <motion.div
-                  key={lineIndex}
+                  key={li}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: lineIndex * 0.03 }}
-                  className={`text-green-400 whitespace-pre-wrap ${
-                    command.input === "" ? "leading-tight" : "leading-relaxed"
-                  }`}
+                  transition={{ delay: li * 0.02 }}
+                  className="whitespace-pre-wrap leading-relaxed"
                 >
                   <LinkRenderer text={line} />
                 </motion.div>
               ))}
             </div>
-          </motion.div>
+          </div>
         ))}
 
+        {/* Input line */}
         {!isBooting && (
-          <form onSubmit={handleSubmit} className="flex items-center space-x-2">
-            <span className="text-blue-400">somu_singh@codex-os</span>
-            <span className="text-white">:</span>
-            <span className="text-purple-400">{currentPath}</span>
-            <span className="text-white">$</span>
+          <div className="flex items-center space-x-2">
+            {PROMPT}
             <div className="flex-1 flex items-center relative">
               <span className="text-white">{currentInput}</span>
               <span
-                className={`text-white ${
-                  isInputFocused ? "terminal-cursor" : ""
-                }`}
+                className={`text-white ${isInputFocused ? "terminal-cursor" : ""}`}
               >
                 ▌
               </span>
@@ -216,14 +207,16 @@ Type "help" for available commands.`,
                 type="text"
                 value={currentInput}
                 onChange={(e) => setCurrentInput(e.target.value)}
+                onKeyDown={handleKeyDown}
                 onFocus={() => setIsInputFocused(true)}
                 onBlur={() => setIsInputFocused(false)}
-                className="absolute inset-0 opacity-0 cursor-default"
+                className="absolute inset-0 opacity-0 cursor-default w-full"
                 autoComplete="off"
-                autoFocus
+                spellCheck={false}
+                aria-label="Terminal input"
               />
             </div>
-          </form>
+          </div>
         )}
       </div>
     </div>

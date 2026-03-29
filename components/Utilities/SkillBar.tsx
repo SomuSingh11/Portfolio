@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { proficiencyLevels, type Skill } from "@/components/data/skillsData";
+import { proficiencyLevels, type Skill } from "@/data/skillsData";
 
 // Define a clear interface for the component's props
 interface SkillBarProps {

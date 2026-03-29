@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Toaster, toast } from "react-hot-toast"; // NEW: For notifications
+import { Toaster, toast } from "react-hot-toast";
 import {
   Mail,
   Send,
@@ -12,118 +12,116 @@ import {
   Phone,
   Download,
 } from "lucide-react";
+import { PERSONAL_INFO, SOCIAL_LINKS, API_CONFIG } from "@/config/constants";
 
-const contactConfig = {
-  web3formsAccessKey: process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY,
-  email: "somusingh0110@gmail.com",
-  location: "Indore, MP, India",
-  timezone: "IST (UTC+5:30)",
-  resumePath: "/SomuSingh_Resume.pdf",
-  calendlyLink: "https://calendly.com/your-username",
-  socials: {
-    github: "https://github.com/SomuSingh11",
-    linkedin: "https://www.linkedin.com/in/somusingh11/",
-    x: "https://x.com/SomuSingh_",
-  },
+interface FormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+const INITIAL_FORM: FormData = {
+  name: "",
+  email: "",
+  subject: "",
+  message: "",
 };
-// ------------------------------------
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
+  const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleDownloadResume = useCallback(() => {
+    const link = document.createElement("a");
+    link.href = PERSONAL_INFO.resumePath;
+    link.download = "SomuSingh_Resume.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Resume downloaded!");
+  }, []);
+
+  const quickActions = [
+    { icon: Download, label: "Download Resume", action: handleDownloadResume },
+    {
+      icon: Phone,
+      label: "Schedule Call",
+      action: () => window.open(SOCIAL_LINKS.calendly, "_blank"),
+    },
+    {
+      icon: Mail,
+      label: "Email Directly",
+      action: () => window.open(`mailto:${PERSONAL_INFO.email}`),
+    },
+  ];
 
   const socialLinks = [
     {
       icon: Github,
-      href: contactConfig.socials.github,
+      href: SOCIAL_LINKS.github,
       label: "GitHub",
       color: "text-gray-400",
     },
     {
       icon: Linkedin,
-      href: contactConfig.socials.linkedin,
+      href: SOCIAL_LINKS.linkedin,
       label: "LinkedIn",
       color: "text-blue-400",
     },
     {
       icon: XIcon,
-      href: contactConfig.socials.x,
-      label: "X",
+      href: SOCIAL_LINKS.x,
+      label: "X / Twitter",
       color: "text-sky-400",
     },
   ];
 
-  // --- UPDATED: Functional Quick Actions ---
-  const quickActions = [
-    {
-      icon: Download,
-      label: "Download Resume",
-      action: () => {
-        const link = document.createElement("a");
-        link.href = contactConfig.resumePath;
-        link.setAttribute(
-          "download",
-          contactConfig.resumePath.split("/").pop() || "resume.pdf"
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!API_CONFIG.web3forms.accessKey) {
+        toast.error("Contact form not configured.");
+        return;
+      }
+
+      setIsSubmitting(true);
+      try {
+        const res = await fetch(API_CONFIG.web3forms.submitUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            ...formData,
+            access_key: API_CONFIG.web3forms.accessKey,
+          }),
+        }).then((r) => r.json());
+
+        if (res.success) {
+          toast.success("Message sent! I'll get back to you soon.");
+          setFormData(INITIAL_FORM);
+        } else {
+          throw new Error(res.message ?? "Submission failed");
+        }
+      } catch (err) {
+        toast.error(
+          err instanceof Error ? err.message : "Something went wrong.",
         );
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        toast.success("Resume downloaded!");
-      },
+      } finally {
+        setIsSubmitting(false);
+      }
     },
-    {
-      icon: Phone,
-      label: "Schedule Call",
-      action: () => window.open(contactConfig.calendlyLink, "_blank"),
+    [formData],
+  );
+
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     },
-    {
-      icon: Mail,
-      label: "Email Directly",
-      action: () => window.open(`mailto:${contactConfig.email}`),
-    },
-  ];
-  // -----------------------------------------
-
-  // --- NEW: Handle form submission with Web3Forms ---
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const finalData = {
-      ...formData,
-      access_key: contactConfig.web3formsAccessKey,
-    };
-
-    const res = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(finalData),
-    }).then((res) => res.json());
-
-    if (res.success) {
-      toast.success("Message sent! I'll get back to you soon.");
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    } else {
-      console.log("Error", res);
-      toast.error(res.message || "Something went wrong.");
-    }
-    setIsSubmitting(false);
-  };
-  // ------------------------------------------------
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+    [],
+  );
 
   return (
     <div className="h-full bg-gray-900 text-white overflow-y-auto">
@@ -133,6 +131,7 @@ export default function Contact() {
           className: "bg-gray-800 border border-gray-700 text-white",
         }}
       />
+
       <div className="bg-gray-800 border-b border-gray-700 p-4">
         <div className="flex items-center space-x-3">
           <Mail className="w-6 h-6 text-blue-400" />
@@ -142,75 +141,79 @@ export default function Contact() {
 
       <div className="p-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left: Quick actions + socials + details */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-            className="space-y-6"
+            className="space-y-4"
           >
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-              <div className="space-y-3">
+            <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
+              <h3 className="text-base font-semibold mb-3">Quick Actions</h3>
+              <div className="space-y-2">
                 {quickActions.map((action) => (
                   <button
                     key={action.label}
                     onClick={action.action}
-                    className="w-full flex items-center space-x-3 p-3 bg-gray-700 hover:cursor-pointer hover:bg-gray-600 rounded transition-colors text-left"
+                    className="w-full flex items-center space-x-3 p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-left text-sm"
                   >
-                    <action.icon className="w-5 h-5 text-blue-400" />
+                    <action.icon className="w-4 h-4 text-blue-400 flex-shrink-0" />
                     <span>{action.label}</span>
                   </button>
                 ))}
               </div>
             </div>
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Connect Online</h3>
-              <div className="space-y-3">
+
+            <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
+              <h3 className="text-base font-semibold mb-3">Connect Online</h3>
+              <div className="space-y-2">
                 {socialLinks.map((link) => (
                   <a
                     key={link.label}
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center space-x-3 p-3 bg-gray-700 hover:bg-gray-600 rounded transition-colors group"
+                    className="flex items-center space-x-3 p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors group text-sm"
                   >
-                    <link.icon className={`w-5 h-5 ${link.color}`} />
+                    <link.icon
+                      className={`w-4 h-4 ${link.color} flex-shrink-0`}
+                    />
                     <span className="flex-1">{link.label}</span>
-                    <span className="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Open in new tab
+                    <span className="text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                      ↗
                     </span>
                   </a>
                 ))}
               </div>
             </div>
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Contact Details</h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center space-x-3">
+
+            <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
+              <h3 className="text-base font-semibold mb-3">Details</h3>
+              <div className="space-y-2 text-sm text-gray-300">
+                <div className="flex items-center space-x-2">
                   <Mail className="w-4 h-4 text-blue-400" />
-                  <span>{contactConfig.email}</span>
+                  <span>{PERSONAL_INFO.email}</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <span className="w-4 h-4 text-center">📍</span>
-                  <span>{contactConfig.location}</span>
+                <div className="flex items-center space-x-2">
+                  <span>📍</span>
+                  <span>{PERSONAL_INFO.location}</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <span className="w-4 h-4 text-center">🕐</span>
-                  <span>{contactConfig.timezone}</span>
+                <div className="flex items-center space-x-2">
+                  <span>🕐</span>
+                  <span>{PERSONAL_INFO.timezone}</span>
                 </div>
               </div>
             </div>
           </motion.div>
 
+          {/* Right: Message form */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-gray-800 border border-gray-700 rounded-lg p-6"
+            className="bg-gray-800 border border-gray-700 rounded-lg p-5"
           >
-            <h2 className="text-lg font-semibold mb-4">Send a Message</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Form inputs remain the same */}
-              <div className="grid grid-cols-2 gap-4">
+            <h2 className="text-base font-semibold mb-4">Send a Message</h2>
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
                 <input
                   type="text"
                   name="name"
@@ -218,7 +221,7 @@ export default function Contact() {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
+                  className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors text-sm"
                 />
                 <input
                   type="email"
@@ -227,7 +230,7 @@ export default function Contact() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
+                  className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors text-sm"
                 />
               </div>
               <input
@@ -237,7 +240,7 @@ export default function Contact() {
                 value={formData.subject}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors text-sm"
               />
               <textarea
                 name="message"
@@ -245,15 +248,15 @@ export default function Contact() {
                 value={formData.message}
                 onChange={handleChange}
                 required
-                rows={4}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors resize-none"
+                rows={5}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors resize-none text-sm"
               />
               <motion.button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white py-2 px-4 rounded font-medium transition-colors flex items-center justify-center space-x-2"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 text-sm"
               >
                 {isSubmitting ? (
                   <>

@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Award, ChevronRight, Rocket, Brain } from "lucide-react";
-import { achievements, skillCategories } from "@/components/data/skillsData";
+import { achievements, skillCategories } from "@/data/skillsData";
 import SkillBar from "@/components/Utilities/SkillBar";
 
 export default function Skills() {
@@ -12,7 +12,7 @@ export default function Skills() {
 
   const selectedCategoryData = useMemo(
     () => skillCategories.find((cat) => cat.id === selectedCategory),
-    [selectedCategory]
+    [selectedCategory],
   );
 
   return (
