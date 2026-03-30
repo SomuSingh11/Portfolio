@@ -53,7 +53,7 @@ export default function DesktopIcon({
     >
       <div className="flex flex-col items-center space-y-1 w-16">
         <Image
-          src={`/icons/breeze/${meta.icon}`}
+          src={`/icons/mobile/${meta.icon}`}
           alt={`${meta.title} icon`}
           width={46}
           height={46}

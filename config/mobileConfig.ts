@@ -21,7 +21,7 @@ export const MOBILE_APPS: MobileAppConfig[] = [
   {
     id: "about",
     label: "whoami",
-    icon: "about.svg",
+    icon: "fingerprint.svg",
     bgGradient: "from-blue-500 to-blue-700",
   },
   {
@@ -39,7 +39,7 @@ export const MOBILE_APPS: MobileAppConfig[] = [
   {
     id: "github",
     label: "GitHub",
-    icon: "githubIcon.svg",
+    icon: "github.svg",
     bgGradient: "from-gray-600 to-gray-900",
   },
   {
@@ -51,7 +51,7 @@ export const MOBILE_APPS: MobileAppConfig[] = [
   {
     id: "resume",
     label: "Resume",
-    icon: "resume2.svg",
+    icon: "resume.svg",
     bgGradient: "from-red-500 to-rose-700",
   },
   {
@@ -63,15 +63,15 @@ export const MOBILE_APPS: MobileAppConfig[] = [
   {
     id: "terminal",
     label: "Terminal",
-    icon: "terminal1.svg",
+    icon: "terminal.svg",
     bgGradient: "from-gray-800 to-black",
   },
   {
     id: "achievements",
     label: "Awards",
-    icon: "skills.svg",
+    icon: "achievements.svg",
     bgGradient: "from-amber-500 to-yellow-700",
   },
 ];
 
-export const DOCK_APPS: AppId[] = ["terminal", "projects", "github", "contact"];
+export const DOCK_APPS: AppId[] = ["terminal", "projects", "contact", "about"];

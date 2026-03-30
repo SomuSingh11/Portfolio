@@ -16,6 +16,7 @@ import HashNode from "@/components/Applications/HashNode";
 import Skills from "@/components/Applications/Skills";
 import Contact from "@/components/Applications/Contact";
 import { ChevronLeft } from "lucide-react";
+import Achievements from "../Utilities/Achievements";
 
 function AppContent({ appId }: { appId: AppId }) {
   switch (appId) {
@@ -35,6 +36,8 @@ function AppContent({ appId }: { appId: AppId }) {
       return <Skills />;
     case "contact":
       return <Contact />;
+    case "achievements":
+      return <Achievements />;
     default:
       return <About />;
   }

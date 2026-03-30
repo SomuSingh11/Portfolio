@@ -66,7 +66,7 @@ export const APP_META: Record<
 > = {
   terminal: {
     title: "Terminal",
-    icon: "terminal1.svg",
+    icon: "terminal.svg",
     description: "Command line interface",
   },
   projects: {
@@ -76,7 +76,7 @@ export const APP_META: Record<
   },
   about: {
     title: "About Me",
-    icon: "about.svg",
+    icon: "fingerprint.svg",
     description: "Personal information",
   },
   skills: {
@@ -91,12 +91,12 @@ export const APP_META: Record<
   },
   github: {
     title: "GitHub",
-    icon: "githubIcon.svg",
+    icon: "github.svg",
     description: "GitHub profile",
   },
   resume: {
     title: "Resume",
-    icon: "resume2.svg",
+    icon: "resume.svg",
     description: "Download resume",
   },
   hashnode: {
@@ -106,7 +106,7 @@ export const APP_META: Record<
   },
   achievements: {
     title: "Achievements",
-    icon: "skills.svg",
+    icon: "achievements.svg",
     description: "Certifications and awards",
   },
 };

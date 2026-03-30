@@ -21,8 +21,8 @@ const AppIcon = memo(function AppIcon({
   size = "normal",
   animationDelay = 0,
 }: AppIconProps) {
-  const iconSize = size === "dock" ? 58 : 52;
-  const containerSize = size === "dock" ? "w-[58px]" : "w-[52px]";
+  const iconSize = size === "dock" ? 60 : 68;
+  const containerSize = size === "dock" ? "w-[60px]" : "w-[68px]";
 
   return (
     <motion.div
@@ -38,28 +38,16 @@ const AppIcon = memo(function AppIcon({
     >
       <motion.button
         layoutId={layoutId}
-        className={`${containerSize} aspect-square rounded-[14px] overflow-hidden shadow-lg relative focus:outline-none`}
-        style={{
-          background: `linear-gradient(135deg, var(--from), var(--to))`,
-        }}
+        className={`${containerSize} aspect-square relative flex items-center justify-center focus:outline-none`}
         onTap={() => onTap(app.id)}
         whileTap={{ scale: 0.88 }}
         whileHover={{ scale: 1.06 }}
         transition={{ type: "spring", stiffness: 500, damping: 30 }}
-        aria-label={`Open ${app.label}`}
       >
-        {/* Gradient background */}
-        <div
-          className={`absolute inset-0 bg-gradient-to-br ${app.bgGradient}`}
-        />
-
-        {/* Subtle inner highlight */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
-
-        {/* Icon image */}
-        <div className="absolute inset-0 flex items-center justify-center p-2.5">
+        {/* Icon only */}
+        <div className="absolute inset-0 flex items-center justify-center p-1">
           <Image
-            src={`/icons/breeze/${app.icon}`}
+            src={`/icons/mobile/${app.icon}`}
             alt={app.label}
             width={iconSize}
             height={iconSize}
