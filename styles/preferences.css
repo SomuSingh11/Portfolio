@@ -1,0 +1,86 @@
+/* ─── Preference CSS Variables ───────────────────────────────────────────────
+   These are set dynamically by preferences-store.tsx via applyPreferencesToDOM()
+   Defaults match DEFAULT_PREFERENCES
+*/
+
+:root {
+  /* Accent color — HSL components only, used as hsl(var(--accent-hsl)) */
+  --accent-hsl: 217 91% 60%;
+  --accent-hex: #3b82f6;
+
+  /* Font */
+  --app-font: var(--font-geist-sans);
+  --app-font-size: 16px;
+
+  /* Animation durations */
+  --animation-duration: 300ms;
+  --transition-duration: 200ms;
+
+  /* Terminal theme */
+  --terminal-bg: #000000;
+  --terminal-text: #00ff41;
+  --terminal-prompt: #00ff41;
+}
+
+/* Apply font to everything */
+body {
+  font-family: var(--app-font), sans-serif;
+  font-size: var(--app-font-size);
+}
+
+/* Accent color utility — use this instead of hardcoded blue */
+.accent-bg {
+  background-color: hsl(var(--accent-hsl));
+}
+
+.accent-text {
+  color: hsl(var(--accent-hsl));
+}
+
+.accent-border {
+  border-color: hsl(var(--accent-hsl));
+}
+
+.accent-ring {
+  --tw-ring-color: hsl(var(--accent-hsl));
+}
+
+/* Light mode overrides */
+.light-mode {
+  --tw-bg-opacity: 1;
+}
+
+.light-mode body {
+  background-color: #f0f0f0;
+  color: #111;
+}
+
+.light-mode .bg-gray-900 {
+  background-color: #e8e8e8 !important;
+}
+.light-mode .bg-gray-800 {
+  background-color: #d0d0d0 !important;
+}
+.light-mode .bg-gray-700 {
+  background-color: #b8b8b8 !important;
+}
+.light-mode .text-white {
+  color: #111 !important;
+}
+.light-mode .text-gray-300 {
+  color: #333 !important;
+}
+.light-mode .text-gray-400 {
+  color: #555 !important;
+}
+.light-mode .border-gray-700 {
+  border-color: #ccc !important;
+}
+
+/* High contrast additions */
+.high-contrast .border-gray-700 {
+  border-color: #666 !important;
+}
+.high-contrast .text-gray-400 {
+  color: #aaa !important;
+}
