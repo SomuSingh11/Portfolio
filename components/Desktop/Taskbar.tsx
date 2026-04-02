@@ -89,7 +89,7 @@ export default function Taskbar({
                 aria-label={`Focus ${win.title}`}
               >
                 <Image
-                  src={`/icons/breeze/${APP_META[win.id].icon}`}
+                  src={`/icons/mobile/${APP_META[win.id].icon}`}
                   alt={win.title}
                   width={18}
                   height={18}

@@ -109,6 +109,11 @@ export const APP_META: Record<
     icon: "achievements.svg",
     description: "Certifications and awards",
   },
+  preferences: {
+    title: "Preferences",
+    icon: "preferences.svg",
+    description: "Customize your experience",
+  },
 };
 
 // ─── Desktop Icon Positions ───────────────────────────────────────────────────

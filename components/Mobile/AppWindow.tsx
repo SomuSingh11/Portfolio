@@ -15,8 +15,9 @@ import Projects from "@/components/Applications/Projects";
 import HashNode from "@/components/Applications/HashNode";
 import Skills from "@/components/Applications/Skills";
 import Contact from "@/components/Applications/Contact";
-import { ChevronLeft } from "lucide-react";
+import Preferences from "@/components/Applications/Preferences";
 import Achievements from "../Utilities/Achievements";
+import { ChevronLeft } from "lucide-react";
 
 function AppContent({ appId }: { appId: AppId }) {
   switch (appId) {
@@ -38,6 +39,8 @@ function AppContent({ appId }: { appId: AppId }) {
       return <Contact />;
     case "achievements":
       return <Achievements />;
+    case "preferences":
+      return <Preferences />;
     default:
       return <About />;
   }

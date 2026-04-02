@@ -42,6 +42,7 @@ import Contact from "@/components/Applications/Contact";
 import GitHub from "@/components/Applications/GitHub";
 import Resume from "@/components/Applications/Resume";
 import HashNode from "@/components/Applications/HashNode";
+import Preferences from "@/components/Applications/Preferences";
 
 interface WindowProps {
   window: WindowData;
@@ -66,6 +67,8 @@ function WindowContent({ appId }: { appId: WindowData["content"] }) {
       return <Resume />;
     case "hashnode":
       return <HashNode />;
+    case "preferences":
+      return <Preferences />;
     default:
       return (
         <div className="p-4 text-white text-sm font-mono">

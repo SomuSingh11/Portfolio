@@ -34,25 +34,31 @@ import DesktopIcon from "./DesktopIcon";
 import Window from "./Window";
 import Taskbar from "./Taskbar";
 import { useDesktopStore } from "@/store/desktop-store";
-import {
-  WALLPAPERS,
-  DESKTOP_ICON_LAYOUT,
-  ANIMATION_PRESETS,
-} from "@/config/constants";
+import { usePreferences } from "@/store/preferences-store";
+import { DESKTOP_ICON_LAYOUT, ANIMATION_PRESETS } from "@/config/constants";
 import type { AppId } from "@/types/desktop";
 import GuidanceModal from "@/components/Utilities/GuidanceModal";
+
+// Add preferences icon to the desktop layout
+const FULL_ICON_LAYOUT = [
+  ...DESKTOP_ICON_LAYOUT,
+  { id: "preferences" as AppId, position: { x: 158, y: 344 } },
+];
 
 export default function Desktop() {
   const { windows, openWindow, closeWindow, focusWindow, minimizeWindow } =
     useDesktopStore();
+  const { prefs, previewWallpaper } = usePreferences();
 
   const constraintsRef = useRef<HTMLDivElement>(null);
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
   } | null>(null);
-  const [wallpaperIndex, setWallpaperIndex] = useState(0);
   const [showGuidance, setShowGuidance] = useState(false);
+
+  // Active wallpaper — preview takes priority over saved
+  const activeWallpaper = previewWallpaper ?? prefs.wallpaper;
 
   const handleDesktopClick = useCallback(
     (e: React.MouseEvent) => {
@@ -77,23 +83,13 @@ export default function Desktop() {
     [openWindow],
   );
 
-  const handleChangeWallpaper = useCallback(() => {
-    setWallpaperIndex((prev) => (prev + 1) % WALLPAPERS.length);
+  const handleOpenPreferences = useCallback(() => {
+    openWindow("preferences");
     setContextMenu(null);
-  }, []);
-
-  const handleRefreshWallpaper = useCallback(() => {
-    setWallpaperIndex(0);
-    setContextMenu(null);
-  }, []);
+  }, [openWindow]);
 
   const handleShowGuidance = useCallback(() => {
     setShowGuidance(true);
-    setContextMenu(null);
-  }, []);
-
-  // Close context menu on outside click
-  const handleDocumentClick = useCallback(() => {
     setContextMenu(null);
   }, []);
 
@@ -104,30 +100,29 @@ export default function Desktop() {
       onContextMenu={handleDesktopRightClick}
       ref={constraintsRef}
     >
-      {/* Wallpaper with crossfade */}
+      {/* Wallpaper — crossfades when changed from Preferences */}
       <AnimatePresence mode="wait">
         <motion.div
-          key={wallpapers[wallpaperIndex]}
+          key={activeWallpaper}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={ANIMATION_PRESETS.fadeSlow}
           className="absolute inset-0 -z-10 bg-cover bg-center"
-          style={{
-            backgroundImage: `url('${WALLPAPERS[wallpaperIndex]}')`,
-          }}
+          style={{ backgroundImage: `url('${activeWallpaper}')` }}
         />
       </AnimatePresence>
 
       {/* Desktop Icons */}
-      {DESKTOP_ICON_LAYOUT.map((iconConfig) => (
-        <DesktopIcon
-          key={iconConfig.id}
-          iconId={iconConfig.id}
-          position={iconConfig.position}
-          onDoubleClick={() => handleIconDoubleClick(iconConfig.id)}
-        />
-      ))}
+      {prefs.showDesktopIcons &&
+        FULL_ICON_LAYOUT.map((iconConfig) => (
+          <DesktopIcon
+            key={iconConfig.id}
+            iconId={iconConfig.id}
+            position={iconConfig.position}
+            onDoubleClick={() => handleIconDoubleClick(iconConfig.id)}
+          />
+        ))}
 
       {/* Windows */}
       <AnimatePresence>
@@ -149,8 +144,7 @@ export default function Desktop() {
             onClick={(e) => e.stopPropagation()}
           >
             {[
-              { label: "🔄 Refresh Desktop", action: handleRefreshWallpaper },
-              { label: "🎨 Change Wallpaper", action: handleChangeWallpaper },
+              { label: "⚙️ Preferences", action: handleOpenPreferences },
               { label: "❓ Codex OS Guide", action: handleShowGuidance },
             ].map(({ label, action }) => (
               <button
@@ -177,6 +171,3 @@ export default function Desktop() {
     </div>
   );
 }
-
-// Fix the missing WALLPAPERS reference
-const wallpapers = WALLPAPERS;

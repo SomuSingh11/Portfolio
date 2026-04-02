@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { DesktopProvider } from "@/store/desktop-store";
 import { useDevice } from "@/provider/device-provider";
+import { PreferencesProvider } from "@/store/preferences-store";
 import Desktop from "@/components/Desktop/Desktop";
 import MobileLayout from "@/components/Mobile/MobileLayout";
 import SetupScreen from "@/components/Utilities/SetupScreen";
@@ -26,10 +27,11 @@ export default function Home() {
       {isSettingUp ? (
         <SetupScreen key="setup" onComplete={() => setIsSettingUp(false)} />
       ) : (
-        // DesktopProvider wraps BOTH desktop and mobile so store is always available
-        <DesktopProvider key="app">
-          <AppContent />
-        </DesktopProvider>
+        <PreferencesProvider key="prefs">
+          <DesktopProvider key="app">
+            <AppContent />
+          </DesktopProvider>
+        </PreferencesProvider>
       )}
     </AnimatePresence>
   );

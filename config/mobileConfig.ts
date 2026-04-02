@@ -72,6 +72,12 @@ export const MOBILE_APPS: MobileAppConfig[] = [
     icon: "achievements.svg",
     bgGradient: "from-amber-500 to-yellow-700",
   },
+  {
+    id: "preferences",
+    label: "Preferences",
+    icon: "preferences.svg",
+    bgGradient: "from-slate-500 to-slate-700",
+  },
 ];
 
 export const DOCK_APPS: AppId[] = ["terminal", "projects", "contact", "about"];
