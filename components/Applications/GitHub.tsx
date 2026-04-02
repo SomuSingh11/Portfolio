@@ -14,6 +14,7 @@ import {
   BarChart2,
   Users,
   BookMarked,
+  Loader2,
 } from "lucide-react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
@@ -60,7 +61,7 @@ export default function GitHub() {
           animate={{ rotate: 360 }}
           transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
         >
-          <Github className="w-8 h-8 text-gray-400" />
+          <Loader2 className="w-8 h-8 text-gray-400" />
         </motion.div>
         <p className="text-gray-500 text-sm">Loading GitHub data...</p>
       </div>
@@ -90,7 +91,7 @@ export default function GitHub() {
 
   return (
     <div className="h-full bg-gray-900 text-white flex flex-col items-center overflow-hidden">
-      <div className="w-full max-w-5xl flex flex-col h-full">
+      <div className="w-full max-w-4xl flex flex-col h-full">
         {/* ── Profile header ── */}
         {profile && (
           <div className="flex-shrink-0 border-b border-gray-800 p-4">
