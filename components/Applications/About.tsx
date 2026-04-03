@@ -23,7 +23,7 @@ import {
   animes,
   songs,
 } from "@/data/about";
-import { PERSONAL_INFO, SOCIAL_LINKS } from "@/config/constants";
+import { PERSONAL_INFO } from "@/config/constants";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
