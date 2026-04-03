@@ -44,8 +44,8 @@ export const MOBILE_APPS: MobileAppConfig[] = [
   },
   {
     id: "hashnode",
-    label: "Blog",
-    icon: "hashnode-solid.svg",
+    label: "Hashnode",
+    icon: "Hashnode_icon.svg",
     bgGradient: "from-blue-600 to-indigo-800",
   },
   {

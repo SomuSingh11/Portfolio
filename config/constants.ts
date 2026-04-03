@@ -101,7 +101,7 @@ export const APP_META: Record<
   },
   hashnode: {
     title: "Hashnode",
-    icon: "hashnode-solid.svg",
+    icon: "Hashnode_icon.svg",
     description: "Blog posts",
   },
   achievements: {

@@ -50,7 +50,6 @@ export default function Taskbar({
   windows,
   onWindowClick,
   onWindowClose,
-  onWindowMinimize,
 }: TaskbarProps) {
   const currentTime = useCurrentTime();
 

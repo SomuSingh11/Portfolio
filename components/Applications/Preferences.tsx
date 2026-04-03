@@ -176,7 +176,6 @@ function WallpaperSection() {
 
   return (
     <div className="space-y-4">
-      <SectionTitle>Wallpaper</SectionTitle>
       <div
         className="w-full h-28 rounded-xl bg-cover bg-center border border-gray-700 transition-all duration-300"
         style={{ backgroundImage: `url('${active}')` }}
@@ -236,7 +235,6 @@ function AppearanceSection() {
   const { prefs, set } = usePreferences();
   return (
     <div className="space-y-1">
-      <SectionTitle>Appearance</SectionTitle>
       <SettingRow
         label="Mode"
         description="Light mode applies a lighter color scheme"
@@ -291,7 +289,6 @@ function TypographySection() {
   const { prefs, set } = usePreferences();
   return (
     <div className="space-y-4">
-      <SectionTitle>Typography</SectionTitle>
       <div className="space-y-2">
         {(Object.entries(FONT_CONFIG) as [FontFamily, any][]).map(
           ([key, config]) => (
@@ -339,7 +336,6 @@ function TerminalSection() {
   const { prefs, set } = usePreferences();
   return (
     <div className="space-y-4">
-      <SectionTitle>Terminal</SectionTitle>
       <div className="space-y-2">
         {(Object.entries(TERMINAL_THEME_CONFIG) as [TerminalTheme, any][]).map(
           ([key, config]) => (
@@ -402,7 +398,6 @@ function DesktopSection() {
   const { prefs, set } = usePreferences();
   return (
     <div className="space-y-1">
-      <SectionTitle>Desktop</SectionTitle>
       <SettingRow
         label="Desktop Icons"
         description="Show icons on the desktop surface"
@@ -430,7 +425,6 @@ function AccessibilitySection() {
   const { prefs, set } = usePreferences();
   return (
     <div className="space-y-1">
-      <SectionTitle>Accessibility</SectionTitle>
       <SettingRow
         label="Reduce Motion"
         description="Minimises animations throughout the OS"
@@ -463,7 +457,6 @@ function AboutSection({ onReset }: { onReset: () => void }) {
   ];
   return (
     <div className="space-y-4">
-      <SectionTitle>About This System</SectionTitle>
       <div className="bg-gray-800/60 border border-gray-700 rounded-xl p-4 space-y-4">
         <div className="flex items-center gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -582,37 +575,39 @@ export default function Preferences() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto min-w-0">
-          <AnimatePresence mode="wait">
-            {activeSection ? (
-              <motion.div
-                key={activeSection}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.15 }}
-                className="p-6 max-w-xl"
-              >
-                {renderSection(activeSection)}
-              </motion.div>
-            ) : (
-              <motion.div
-                key="empty"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="h-full flex items-center justify-center p-8"
-              >
-                <div className="text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-gray-800 flex items-center justify-center mx-auto mb-4">
-                    <Palette className="w-8 h-8 text-gray-600" />
+        <div className="flex-1 overflow-y-auto min-w-0 min-h-0 flex justify-center">
+          <div className="w-full max-w-4xl">
+            <AnimatePresence mode="wait">
+              {activeSection ? (
+                <motion.div
+                  key={activeSection}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.15 }}
+                  className="p-6 w-full"
+                >
+                  {renderSection(activeSection)}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="h-full flex items-center justify-center p-8"
+                >
+                  <div className="text-center">
+                    <div className="w-16 h-16 rounded-2xl bg-gray-800 flex items-center justify-center mx-auto mb-4">
+                      <Palette className="w-8 h-8 text-gray-600" />
+                    </div>
+                    <p className="text-gray-500 text-sm">
+                      Select a category to customise
+                    </p>
                   </div>
-                  <p className="text-gray-500 text-sm">
-                    Select a category to customise
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
