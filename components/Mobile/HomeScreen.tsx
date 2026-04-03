@@ -6,8 +6,7 @@ import AppIcon from "@/components/Mobile/AppIcon";
 import NotificationPanel from "@/components/Mobile/NotificationPanel";
 import { MOBILE_APPS, DOCK_APPS } from "@/config/mobileConfig";
 import type { AppId } from "@/types/desktop";
-
-const WALLPAPER = "/wallpaper/pain.jpg";
+import { usePreferences } from "@/store/preferences-store";
 
 const APPS_PER_PAGE = 8;
 const homeApps = MOBILE_APPS.filter((a) => !DOCK_APPS.includes(a.id));
@@ -30,6 +29,9 @@ interface HomeScreenProps {
 export default function HomeScreen({ onOpenApp }: HomeScreenProps) {
   const [page, setPage] = useState(0);
   const [notifOpen, setNotifOpen] = useState(false);
+  const { prefs, previewWallpaper } = usePreferences();
+
+  const activeWallpaper = previewWallpaper ?? prefs.wallpaper;
 
   const handlePageSwipe = useCallback(
     (_: unknown, info: PanInfo) => {
@@ -55,7 +57,7 @@ export default function HomeScreen({ onOpenApp }: HomeScreenProps) {
       {/* Wallpaper */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('${WALLPAPER}')` }}
+        style={{ backgroundImage: `url('${activeWallpaper}')` }}
       />
       <div className="absolute inset-0 bg-black/30" />
 

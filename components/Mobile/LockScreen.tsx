@@ -9,8 +9,7 @@ import {
 } from "framer-motion";
 import { useCurrentTime } from "@/hooks/ui/useCurrentTime";
 import { PERSONAL_INFO } from "@/config/constants";
-
-const WALLPAPER = "/wallpaper/pain.jpg";
+import { usePreferences } from "@/store/preferences-store";
 
 interface LockScreenProps {
   onUnlock: () => void;
@@ -19,6 +18,9 @@ interface LockScreenProps {
 export default function LockScreen({ onUnlock }: LockScreenProps) {
   const time = useCurrentTime();
   const [unlocked, setUnlocked] = useState(false);
+
+  const { prefs, previewWallpaper } = usePreferences();
+  const activeWallpaper = previewWallpaper ?? prefs.wallpaper;
 
   const y = useMotionValue(0);
   const opacity = useTransform(y, [0, -200], [1, 0]);
@@ -61,7 +63,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
           {/* Wallpaper */}
           <div
             className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url('${WALLPAPER}')` }}
+            style={{ backgroundImage: `url('${activeWallpaper}')` }}
           />
           <div className="absolute inset-0 bg-black/40" />
 

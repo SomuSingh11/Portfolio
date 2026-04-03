@@ -80,7 +80,7 @@ export default function AppWindow({ appId, onClose }: AppWindowProps) {
       >
         {/* App header — no status bar, just a slim nav bar */}
         <div
-          className="flex-shrink-0 bg-gray-900 border-b border-white/5 flex items-center px-4 py-3 gap-3"
+          className="flex-shrink-0 bg-gray-900 border-b border-white/5 flex items-center px-4 gap-3"
           // This area is draggable to close
           onPointerDown={(e) => {
             // allow framer drag on this element
@@ -92,34 +92,7 @@ export default function AppWindow({ appId, onClose }: AppWindowProps) {
               }),
             );
           }}
-        >
-          {/* Home text button — left */}
-          <motion.button
-            onTap={onClose}
-            whileTap={{ scale: 0.9 }}
-            className="flex items-center space-x-1 text-blue-400 active:opacity-70"
-          >
-            <ChevronLeft size={20} />
-            <span className="text-sm font-medium">Home</span>
-          </motion.button>
-
-          {/* App name + icon — centered */}
-          {/* <div className="flex-1 flex items-center justify-center space-x-2">
-            <Image
-              src={`/icons/breeze/${meta.icon}`}
-              alt={meta.title}
-              width={20}
-              height={20}
-              className="object-contain"
-            />
-            <span className="text-white text-sm font-semibold">
-              {meta.title}
-            </span>
-          </div> */}
-
-          {/* Spacer to keep title centered */}
-          <div className="shrink-0 w-10" />
-        </div>
+        ></div>
 
         {/* App content */}
         <div className="flex-1 overflow-hidden min-h-0">
@@ -128,9 +101,16 @@ export default function AppWindow({ appId, onClose }: AppWindowProps) {
           </AppErrorBoundary>
         </div>
 
-        {/* Home indicator */}
-        <div className="flex-shrink-0 flex justify-center py-2 bg-gray-900/80">
-          <div className="w-32 h-1 bg-white/20 rounded-full" />
+        {/* Home indicator / back button */}
+        <div className="flex-shrink-0 backdrop-blur-2xl bg-gradient-to-t from-black/40 via-black/20 to-transparent border-t border-white/10 flex items-center justify-center py-2">
+          <motion.button
+            onTap={onClose}
+            whileTap={{ scale: 0.94, opacity: 0.7 }}
+            className="flex flex-col items-center gap-1 px-6 py-1 text-white/40 active:text-white/70"
+          >
+            <ChevronLeft size={18} className="rotate-[-90deg]" />
+            Home
+          </motion.button>
         </div>
       </motion.div>
     </AnimatePresence>

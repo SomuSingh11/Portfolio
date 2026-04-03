@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import projects from "@/data/projects";
 import ProjectDetail from "@/components/Projects/ProjectDetail";
+import { MoveLeft } from "lucide-react";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -57,7 +58,7 @@ export default async function ProjectPage({ params }: Props) {
             href="/"
             className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm font-medium"
           >
-            <span className="text-lg">←</span>
+            <MoveLeft size="15" />
             <span>Somu Singh</span>
           </Link>
 
@@ -66,12 +67,7 @@ export default async function ProjectPage({ params }: Props) {
               Portfolio
             </Link>
             <span>/</span>
-            <Link
-              href="/#projects"
-              className="hover:text-gray-400 transition-colors"
-            >
-              Projects
-            </Link>
+            <span>Projects</span>
             <span>/</span>
             <span className="text-gray-300">{project.name}</span>
           </div>
