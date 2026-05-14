@@ -19,9 +19,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Somu Singh | Codex OS",
-  description:
-    "An interactive OS-themed portfolio.",
+  title: "Somu Singh",
+  description: "An interactive OS-themed portfolio.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

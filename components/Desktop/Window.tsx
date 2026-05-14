@@ -192,13 +192,14 @@ export default function Window({ window, constraintsRef }: WindowProps) {
                 aria-label={isMaximized ? "Restore window" : "Maximize window"}
               />
             </div>
-            <span className="text-white text-sm font-medium">
-              {window.title}
-            </span>
           </div>
 
+          <span className="text-white text-sm font-medium mr-2">
+            {window.title}
+          </span>
+
           {/* Right-side controls */}
-          <div className="flex items-center space-x-1">
+          {/* <div className="flex items-center space-x-1">
             <button
               onClick={handleMinimize}
               className="p-1 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors focus:outline-none"
@@ -224,7 +225,7 @@ export default function Window({ window, constraintsRef }: WindowProps) {
             >
               <X className="w-3 h-3" />
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Content — wrapped in error boundary so one broken app can't crash the desktop */}

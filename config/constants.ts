@@ -43,6 +43,7 @@ export const WALLPAPERS = [
   "/wallpaper/redHair.jpg",
   "/wallpaper/pain.jpg",
   "/wallpaper/ubuntu.jpg",
+  "/wallpaper/fate-rewinder.png",
   "/wallpaper/penguin.jpg",
   "/wallpaper/windowsXp.jpg",
   "/wallpaper/goldFish.jpg",

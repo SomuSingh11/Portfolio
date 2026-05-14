@@ -59,11 +59,11 @@ function ProjectListItem({
           </div>
         )}
       </div>
-      <span
+      {/* <span
         className={`text-xs flex-shrink-0 font-bold ${selected ? "text-white" : STATUS_COLOR[project.status]}`}
       >
         {STATUS_ICON[project.status]}
-      </span>
+      </span> */}
     </motion.button>
   );
 }
@@ -163,7 +163,7 @@ export default function Projects() {
               <div className="p-4 space-y-4">
                 {projects.map((p, i) => (
                   <MobileProjectCard
-                    key={p.id}
+                    key={p.slug}
                     project={p}
                     onClick={() => selectProject(p)}
                     index={i}
@@ -225,7 +225,7 @@ export default function Projects() {
           <div className="flex-1 overflow-y-auto p-2 space-y-1">
             {projects.map((p, i) => (
               <ProjectListItem
-                key={p.id}
+                key={p.slug}
                 project={p}
                 selected={selectedProject?.id === p.id}
                 onClick={() => setSelectedProject(p)}
