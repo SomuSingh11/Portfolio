@@ -1,46 +1,66 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { IconData } from "@/types/desktop";
 import Image from "next/image";
+import type { AppId } from "@/types/desktop";
+import { APP_META } from "@/config/constants";
 
 interface DesktopIconProps {
-  icon: IconData;
+  iconId: AppId;
+  position: { x: number; y: number };
   onDoubleClick: () => void;
 }
 
-export default function DesktopIcon({ icon, onDoubleClick }: DesktopIconProps) {
+export default function DesktopIcon({
+  iconId,
+  position,
+  onDoubleClick,
+}: DesktopIconProps) {
   const [isSelected, setIsSelected] = useState(false);
+  const meta = APP_META[iconId];
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     setIsSelected(true);
-    setTimeout(() => setIsSelected(false), 2000);
-  };
+    const timer = setTimeout(() => setIsSelected(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onDoubleClick();
+      }
+    },
+    [onDoubleClick],
+  );
 
   return (
     <motion.div
-      className={`absolute cursor-pointer select-none ${
-        isSelected ? "bg-blue-500/30" : ""
-      } rounded-lg p-2 transition-colors`}
-      style={{
-        left: icon.position.x,
-        top: icon.position.y,
-      }}
+      className={`absolute cursor-pointer select-none rounded-lg p-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+        isSelected ? "bg-blue-500/30" : "hover:bg-white/10"
+      }`}
+      style={{ left: position.x, top: position.y }}
       onClick={handleClick}
       onDoubleClick={onDoubleClick}
+      onKeyDown={handleKeyDown}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Open ${meta.title}`}
     >
-      <div className="flex flex-col items-center space-y-1">
+      <div className="flex flex-col items-center space-y-1 w-16">
         <Image
-          src={`/icons/breeze/${icon.icon}`}
-          alt={icon.name}
+          src={`/icons/mobile/${meta.icon}`}
+          alt={`${meta.title} icon`}
           width={46}
           height={46}
+          className="drop-shadow-lg"
         />
-        <span className="text-white text-sm font-medium text-center drop-shadow-lg">
-          {icon.name}
+        <span className="text-white text-xs font-medium text-center leading-tight drop-shadow-lg line-clamp-2">
+          {meta.title}
         </span>
       </div>
     </motion.div>

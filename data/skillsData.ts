@@ -1,5 +1,3 @@
-// src/components/data/skillsData.ts
-
 import type { FC, SVGProps } from "react";
 import {
   Brain,
@@ -13,11 +11,10 @@ import {
   Map,
   Rocket,
   Shield,
-  ToolCase,
+  Wrench,
   Trophy,
 } from "lucide-react";
 
-// Import brand icons from react-icons
 import {
   SiPrisma,
   SiSocketdotio,
@@ -35,14 +32,22 @@ import {
   SiReact,
   SiJavascript,
   SiHtml5,
-  SiCss3, // Added for individual coloring
+  SiCss3,
   SiNodedotjs,
   SiExpress,
   SiGithub,
 } from "react-icons/si";
 
-// --- INTERFACE AND TYPE DEFINITIONS ---
+// ─── Types ────────────────────────────────────────────────────────────────────
 export type IconType = FC<SVGProps<SVGSVGElement>>;
+
+export type ProficiencyLevelName =
+  | "Exploring"
+  | "Beginner"
+  | "Learning"
+  | "Intermediate"
+  | "Comfortable"
+  | "Advanced";
 
 export interface ProficiencyDetail {
   level: number;
@@ -50,22 +55,13 @@ export interface ProficiencyDetail {
   description: string;
 }
 
-export interface Achievement {
-  title: string;
-  description: string;
-  icon: IconType;
-  color: string;
-}
-
-export type ProficiencyLevelName = keyof typeof proficiencyLevels;
-
 export interface Skill {
   name: string;
   proficiency: ProficiencyLevelName;
   projects: number;
   icon: IconType;
   status: string;
-  color: string; // <-- Property added for individual icon color
+  color: string;
 }
 
 export interface SkillCategory {
@@ -78,10 +74,18 @@ export interface SkillCategory {
   skills: Skill[];
 }
 
-// --- DATA EXPORTS ---
+export interface Achievement {
+  title: string;
+  description: string;
+  icon: IconType;
+  color: string;
+}
 
-export const proficiencyLevels: Record<string, ProficiencyDetail> = {
-  // ... (this data remains the same)
+// ─── Proficiency Levels ───────────────────────────────────────────────────────
+export const proficiencyLevels: Record<
+  ProficiencyLevelName,
+  ProficiencyDetail
+> = {
   Exploring: {
     level: 25,
     color: "from-gray-400 to-gray-500",
@@ -114,10 +118,11 @@ export const proficiencyLevels: Record<string, ProficiencyDetail> = {
   },
 };
 
+// ─── Skill Categories ─────────────────────────────────────────────────────────
 export const skillCategories: SkillCategory[] = [
   {
     id: "frontend",
-    category: "Frontend Development",
+    category: "Frontend",
     icon: Code,
     color: "from-blue-400 to-cyan-500",
     bgGradient: "from-blue-900/20 to-cyan-900/20",
@@ -199,11 +204,11 @@ export const skillCategories: SkillCategory[] = [
   },
   {
     id: "backend",
-    category: "Backend Development",
+    category: "Backend",
     icon: Database,
     color: "from-green-400 to-emerald-500",
     bgGradient: "from-green-900/20 to-emerald-900/20",
-    description: "Server-side logic and database management",
+    description: "Server-side logic and API development",
     skills: [
       {
         name: "Node.js",
@@ -250,7 +255,7 @@ export const skillCategories: SkillCategory[] = [
         proficiency: "Learning",
         projects: 2,
         icon: ListVideo,
-        status: "Video/Audio Integration",
+        status: "Video/Audio Calls",
         color: "text-purple-500",
       },
     ],
@@ -261,14 +266,14 @@ export const skillCategories: SkillCategory[] = [
     icon: Database,
     color: "from-orange-400 to-red-500",
     bgGradient: "from-orange-900/20 to-red-900/20",
-    description: "Relational and non-relational databases",
+    description: "Relational and non-relational data storage",
     skills: [
       {
         name: "MongoDB",
         proficiency: "Intermediate",
         projects: 4,
         icon: SiMongodb,
-        status: "Used in Full-Stack Apps",
+        status: "Full-Stack Apps",
         color: "text-green-500",
       },
       {
@@ -291,11 +296,11 @@ export const skillCategories: SkillCategory[] = [
   },
   {
     id: "tools",
-    category: "Development Tools",
-    icon: ToolCase,
+    category: "Tools",
+    icon: Wrench, // was ToolCase which doesn't exist
     color: "from-purple-400 to-pink-500",
     bgGradient: "from-purple-900/20 to-pink-900/20",
-    description: "Essential development and collaboration tools",
+    description: "Development and collaboration tools",
     skills: [
       {
         name: "Git & GitHub",
@@ -367,12 +372,11 @@ export const skillCategories: SkillCategory[] = [
   },
 ];
 
+// ─── Achievements ─────────────────────────────────────────────────────────────
 export const achievements: Achievement[] = [
-  // ... (this data remains the same)
   {
     title: "HackByte 3.0 Finalist",
-    description:
-      "Top 10 finalist among 120+ teams for Sync-City, an AI-powered collaboration platform",
+    description: "Top 10 finalist among 120+ teams for Sync-City",
     icon: Trophy,
     color: "text-yellow-400",
   },
@@ -384,15 +388,13 @@ export const achievements: Achievement[] = [
   },
   {
     title: "Project Builder",
-    description:
-      "Developed AI-powered and real-time applications like Catalyst and Huddle",
+    description: "Shipped AI-powered and real-time production apps",
     icon: Rocket,
     color: "text-green-400",
   },
   {
     title: "Certified",
-    description:
-      "Earned Postman API Fundamentals & Cisco Networking Basics certifications",
+    description: "Postman API Fundamentals & Cisco Networking Basics",
     icon: Shield,
     color: "text-purple-400",
   },

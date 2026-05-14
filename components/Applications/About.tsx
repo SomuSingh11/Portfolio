@@ -1,594 +1,635 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useCallback, useRef, memo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin,
-  Award,
+  Zap,
+  Github,
+  Linkedin,
+  Mail,
+  ExternalLink,
   GraduationCap,
-  BookOpen,
-  Calendar,
+  Layers,
+  Heart,
+  Radio,
+  User,
+  ChevronRight,
+  ArrowLeft,
+  Code2,
+  Globe,
+  Server,
+  BrainCircuit,
+  Cpu,
+  Wrench,
   Gamepad2,
-  Film,
-  Music,
+  Tv2,
+  Music2,
+  BookOpen,
 } from "lucide-react";
+import { BIO, EDUCATION, STACK, INTERESTS, NOW } from "@/data/about";
 
-import TechStackBox from "../Utilities/TechStack";
-import { useState } from "react";
-import { Skeleton } from "../ui/skeleton";
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type SectionId = "bio" | "education" | "stack" | "interests" | "now";
+
+interface NavItem {
+  id: SectionId;
+  label: string;
+  description: string;
+  icon: React.ElementType;
+}
+
+// ─── Nav config (same shape as Preferences SECTIONS) ─────────────────────────
+
+const NAV: NavItem[] = [
+  { id: "bio", label: "Bio", description: "Who I am", icon: User },
+  {
+    id: "education",
+    label: "Education",
+    description: "Academic background",
+    icon: GraduationCap,
+  },
+  {
+    id: "stack",
+    label: "Stack",
+    description: "Tools & technologies",
+    icon: Layers,
+  },
+  {
+    id: "interests",
+    label: "Interests",
+    description: "Games, anime & music",
+    icon: Heart,
+  },
+  { id: "now", label: "Now", description: "What I'm up to", icon: Radio },
+];
+
+const CATEGORY_ICONS: Record<string, React.ElementType> = {
+  Languages: Code2,
+  Frontend: Globe,
+  Backend: Server,
+  "AI / ML": BrainCircuit,
+  Embedded: Cpu,
+  Tools: Wrench,
+};
+
+const SOCIAL_ICONS: Record<string, React.ElementType> = {
+  github: Github,
+  linkedin: Linkedin,
+  hashnode: ExternalLink,
+  mail: Mail,
+};
+
+// ─── Shared animation (same values as Preferences) ───────────────────────────
+
+const pageVariants = {
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+};
+const pageTransition = { duration: 0.15 };
+
+// ─── Shared UI ────────────────────────────────────────────────────────────────
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="text-base font-semibold text-white mb-4">{children}</h2>
+  );
+}
+
+function Divider() {
+  return <div className="border-b border-gray-800/80" />;
+}
+
+// ─── Bio Section ──────────────────────────────────────────────────────────────
+
+const BioSection = memo(function BioSection() {
+  return (
+    <div className="space-y-4">
+      {/* Profile card */}
+      <div className="bg-gray-800/60 border border-gray-700 rounded-xl p-4 space-y-4">
+        <div className="flex items-center gap-4">
+          {/* Avatar */}
+          <div className="relative flex-shrink-0">
+            <img
+              src={BIO.avatar}
+              alt={BIO.name}
+              className="w-14 h-14 rounded-full border-2 border-gray-600 object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src =
+                  `https://ui-avatars.com/api/?name=${encodeURIComponent(BIO.name)}&background=1f2937&color=ffffff&size=56&bold=true`;
+              }}
+            />
+            {/* Online dot */}
+            <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-gray-900" />
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <p className="text-white font-bold text-base leading-tight">
+              {BIO.name}
+            </p>
+            <p className="text-[hsl(var(--accent-hsl))] text-xs mt-0.5 leading-snug">
+              {BIO.tagline}
+            </p>
+            <div className="flex items-center gap-1.5 mt-1.5 text-gray-500 text-xs">
+              <MapPin className="w-3 h-3 flex-shrink-0" />
+              <span>{BIO.location}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Badges */}
+        <div className="flex flex-wrap gap-2">
+          {BIO.badges.map((b) => (
+            <span
+              key={b.label}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium"
+              style={{
+                background:
+                  b.color === "yellow"
+                    ? "rgba(234,179,8,0.12)"
+                    : "hsl(var(--accent-hsl) / 0.12)",
+                color:
+                  b.color === "yellow" ? "#fbbf24" : "hsl(var(--accent-hsl))",
+                border: `1px solid ${b.color === "yellow" ? "rgba(234,179,8,0.25)" : "hsl(var(--accent-hsl) / 0.25)"}`,
+              }}
+            >
+              <Zap className="w-3 h-3" />
+              {b.label}
+            </span>
+          ))}
+        </div>
+
+        {/* Socials */}
+        <div className="flex flex-wrap gap-2 pt-1">
+          {BIO.socials.map((s) => {
+            const Icon = SOCIAL_ICONS[s.icon] ?? ExternalLink;
+            return (
+              <a
+                key={s.label}
+                href={s.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white text-xs rounded-lg transition-colors font-medium"
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {s.label}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Open to work */}
+      <div className="flex items-center gap-3 px-4 py-3 bg-green-900/15 border border-green-800/30 rounded-xl">
+        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
+        <p className="text-green-400 text-sm">
+          {BIO.status} — feel free to reach out
+        </p>
+      </div>
+    </div>
+  );
+});
+
+// ─── Education Section ────────────────────────────────────────────────────────
+
+const EducationSection = memo(function EducationSection() {
+  return (
+    <div className="space-y-4">
+      <div className="relative ml-2">
+        {/* Timeline spine */}
+        <div className="absolute left-0 top-2 bottom-2 w-px bg-gray-700" />
+
+        <div className="space-y-3 pl-6">
+          {EDUCATION.map((edu, i) => (
+            <div key={edu.id} className="relative">
+              {/* Dot */}
+              <span
+                className="absolute top-3 w-2.5 h-2.5 rounded-full border-2 flex-shrink-0"
+                style={{
+                  background: i === 0 ? "hsl(var(--accent-hsl))" : "#1f2937",
+                  borderColor: i === 0 ? "hsl(var(--accent-hsl))" : "#374151",
+                  left: "-0.85rem",
+                  boxShadow:
+                    i === 0 ? "0 0 8px hsl(var(--accent-hsl) / 0.45)" : "none",
+                }}
+              />
+
+              <div className="bg-gray-800/60 border border-gray-700 rounded-xl p-3.5 hover:border-gray-600 transition-colors">
+                <p className="text-white text-sm font-semibold">{edu.degree}</p>
+                <p className="text-gray-400 text-xs mt-0.5">
+                  {edu.institution}
+                </p>
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="text-xs px-2 py-0.5 rounded-md bg-[hsl(var(--accent-hsl))]/10 text-[hsl(var(--accent-hsl))]">
+                    {edu.year}
+                  </span>
+                  <span className="text-gray-500 text-xs">{edu.grade}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+});
+
+// ─── Stack Section ────────────────────────────────────────────────────────────
+
+const StackSection = memo(function StackSection() {
+  return (
+    <div className="space-y-5">
+      {STACK.map((group) => {
+        const Icon = CATEGORY_ICONS[group.category] ?? Layers;
+        return (
+          <div key={group.category}>
+            <div className="flex items-center gap-2 mb-2.5">
+              <Icon className="w-3.5 h-3.5 text-[hsl(var(--accent-hsl))]" />
+              <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">
+                {group.category}
+              </span>
+              <div className="flex-1 h-px bg-gray-800" />
+            </div>
+
+            <div className="flex flex-wrap gap-1.5">
+              {group.items.map((item) => (
+                <span
+                  key={item}
+                  className="px-2.5 py-1 bg-gray-800 border border-gray-700 hover:border-gray-600 hover:text-white text-gray-300 text-xs rounded-lg transition-colors cursor-default"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+});
+
+// ─── Interests Section ────────────────────────────────────────────────────────
+
+function HScroll({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="flex gap-3 overflow-x-auto pb-2"
+      style={{ scrollbarWidth: "none" }}
+    >
+      {children}
+    </div>
+  );
+}
+
+const InterestsSection = memo(function InterestsSection() {
+  return (
+    <div className="space-y-6">
+      {/* Games */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <Gamepad2 className="w-3.5 h-3.5 text-violet-400" />
+          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">
+            Games Completed
+          </span>
+        </div>
+        <HScroll>
+          {INTERESTS.games.map((g) => (
+            <div key={g.name} className="flex-shrink-0 w-24 group">
+              <div className="w-24 h-32 rounded-xl overflow-hidden border border-gray-700 group-hover:border-gray-500 transition-colors">
+                <img
+                  src={g.image}
+                  alt={g.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      `https://placehold.co/96x128/1f2937/6b7280?text=${encodeURIComponent(g.name.slice(0, 2))}`;
+                  }}
+                />
+              </div>
+              <p className="text-xs mt-1.5 text-center text-gray-500 leading-tight">
+                {g.name}
+              </p>
+            </div>
+          ))}
+        </HScroll>
+      </div>
+
+      <Divider />
+
+      {/* Anime */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <Tv2 className="w-3.5 h-3.5 text-red-400" />
+          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">
+            Anime Logged
+          </span>
+        </div>
+        <HScroll>
+          {INTERESTS.anime.map((a) => (
+            <div key={a.name} className="flex-shrink-0 w-20 group">
+              <div className="w-20 h-28 rounded-xl overflow-hidden border border-gray-700 group-hover:border-gray-500 transition-colors">
+                <img
+                  src={a.image}
+                  alt={a.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      `https://placehold.co/80x112/1f2937/6b7280?text=${encodeURIComponent(a.name.slice(0, 2))}`;
+                  }}
+                />
+              </div>
+              <p className="text-xs mt-1.5 text-center text-gray-500 leading-tight">
+                {a.name}
+              </p>
+            </div>
+          ))}
+        </HScroll>
+      </div>
+
+      <Divider />
+
+      {/* Music */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <Music2 className="w-3.5 h-3.5 text-green-400" />
+          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">
+            Current Rotation
+          </span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {INTERESTS.music.map((s) => (
+            <a
+              key={s.name}
+              href={s.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-3 py-2.5 bg-gray-800/60 border border-gray-700 hover:border-gray-600 rounded-xl transition-colors group"
+            >
+              <div className="w-9 h-9 rounded-lg overflow-hidden border border-gray-700 flex-shrink-0">
+                <img
+                  src={s.image}
+                  alt={s.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      `https://placehold.co/36x36/1f2937/6b7280?text=♪`;
+                  }}
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-white text-xs font-semibold truncate group-hover:text-[hsl(var(--accent-hsl))] transition-colors">
+                  {s.name}
+                </p>
+                <p className="text-gray-500 text-xs truncate">{s.artist}</p>
+              </div>
+              <ExternalLink className="w-3 h-3 text-gray-600 group-hover:text-[hsl(var(--accent-hsl))] flex-shrink-0 transition-colors" />
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+});
+
+// ─── Now Section ──────────────────────────────────────────────────────────────
+
+const NowSection = memo(function NowSection() {
+  const items = [
+    {
+      icon: Cpu,
+      label: "Building",
+      value: NOW.building,
+      colorClass: "text-[hsl(var(--accent-hsl))]",
+      bgClass: "bg-[hsl(var(--accent-hsl))]/5",
+      borderClass: "border-[hsl(var(--accent-hsl))]/20",
+    },
+    {
+      icon: Tv2,
+      label: "Watching",
+      value: NOW.watching,
+      colorClass: "text-red-400",
+      bgClass: "bg-red-900/10",
+      borderClass: "border-red-800/25",
+    },
+    {
+      icon: Music2,
+      label: "Listening",
+      value: NOW.listening,
+      colorClass: "text-green-400",
+      bgClass: "bg-green-900/10",
+      borderClass: "border-green-800/25",
+    },
+    {
+      icon: BookOpen,
+      label: "Reading",
+      value: NOW.reading,
+      colorClass: "text-violet-400",
+      bgClass: "bg-violet-900/10",
+      borderClass: "border-violet-800/25",
+    },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <p className="text-xs text-gray-600 -mt-2 font-mono">
+        what i&apos;m up to right now
+      </p>
+
+      <div className="space-y-2.5">
+        {items.map(
+          ({ icon: Icon, label, value, colorClass, bgClass, borderClass }) => (
+            <div
+              key={label}
+              className={`flex items-start gap-3.5 p-4 rounded-xl border ${bgClass} ${borderClass}`}
+            >
+              <Icon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${colorClass}`} />
+              <div>
+                <p
+                  className={`text-[10px] font-semibold uppercase tracking-widest mb-1 opacity-80 ${colorClass}`}
+                >
+                  {label}
+                </p>
+                <p className="text-white text-sm leading-snug">{value}</p>
+              </div>
+            </div>
+          ),
+        )}
+      </div>
+    </div>
+  );
+});
+
+// ─── Section renderer ─────────────────────────────────────────────────────────
+
+function renderSection(id: SectionId) {
+  switch (id) {
+    case "bio":
+      return <BioSection />;
+    case "education":
+      return <EducationSection />;
+    case "stack":
+      return <StackSection />;
+    case "interests":
+      return <InterestsSection />;
+    case "now":
+      return <NowSection />;
+  }
+}
+
+// ─── Main Export ──────────────────────────────────────────────────────────────
 
 export default function About() {
-  const educationHistory = [
-    {
-      level: "B.E. Computer Engineering",
-      institution: "Institute of Engineering & Technology, DAVV",
-      details: "GPA: 9.04 | 2022 - Present",
-      image: "/about/ietDavv.jpg",
-    },
-    {
-      level: "Higher Secondary (Class XII)",
-      institution: "Mount Litera Zee School",
-      details: "CBSE | 95% | 2020 - 2021",
-      image: "/about/mlzs.jpg",
-    },
-    {
-      level: "Secondary (Class X)",
-      institution: "Mount Litera Zee School",
-      details: "CBSE | 90% | 2018 - 2019",
-      image: "/about/mlzs.jpg",
-    },
-  ];
+  const [activeSection, setActiveSection] = useState<SectionId | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
-  const interests = [
-    {
-      icon: "🤖",
-      label: "Building AI Tools",
-      image: "https://placehold.co/400x300/1E293B/E2E8F0?text=AI+Development",
-    },
-    {
-      icon: "🏆",
-      label: "Hackathons",
-      image: "https://placehold.co/400x300/1E293B/E2E8F0?text=Hackathon+Winner",
-    },
-    {
-      icon: "🌐",
-      label: "Real-time Apps",
-      image:
-        "https://placehold.co/400x300/1E293B/E2E8F0?text=WebSockets+&+WebRTC",
-    },
-    {
-      icon: "💡",
-      label: "System Design",
-      image:
-        "https://placehold.co/400x300/1E293B/E2E8F0?text=System+Architecture",
-    },
-    {
-      icon: "📖",
-      label: "Open Source",
-      image: "https://placehold.co/400x300/1E293B/E2E8F0?text=Open+Source+Code",
-    },
-    {
-      icon: "🎮",
-      label: "Gaming",
-      image: "https://placehold.co/400x300/1E293B/E2E8F0?text=Strategy+Gaming",
-    },
-  ];
+  const handleSelect = useCallback((id: SectionId) => {
+    setActiveSection(id);
+    contentRef.current?.scrollTo({ top: 0 });
+  }, []);
 
-  const media = {
-    games: [
-      {
-        name: "Sekiro",
-        image:
-          "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExaHB0d3F2aHdhZ2U4c3pmZ3dodjlhcjllcnVmZzkxZTc1djRpYTc0dyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PR88Zx9O7Zu4eJeRxf/giphy.gif",
-      },
-      {
-        name: "Arkham Asylum",
-        image:
-          "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjdxZ2ZwenY0YW56YnlveXVvN3BpODF0aXR4YWVianNjMmdkN3ByaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ShCMwjMF5B3La/giphy.gif",
-      },
-      {
-        name: "RDR 2",
-        image:
-          "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExczlpcnYyY3I1eDViNDBpMTFoejUzeXpjMjIwOWYwcHg4NDUzYTl4NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lpn1hW4FhnVHW78c7t/giphy.gif",
-      },
-      {
-        name: "Arkham Knight",
-        image:
-          "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNm9heGV6bW9hbGhrbmV1OG9tZWw0eDVzeHhybTBrZGttcnA3bWI3MCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NL7pwToW0Plx6/giphy.gif",
-      },
-      {
-        name: "CS:GO",
-        image:
-          "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3NjbzV6bWhibmN2eDZwZnFwOWI2YWc1MWdjNzNwbno1Nm9yOGxteCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/6u36gATCpUFY16iUrr/giphy.gif",
-      },
-      {
-        name: "Valorant",
-        image:
-          "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHZtaXFudTZxazd6d3F6MHlsOTNyZW0wemRzZWcyMmt2NGdhZnNqayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LNUEosTYfZ1fVJycur/giphy.gif",
-      },
-      {
-        name: "Assassin's Creed Unity",
-        image:
-          "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGc2ODV3MXRlN29md2FyNHUwMW9mcXl3M3ltZ2c3azJrYmFldmxnMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MsXiYRKmJVwSA/giphy.gif",
-      },
-      {
-        name: "AC Black Flag",
-        image:
-          "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjh0b3hrOTFheG1za3RkazI4M2ppeXJ4c3plc3ZmYnljZzZlaWozZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1Ctu1BCYf21we9tRmT/giphy.gif",
-      },
-      {
-        name: "Batman: Arkham City",
-        image:
-          "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmV1eml3ZDFieTJ4aWNrYTJ2MmxqbDdnNW1zeTIzNzU1emw4eDRxdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MQHfI7JjYh75m/giphy.gif",
-      },
-      {
-        name: "GTA V",
-        image:
-          "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWg2dHIyOTVzb3I1bjdrNDkwZzZ4dDUyczlvNzdqYmNtemRsM25mOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/fnrWxccF43Wta/giphy.gif",
-      },
-      {
-        name: "Watch Dogs",
-        image:
-          "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnJkaWlhMzFvMDNoZWUyNDZ2M3hibjk0YnZ2a3R4ajFscWdieHZyciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/D0LcnPgg68wg/giphy.gif",
-      },
-      {
-        name: "Watch Dogs 2",
-        image:
-          "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGFwcncxanp5dDNnOWQ2dDY0azI2MGNpcjM2MXYwOHFuMTR5dG51aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l3q2BAs9N0IItUKA0/giphy.gif",
-      },
-      {
-        name: "Tomb Raider",
-        image:
-          "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZndzenJzdXB6OWJ0MGhnYmQ4YmJmaDc4MjJzb3JyODk1aWc3dTk2ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/sZbnmZsxHWAOk/giphy.gif",
-      },
-      {
-        name: "Tomb Raider 2",
-        image:
-          "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3M3dnptY3BtNTQyOTJ3NGZ4NnAweDhtb3IyaGYzNGViOGxuaTB5NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/mnvTVgxyzQsYwJXZHt/giphy.gif",
-      },
-      {
-        name: "Prototype 2",
-        image: "https://placehold.co/150x200/1E293B/E2E8F0?text=Prototype",
-      },
-    ],
-    animes: [
-      {
-        name: "Attack on Titan",
-        image:
-          "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExcncyajlhcXNmeWdvNG9namsybmRqeng3a3hxbWx4bG04dHJnNnc1OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3ohzdX0xTqz5TLZZK0/giphy.gif",
-      },
-      {
-        name: "Jujutsu Kaisen",
-        image:
-          "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExem5oeHd3cDloZTgybW1iYmd1YW51d2xseWE4c2o0czcxNHE2NHFudSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/UgV8Y7bDxsZDCP01eo/giphy.gif",
-      },
-      {
-        name: "Solo Leveling",
-        image:
-          "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmpob2Fvem1hNWs2d3hpYm96cDluNjA0dTR2cmI5dHQ2a25hbzJuZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/pVWuLuV1JESZJdebkI/giphy.gif",
-      },
-      {
-        name: "Naruto",
-        image:
-          "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNDZuODd5M2wwbTBqZ213Z3o3MHhpd2ZycGFtdGoxZmltMXl3bjl3YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3s0ddui7kadGg/giphy.gif",
-      },
-      {
-        name: "One Piece",
-        image:
-          "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2FyNHVhd3Fjb2dlenN3cGxxcWk5czlobTlzMG03MjkyNnA5dmNtcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/UTek0q3N8osh8agH4Y/giphy.gif",
-      },
-      {
-        name: "Demon Slayer",
-        image:
-          "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExdDQxdzJydTVxdW5ybTF3eHQyM2piamFoOHh4eGp6eHJuNmxxMnlnNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tEcIyVc6ukQV2eb86t/giphy.gif",
-      },
-      {
-        name: "My Hero Academia",
-        image:
-          "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjJ1Z3gzdmNsbm96bjZyZmNxbnh5Y2s0MHUycThmaHZhYzBiZTZjOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/g5SW7jjVccIMM/giphy.gif",
-      },
-      {
-        name: "Black Clover",
-        image:
-          "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExdm14OWNucWpsdXFhcDZpOHRsM24yc2hhM3RpNjhndHBybXNmaGlpeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oFzm2q0Xk1Zg5k4mI/giphy.gif",
-      },
-      {
-        name: "Chainsaw Man",
-        image:
-          "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjA3M2VpZmYzdnN1dzljMTZmaG44emVvaG4zMXB1eWdsa2dlenA4eSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/17bk69vyJWl8hw3tzJ/giphy.gif",
-      },
-      {
-        name: "Your Name",
-        image:
-          "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWFlcHVtdjMzcjN6YnVlbXZ4bXFwNjM1bTRkZndub3U5bTBkNzV3biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3ohjV6G9UwkB190zbq/giphy.gif",
-      },
-      {
-        name: "A Silent Voice",
-        image:
-          "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ29uYThjZGZ6MGkyMThxcXQzOHZkbXJsM2tmMGhjaXo4ZXJ4M2lzMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT1R9OjKLmy4RAgqac/giphy.gif",
-      },
-      {
-        name: "Fullmetal Alchemist: Brotherhood",
-        image:
-          "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTk4bm55N2doNjRpM3owYW82ODZxNzE1YWlxMjlpa20wbW15bmJ0MCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/10AxYSiWYJueVq/giphy.gif",
-      },
-      {
-        name: "Death Note",
-        image:
-          "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmNwODU4dDhreXBkc2thZGZ0cGg4bnN5Yms1NjAzYW9scnJ4Z3Y2YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/o2KLYPem407CM/giphy.gif",
-      },
-      {
-        name: "Steins;Gate",
-        image:
-          "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWYweHAxM3hjcjBweGZ2cG0wZHlnZnNoZnp3ZWJsY2loMjIxd2Z0cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5SCTTJqdzZQI8xRFcQ/giphy.gif",
-      },
-      {
-        name: "Tokyo Ghoul",
-        image:
-          "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXlobWdleDA2ZTF4Zmt3bTBmYjB6MjU4dGQ0bWxyb3N2M202dnNuNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jlVObChD6Fb5C/giphy.gif",
-      },
-      {
-        name: "Re:Zero",
-        image:
-          "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHhyNTJmczZvZzZraDZnYnhnM2xoeXoyaWJqbGk2YzA3bGM5dm90NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/y6aDJi4UcT2ow/giphy.gif",
-      },
-      {
-        name: "Erased",
-        image:
-          "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3V3bnBqZTVyNGw1bmpub2NjM2Rlb2F1bHRkc2NmcHhtYWZlNHozbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/12qu77NvyAsMVi/giphy.gif",
-      },
-      {
-        name: "Haikyuu!!",
-        image:
-          "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWl4OWY0bmJ1ZDdhb2lzcXpjc2JvZ2xiaDV0dTNyMWJzMGl2ZnN3OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ufmlo7OC4AOMU/giphy.gif",
-      },
-      {
-        name: "Kuroko's Basketball",
-        image:
-          "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMWgydzVlZDU2c2o2MW5nc21kaTQ2ZTBibG1rM3FxcDNmNjRiMW12dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/N3ZsneYZgKsYo/giphy.gif",
-      },
-      {
-        name: "One Punch Man",
-        image:
-          "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMWwwMHNnZXlhY2ZjNGRsMm5id284dzJveHV2dHUwc2x1MWdjaTY0aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xULW8EM7Br1usb0s9O/giphy.gif",
-      },
-      {
-        name: "Mob Psycho 100",
-        image:
-          "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWFoOXFhNWZndmltbTFzOG80bnR3MmZ6MnpobWV6aHoxMWEwZDJ3dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/N6Rw5Gpc3EluM8v9jh/giphy.gif",
-      },
-      {
-        name: "Great Teacher Onizuka",
-        image:
-          "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3J3bjA1bDA5czI4MzFydDhqdzl0Y3d3c2Zmdjc2MWk5bWVibmI5ayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TlqRQ1nowmHIs/giphy.gif",
-      },
-    ],
-    songs: [
-      {
-        name: "Lunch Break",
-        artist: "Seedhe Maut",
-        url: "https://open.spotify.com/track/7MXVkk9YMctZqd1Srtv4MB",
-        image: "https://placehold.co/100x100/1DB954/FFFFFF?text=Lunch+Break",
-      },
-      {
-        name: "Circles",
-        artist: "Post Malone",
-        url: "https://open.spotify.com/album/16PSZwABl4VFJvfDFOPOoB",
-        image: "https://placehold.co/100x100/1DB954/FFFFFF?text=Circles",
-      },
-      {
-        name: "Blinding Lights",
-        artist: "The Weeknd",
-        url: "https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b",
-        image:
-          "https://placehold.co/100x100/1DB954/FFFFFF?text=Blinding+Lights",
-      },
-      {
-        name: "Heat Waves",
-        artist: "Glass Animals",
-        url: "https://open.spotify.com/track/6CDzDgIUqeDY5g8ujExx2f",
-        image: "https://placehold.co/100x100/1DB954/FFFFFF?text=Heat+Waves",
-      },
-    ],
-  };
+  const handleBack = useCallback(() => setActiveSection(null), []);
 
-  const certifications = [
-    {
-      name: "Postman API Fundamentals Student Expert",
-      issuer: "Postman",
-      year: "2024",
-      image: "/about/media/postmanBadge.png",
-      url: "https://badgr.com/public/assertions/sZLW6V5oT5yAgMJfU5RDSw?identity__email=somusingh0110@gmail.com",
-    },
-    {
-      name: "Networking Basics Badge",
-      issuer: "Cisco",
-      year: "2024",
-      image: "/about/media/NetworkingBadge.png",
-      url: "https://www.credly.com/badges/0e59880f-0776-4a7d-b3e4-fedb415862dc/public_url",
-    },
-  ];
-
-  const [isImageLoading, setIsImageLoading] = useState(true);
   return (
-    <div className="h-full bg-gray-900 text-white overflow-y-auto p-4 md:p-6 font-sans">
-      <div className="space-y-8 max-w-4xl mx-auto">
-        {/* Intro Card */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden"
-        >
-          <div className="bg-gray-900 px-4 py-2 font-mono text-sm text-gray-400">
-            /home/somu/info.json
-          </div>
-          <div className="p-6">
-            <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
-              {isImageLoading && (
-                <Skeleton className="w-32 h-32 rounded-full border-4 border-gray-700" />
-              )}
-              <img
-                src="https://avatars.githubusercontent.com/u/170082343?v=4"
-                alt="Profile Picture"
-                className={`w-32 h-32 rounded-full border-4 border-gray-700 shrink-0 ${
-                  isImageLoading ? "hidden" : "block"
-                }`}
-                onLoad={() => setIsImageLoading(false)}
-                onError={() => setIsImageLoading(false)}
-              />
-              <div className="flex-1 text-center sm:text-left">
-                <h1 className="text-3xl font-bold mb-1">Somu Singh</h1>
-                <p className="text-blue-400 text-lg mb-4">
-                  Computer Engineering Student & AI Developer
-                </p>
-                <div className="flex flex-wrap justify-center sm:justify-start gap-4 text-sm">
-                  <span className="flex items-center space-x-2 bg-gray-700 px-3 py-1 rounded-full">
-                    <MapPin className="w-4 h-4 text-blue-400" />
-                    <span>Indore, MP</span>
-                  </span>
-                  <span className="flex items-center space-x-2 bg-gray-700 px-3 py-1 rounded-full">
-                    <Award className="w-4 h-4 text-yellow-400" />
-                    <span>HackByte 3.0 Finalist</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+    <div className="h-full bg-gray-900 text-white flex overflow-hidden">
+      {/* ══════════════════════════════════════════════════════════════════════
+          DESKTOP  —  sidebar + content  (pixel-matches Preferences layout)
+      ══════════════════════════════════════════════════════════════════════ */}
+      <div className="hidden md:flex h-full w-full overflow-hidden">
+        {/* Sidebar */}
+        <div className="w-52 flex-shrink-0 bg-gray-800/40 border-r border-gray-700/60 flex flex-col py-3">
+          <p className="px-4 text-[10px] font-semibold text-gray-600 uppercase tracking-wider mb-2">
+            About Me
+          </p>
 
-        {/* Education Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <div className="font-mono text-green-400 mb-2">
-            <span className="text-blue-400">somu@desktop</span>:
-            <span className="text-gray-400">~</span>$ cat /var/log/education.log
-          </div>
-          <div className="space-y-6">
-            {educationHistory.map((edu, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + index * 0.1 }}
-                className="bg-gray-800 border border-gray-700 rounded-lg p-4 flex flex-col md:flex-row items-center gap-4"
-              >
-                <img
-                  src={edu.image}
-                  alt={edu.institution}
-                  className="w-full md:w-48 h-32 object-cover rounded shrink-0"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <GraduationCap className="w-5 h-5 text-green-400" />
-                    <h3 className="font-bold text-lg">{edu.level}</h3>
-                  </div>
-                  <p className="text-gray-400 text-sm flex items-center space-x-2">
-                    <BookOpen className="w-4 h-4" />
-                    <span>{edu.institution}</span>
-                  </p>
-                  <p className="text-gray-400 text-sm flex items-center space-x-2">
-                    <Calendar className="w-4 h-4" />
-                    <span>{edu.details}</span>
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+          {NAV.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => handleSelect(id)}
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors mx-2 rounded-lg ${
+                activeSection === id
+                  ? "bg-[hsl(var(--accent-hsl))]/15 text-[hsl(var(--accent-hsl))]"
+                  : "text-gray-400 hover:text-white hover:bg-gray-700/50"
+              }`}
+            >
+              <Icon className="w-4 h-4 flex-shrink-0" />
+              {label}
+            </button>
+          ))}
+        </div>
 
-        {/* Certifications Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
+        {/* Content */}
+        <div
+          ref={contentRef}
+          className="flex-1 overflow-y-auto min-w-0 min-h-0 flex justify-center"
         >
-          <div className="font-mono text-green-400 mb-2">
-            <span className="text-blue-400">somu@desktop</span>:
-            <span className="text-gray-400">~</span>$ cat
-            /var/log/certifications.log
-          </div>
-          <div className="space-y-6">
-            {certifications.map((cert, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 + idx * 0.1 }}
-                className="bg-gray-800 border border-blue-700 rounded-lg p-4 flex flex-col md:flex-row items-center gap-4"
-              >
-                <img
-                  src={cert.image}
-                  alt={cert.name}
-                  className="w-full md:w-32 h-24 object-contain rounded shrink-0"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <Award className="w-5 h-5 text-yellow-400" />
-                    <h3 className="font-bold text-lg">
-                      <a
-                        href={cert.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:underline text-blue-300"
-                      >
-                        {cert.name}
-                      </a>
-                    </h3>
-                  </div>
-                  <p className="text-gray-400 text-sm flex items-center space-x-2">
-                    <span>{cert.issuer}</span>
-                    <span className="ml-2 text-xs text-blue-400">
-                      {cert.year}
-                    </span>
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Hobbies and Interests Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <div className="font-mono text-green-400 mb-2">
-            <span className="text-blue-400">somu@desktop</span>:
-            <span className="text-gray-400">~</span>$ ls -a
-            /home/somu/interests.log
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {interests.map((interest, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6 + index * 0.05 }}
-                className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden group"
-              >
-                <img
-                  src={interest.image}
-                  alt={interest.label}
-                  className="w-full h-24 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="p-3">
-                  <h4 className="font-bold text-sm flex items-center gap-2">
-                    <span>{interest.icon}</span>
-                    {interest.label}
-                  </h4>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Tech Stack Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <div className="font-mono text-green-400 mb-2">
-            <span className="text-blue-400">somu@desktop</span>:
-            <span className="text-gray-400">~</span>$ ls -a
-            /home/somu/techStack.log
-          </div>
-
-          <TechStackBox />
-        </motion.div>
-
-        {/* Media Log Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-        >
-          <div className="font-mono text-green-400 mb-2">
-            <span className="text-blue-400">somu@desktop</span>:
-            <span className="text-gray-400">~</span>$ tail -f /var/log/media.log
-          </div>
-          <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 space-y-6">
-            {/* Games */}
-            <div>
-              <h3 className="font-bold flex items-center gap-2 mb-3">
-                <Gamepad2 className="w-5 h-5 text-purple-400" />
-                Games Completed
-              </h3>
-              <div className="flex overflow-x-auto space-x-4 pb-4">
-                {media.games.map((game) => (
-                  <div
-                    key={game.name}
-                    className="text-center w-32 flex-shrink-0"
-                  >
-                    <img
-                      src={game.image}
-                      alt={game.name}
-                      className="w-full h-40 rounded-md object-cover mb-2 border-2 border-gray-700"
-                    />
-                    <span className="text-xs text-gray-400">{game.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* Anime */}
-            <div>
-              <h3 className="font-bold flex items-center gap-2 mb-3">
-                <Film className="w-5 h-5 text-red-400" />
-                Anime Logged
-              </h3>
-              <div className="flex overflow-x-auto space-x-4 pb-4">
-                {media.animes.map((anime) => (
-                  <div
-                    key={anime.name}
-                    className="text-center w-40 flex-shrink-0"
-                  >
-                    <img
-                      src={anime.image}
-                      alt={anime.name}
-                      className="w-full h-24 rounded-md object-cover mb-2 border-2 border-gray-700"
-                    />
-                    <span className="text-xs text-gray-400">{anime.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* Spotify */}
-            <div>
-              <h3 className="font-bold flex items-center gap-2 mb-3">
-                <Music className="w-5 h-5 text-green-400" />
-                Current Rotation
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {media.songs.map((song) => (
-                  <a
-                    key={song.name}
-                    href={song.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 bg-gray-700 hover:bg-gray-600 p-2 rounded-lg transition-colors"
-                  >
-                    <img
-                      src={song.image}
-                      alt={song.name}
-                      className="w-12 h-12 rounded-md shrink-0"
-                    />
-                    <div>
-                      <p className="font-bold text-white text-sm">
-                        {song.name}
-                      </p>
-                      <p className="text-xs text-gray-400">{song.artist}</p>
+          <div className="w-full max-w-2xl">
+            <AnimatePresence mode="wait">
+              {activeSection ? (
+                <motion.div
+                  key={activeSection}
+                  variants={pageVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={pageTransition}
+                  className="p-6 w-full"
+                >
+                  {renderSection(activeSection)}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="h-full flex items-center justify-center p-8"
+                >
+                  <div className="text-center">
+                    <div className="w-16 h-16 rounded-2xl bg-gray-800 flex items-center justify-center mx-auto mb-4">
+                      <User className="w-8 h-8 text-gray-600" />
                     </div>
-                  </a>
+                    <p className="text-gray-500 text-sm">
+                      Select a section to explore
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          MOBILE  —  list → detail drill-down  (mirrors Preferences exactly)
+      ══════════════════════════════════════════════════════════════════════ */}
+      <div className="flex md:hidden h-full w-full flex-col overflow-hidden">
+        <AnimatePresence mode="wait">
+          {!activeSection ? (
+            <motion.div
+              key="list"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.18 }}
+              className="flex-1 overflow-y-auto"
+            >
+              <div className="px-4 pt-4 pb-2 border-b border-gray-800">
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                  About Me
+                </p>
+              </div>
+              <div className="py-2">
+                {NAV.map(({ id, label, description, icon: Icon }) => (
+                  <button
+                    key={id}
+                    onClick={() => handleSelect(id)}
+                    className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-800/60 transition-colors border-b border-gray-800/50 last:border-0"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-gray-800 flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-4 h-4 text-[hsl(var(--accent-hsl))]" />
+                    </div>
+                    <div className="flex-1 text-left min-w-0">
+                      <p className="text-sm font-medium text-white">{label}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {description}
+                      </p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                  </button>
                 ))}
               </div>
-            </div>
-          </div>
-        </motion.div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={activeSection}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.18 }}
+              className="flex-1 flex flex-col overflow-hidden"
+            >
+              {/* Back header — identical to Preferences */}
+              <div className="flex-shrink-0 border-b border-gray-800 px-4 py-3 flex items-center gap-3">
+                <button
+                  onClick={handleBack}
+                  className="flex items-center gap-1.5 text-[hsl(var(--accent-hsl))] text-sm font-medium"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  About Me
+                </button>
+                <span className="text-white text-sm font-semibold ml-auto">
+                  {NAV.find((n) => n.id === activeSection)?.label}
+                </span>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-4">
+                {renderSection(activeSection)}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

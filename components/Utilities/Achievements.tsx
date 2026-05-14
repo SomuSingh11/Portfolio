@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { achievements } from "@/components/data/skillsData";
+import { achievements } from "@/data/skillsData";
 import { Award } from "lucide-react";
 
 function Achievements() {

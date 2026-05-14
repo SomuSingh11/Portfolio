@@ -1,8 +1,9 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 
-const bootSequence = [
+const BOOT_LINES = [
   "Booting Codex kernel v1.0...",
   "Mounting root filesystem...",
   "Loading device drivers...",
@@ -13,121 +14,129 @@ const bootSequence = [
   "All services started successfully.",
 ];
 
-const loginPrompt = "codex login: guest";
+const LOGIN_LINE = "codex login: guest";
+const CHAR_DELAY = 35; // ms per character
+const LINE_PAUSE = 120; // ms between lines
 
 interface SetupScreenProps {
   onComplete: () => void;
 }
 
 export default function SetupScreen({ onComplete }: SetupScreenProps) {
-  const [log, setLog] = useState<string[]>([]);
-  const [currentLine, setCurrentLine] = useState("");
-  const [showLogin, setShowLogin] = useState(false);
-  const logContainerRef = useRef<HTMLDivElement>(null);
-  const isMounted = useRef(true);
+  const [completedLines, setCompletedLines] = useState<string[]>([]);
+  const [typingLine, setTypingLine] = useState("");
+  const [phase, setPhase] = useState<"booting" | "login" | "done">("booting");
+  const logRef = useRef<HTMLDivElement>(null);
+  // Single cancel token — when component unmounts, everything stops
+  const cancelled = useRef(false);
 
   useEffect(() => {
     return () => {
-      isMounted.current = false;
+      cancelled.current = true;
     };
   }, []);
 
+  const sleep = useCallback(
+    (ms: number) =>
+      new Promise<void>((resolve, reject) => {
+        const t = setTimeout(resolve, ms);
+        // Check cancellation on each sleep
+        const check = setInterval(() => {
+          if (cancelled.current) {
+            clearTimeout(t);
+            clearInterval(check);
+            reject(new Error("cancelled"));
+          }
+        }, 50);
+        setTimeout(() => clearInterval(check), ms + 100);
+      }),
+    [],
+  );
+
+  const typeLine = useCallback(
+    async (line: string): Promise<void> => {
+      for (let i = 0; i <= line.length; i++) {
+        if (cancelled.current) return;
+        setTypingLine(line.slice(0, i));
+        await sleep(CHAR_DELAY);
+      }
+      if (cancelled.current) return;
+      setCompletedLines((prev) => [...prev, line]);
+      setTypingLine("");
+    },
+    [sleep],
+  );
+
   useEffect(() => {
-    let currentStep = 0;
+    const run = async () => {
+      try {
+        await sleep(200);
 
-    const typeLine = (line: string, callback: () => void) => {
-      let charIndex = 0;
-      const typingInterval = setInterval(() => {
-        if (!isMounted.current) {
-          clearInterval(typingInterval);
-          return;
+        for (const line of BOOT_LINES) {
+          await typeLine(line);
+          await sleep(LINE_PAUSE);
         }
-        if (charIndex < line.length) {
-          setCurrentLine(line.substring(0, charIndex + 1));
-          charIndex++;
-        } else {
-          clearInterval(typingInterval);
-          setLog((prevLog) => [...prevLog, line]);
-          setCurrentLine("");
-          callback();
-        }
-      }, 40);
-    };
 
-    const nextStep = () => {
-      if (currentStep < bootSequence.length) {
-        typeLine(bootSequence[currentStep], () => {
-          currentStep++;
-          setTimeout(nextStep, 100);
-        });
-      } else {
-        setTimeout(() => {
-          if (isMounted.current) setShowLogin(true);
-        }, 300);
+        setPhase("login");
+        await sleep(300);
+        await typeLine(LOGIN_LINE);
+
+        setPhase("done");
+        await sleep(600);
+        if (!cancelled.current) onComplete();
+      } catch {
+        // Silently stop if cancelled
       }
     };
 
-    setTimeout(nextStep, 300);
-  }, []);
+    run();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Auto scroll
   useEffect(() => {
-    if (showLogin) {
-      let charIndex = 0;
-      const loginInterval = setInterval(() => {
-        if (!isMounted.current) {
-          clearInterval(loginInterval);
-          return;
-        }
-        if (charIndex < loginPrompt.length) {
-          setCurrentLine(loginPrompt.substring(0, charIndex + 1));
-          charIndex++;
-        } else {
-          clearInterval(loginInterval);
-          setTimeout(onComplete, 1000);
-        }
-      }, 60);
+    if (logRef.current) {
+      logRef.current.scrollTop = logRef.current.scrollHeight;
     }
-  }, [showLogin, onComplete]);
-
-  useEffect(() => {
-    if (logContainerRef.current) {
-      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
-    }
-  }, [log, currentLine]);
+  }, [completedLines, typingLine]);
 
   return (
     <motion.div
       className="flex flex-col items-center justify-center h-screen bg-black text-[#00FF41] font-mono text-sm p-4"
-      exit={{ opacity: 0, transition: { duration: 0.3 } }}
+      exit={{ opacity: 0, transition: { duration: 0.25 } }}
     >
       <div
-        ref={logContainerRef}
-        className="w-[700px] max-w-full h-[350px] overflow-y-auto p-2 rounded"
-        style={{ textShadow: "0 0 5px rgba(0, 255, 65, 0.5)" }}
+        ref={logRef}
+        className="w-full max-w-2xl h-80 overflow-y-auto rounded p-2 space-y-0.5"
+        style={{ textShadow: "0 0 6px rgba(0,255,65,0.5)" }}
       >
-        {log.map((line, index) => (
-          <p key={index}>[ OK ] {line}</p>
+        {completedLines.map((line, i) => (
+          <p key={i} className="leading-relaxed">
+            {phase === "done" && i === completedLines.length - 1
+              ? line
+              : `[ OK ] ${line}`}
+          </p>
         ))}
-        {currentLine && (
-          <p>
-            {showLogin ? "" : "[ OK ] "}
-            {currentLine}
+
+        {typingLine && (
+          <p className="leading-relaxed">
+            {phase !== "login" && "[ OK ] "}
+            {typingLine}
             <motion.span
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ duration: 0.8, repeat: Infinity }}
-              className="inline-block w-2 h-4 bg-[#00FF41] ml-1"
-            ></motion.span>
+              animate={{ opacity: [1, 0, 1] }}
+              transition={{ duration: 0.7, repeat: Infinity }}
+              className="inline-block w-2 h-[1em] bg-[#00FF41] ml-0.5 align-text-bottom"
+            />
           </p>
         )}
       </div>
 
       <motion.button
         onClick={onComplete}
-        className="absolute bottom-15 right-15 hover:cursor-pointer text-xs text-gray-500 hover:text-white hover:underline transition-colors"
+        className="absolute bottom-8 right-8 text-xs text-gray-600 hover:text-gray-300 transition-colors"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { delay: 1 } }}
+        animate={{ opacity: 1, transition: { delay: 0.8 } }}
       >
-        Skip Boot &gt;
+        Skip →
       </motion.button>
     </motion.div>
   );

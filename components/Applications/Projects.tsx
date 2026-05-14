@@ -1,225 +1,267 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import {
-  ExternalLink,
-  Github,
-  Folder,
-  Calendar,
-  ImageIcon,
-  FolderOpen,
-} from "lucide-react";
-import { ProjectImageCarousel } from "@/components/Utilities/ProjectImageCarosel";
-import projects from "@/components/data/projectsData";
+import { useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Folder, FolderOpen, ArrowLeft, ExternalLink } from "lucide-react";
+import projects, { type Project } from "@/data/projects";
+import ProjectDetail from "@/components/Projects/ProjectDetail";
+
+const STATUS_ICON: Record<Project["status"], string> = {
+  Completed: "✓",
+  "In Progress": "⋯",
+  "Hackathon Finalist": "🏆",
+};
+
+const STATUS_COLOR: Record<Project["status"], string> = {
+  Completed: "text-green-400",
+  "In Progress": "text-yellow-400",
+  "Hackathon Finalist": "text-blue-400",
+};
+
+function ProjectListItem({
+  project,
+  selected,
+  onClick,
+  index,
+}: {
+  project: Project;
+  selected: boolean;
+  onClick: () => void;
+  index: number;
+}) {
+  return (
+    <motion.button
+      initial={{ opacity: 0, x: -12 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.06 }}
+      onClick={onClick}
+      className={`w-full flex items-center gap-3 px-3 py-3.5 rounded-xl text-left transition-colors ${
+        selected
+          ? "bg-blue-600 text-white"
+          : "text-gray-300 hover:bg-gray-700/60"
+      }`}
+    >
+      <div className="relative flex-shrink-0">
+        <Folder
+          className={`w-5 h-5 ${selected ? "text-blue-200" : "text-blue-400"}`}
+        />
+        {project.status === "In Progress" && (
+          <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-yellow-500 rounded-full" />
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="font-medium text-sm truncate">{project.name}</div>
+        {project.tagline && (
+          <div
+            className={`text-xs truncate mt-0.5 ${selected ? "text-blue-100" : "text-gray-500"}`}
+          >
+            {project.tagline}
+          </div>
+        )}
+      </div>
+      {/* <span
+        className={`text-xs flex-shrink-0 font-bold ${selected ? "text-white" : STATUS_COLOR[project.status]}`}
+      >
+        {STATUS_ICON[project.status]}
+      </span> */}
+    </motion.button>
+  );
+}
+
+function MobileProjectCard({
+  project,
+  onClick,
+  index,
+}: {
+  project: Project;
+  onClick: () => void;
+  index: number;
+}) {
+  const firstImage = project.media[0];
+  return (
+    <motion.button
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.07 }}
+      onClick={onClick}
+      className="w-full bg-gray-800/60 border border-gray-700 rounded-xl overflow-hidden text-left hover:border-blue-500/50 transition-colors group"
+    >
+      {firstImage && firstImage.type === "image" && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={firstImage.src}
+          alt={project.name}
+          className="w-full h-36 object-cover group-hover:opacity-90 transition-opacity"
+          loading="lazy"
+        />
+      )}
+      <div className="p-4">
+        <div className="flex items-center gap-2 mb-1">
+          <span className={`text-xs font-bold ${STATUS_COLOR[project.status]}`}>
+            {STATUS_ICON[project.status]}
+          </span>
+          <span className="text-xs text-gray-500">{project.status}</span>
+        </div>
+        <h3 className="text-base font-bold text-white truncate">
+          {project.name}
+        </h3>
+        {project.tagline && (
+          <p className="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed">
+            {project.tagline}
+          </p>
+        )}
+        <div className="flex flex-wrap gap-1 mt-3">
+          {project.tech.slice(0, 3).map((t) => (
+            <span
+              key={t}
+              className="px-2 py-0.5 bg-gray-700 text-gray-300 rounded text-[10px] font-medium"
+            >
+              {t}
+            </span>
+          ))}
+          {project.tech.length > 3 && (
+            <span className="px-2 py-0.5 text-gray-500 text-[10px]">
+              +{project.tech.length - 3} more
+            </span>
+          )}
+        </div>
+      </div>
+    </motion.button>
+  );
+}
 
 export default function Projects() {
-  const [selectedProject, setSelectedProject] = useState(projects[0]);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [mobileView, setMobileView] = useState<"list" | "detail">("list");
 
-  const selectProject = (project: (typeof projects)[number]) => {
+  const selectProject = useCallback((project: Project) => {
     setSelectedProject(project);
-  };
+    setMobileView("detail");
+  }, []);
 
   return (
-    <div
-      className="bg-gray-900 text-white flex h-full"
-      style={{ outline: "none", height: "calc(100% - 1rem)" }}
-    >
-      {/* Left Sidebar - Projects List */}
-      <div className="w-70 bg-gray-800 border-r border-gray-700 flex flex-col h-full">
-        <div className="p-4 border-b border-gray-700">
-          <h2 className="text-lg font-semibold flex items-center space-x-2">
-            <FolderOpen className="w-5 h-5 text-blue-400" />
-            <span>Featured Projects</span>
-          </h2>
-        </div>
-
-        <div className="flex-1 overflow-auto">
-          {/* Projects */}
-          <div className="p-2">
-            {projects.map((project, index) => (
-              <motion.button
-                key={project.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.05 }}
-                onClick={() => selectProject(project)}
-                className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-left transition-colors group ${
-                  selectedProject?.id === project.id
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-300 hover:bg-gray-700"
-                }`}
-              >
-                <div className="relative">
-                  <Folder
-                    className={`w-5 h-5 ${
-                      selectedProject?.id === project.id
-                        ? "text-blue-200"
-                        : "text-blue-400"
-                    }`}
+    <div className="bg-gray-900 text-white h-full overflow-hidden flex flex-col">
+      {/* MOBILE */}
+      <div className="flex flex-col h-full md:hidden">
+        <AnimatePresence mode="wait">
+          {mobileView === "list" ? (
+            <motion.div
+              key="list"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+              className="flex-1 overflow-y-auto"
+            >
+              <div className="px-4 pt-4 pb-3 border-b border-gray-800 flex items-center gap-2">
+                <FolderOpen className="w-5 h-5 text-blue-400" />
+                <h1 className="text-base font-semibold">Projects</h1>
+                <span className="ml-auto text-xs text-gray-500">
+                  {projects.length} projects
+                </span>
+              </div>
+              <div className="p-4 space-y-4">
+                {projects.map((p, i) => (
+                  <MobileProjectCard
+                    key={p.slug}
+                    project={p}
+                    onClick={() => selectProject(p)}
+                    index={i}
                   />
-                  {project.status === "In Progress" && (
-                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-500 rounded-full"></div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm truncate">
-                    {project.name}
-                  </div>
-                  <div
-                    className={`text-xs truncate ${
-                      selectedProject?.id === project.id
-                        ? "text-blue-100"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {project.category}
-                  </div>
-                </div>
-                <div
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    project.status === "Completed"
-                      ? "bg-green-600/20 text-green-400"
-                      : "bg-yellow-600/20 text-yellow-400"
-                  }`}
+                ))}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="detail"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2 }}
+              className="flex-1 flex flex-col overflow-hidden"
+            >
+              <div className="flex-shrink-0 border-b border-gray-800 px-4 py-3 flex items-center gap-3">
+                <button
+                  onClick={() => setMobileView("list")}
+                  className="flex items-center gap-1.5 text-blue-400 text-sm font-medium"
                 >
-                  {project.status === "Completed" ? "✓" : "⋯"}
-                </div>
-              </motion.button>
+                  <ArrowLeft className="w-4 h-4" />
+                  Projects
+                </button>
+                <span className="text-white text-sm font-semibold ml-auto truncate">
+                  {selectedProject?.name}
+                </span>
+                {selectedProject?.demo && (
+                  <a
+                    href={selectedProject.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-shrink-0 text-blue-400"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                {selectedProject && <ProjectDetail project={selectedProject} />}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* DESKTOP */}
+      <div className="hidden md:flex h-full overflow-hidden">
+        <div className="w-64 flex-shrink-0 bg-gray-800/50 border-r border-gray-700/60 flex flex-col">
+          <div className="p-4 border-b border-gray-700/60 flex-shrink-0">
+            <h2 className="text-sm font-semibold flex items-center gap-2 text-gray-300">
+              <FolderOpen className="w-4 h-4 text-blue-400" />
+              Projects
+              <span className="ml-auto text-xs text-gray-600">
+                {projects.length}
+              </span>
+            </h2>
+          </div>
+          <div className="flex-1 overflow-y-auto p-2 space-y-1">
+            {projects.map((p, i) => (
+              <ProjectListItem
+                key={p.slug}
+                project={p}
+                selected={selectedProject?.id === p.id}
+                onClick={() => setSelectedProject(p)}
+                index={i}
+              />
             ))}
           </div>
         </div>
-      </div>
-
-      {/* Right Content Area - Project Details */}
-      <div className="flex-1 bg-gray-900 text-white flex flex-col h-full min-h-0 min-w-100 pb-16">
-        {selectedProject ? (
-          <>
-            {/* Header */}
-            <div className="bg-gray-800 border-b border-gray-700 p-3">
-              <div className="flex items-start justify-between">
-                <div className="w-full">
-                  <div className="flex justify-between w-full">
-                    <h1 className="text-2xl font-bold text-white mb-2">
-                      {selectedProject.name}
-                    </h1>
-                    <div className="flex space-x-3">
-                      {/* Live Demo Button */}
-                      <a
-                        href={selectedProject.demo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-8 h-8 rounded-full bg-blue-600/90 hover:bg-blue-500 text-white transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
-                        title="Live Demo"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-
-                      {/* GitHub Source Button */}
-                      <a
-                        href={selectedProject.repo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-8 h-8 rounded-full border border-gray-600 bg-gray-500/10 hover:border-gray-500 hover:bg-gray-500/20 text-gray-300 transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
-                        title="Source Code"
-                      >
-                        <Github className="w-3 h-3" />
-                      </a>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4 text-sm text-gray-400">
-                    <span className="flex items-center space-x-1">
-                      <Calendar className="w-4 h-4" />
-                      <span>{selectedProject.date}</span>
-                    </span>
-                    <span className="flex items-center space-x-1">
-                      <span>{selectedProject.category}</span>
-                    </span>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        selectedProject.status === "Completed"
-                          ? "bg-green-600/20 text-green-400 border border-green-600/30"
-                          : "bg-yellow-600/20 text-yellow-400 border border-yellow-600/30"
-                      }`}
-                    >
-                      {selectedProject.status}
-                    </span>
-                  </div>
+        <div className="flex-1 overflow-hidden min-w-0">
+          <AnimatePresence mode="wait">
+            {selectedProject ? (
+              <motion.div
+                key={selectedProject.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="h-full overflow-y-auto"
+              >
+                <ProjectDetail project={selectedProject} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="h-full flex items-center justify-center"
+              >
+                <div className="text-center text-gray-600">
+                  <FolderOpen className="w-12 h-12 mx-auto mb-3 opacity-40" />
+                  <p className="text-sm">Select a project to explore</p>
                 </div>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-8 min-h-0">
-              {/* Image Carousel */}
-              {/* === Image Carousel Integration === */}
-              {selectedProject.images && selectedProject.images.length > 0 ? (
-                <ProjectImageCarousel
-                  images={selectedProject.images}
-                  projectName={selectedProject.name}
-                />
-              ) : (
-                <div className="bg-gray-800 rounded-lg p-8 aspect-video flex items-center justify-center">
-                  <div className="text-center">
-                    <ImageIcon className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                    <p className="text-gray-400">
-                      No images available for this project
-                    </p>
-                  </div>
-                </div>
-              )}
-              {/* Description */}
-              <div>
-                <h3 className="text-lg font-semibold mb-3">
-                  About This Project
-                </h3>
-                <p className="text-gray-300 leading-relaxed">
-                  {selectedProject.description}
-                </p>
-              </div>
-
-              {/* Tech Stack */}
-              <div>
-                <h3 className="text-lg font-semibold mb-3">Technology Stack</h3>
-                <div className="flex flex-wrap gap-3">
-                  {selectedProject.tech.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-4 py-2 bg-blue-600/20 text-blue-400 rounded-lg border border-blue-600/30 font-medium"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Features */}
-              <div>
-                <h3 className="text-lg font-semibold mb-3">Key Features</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {selectedProject.features.map((feature) => (
-                    <div
-                      key={feature}
-                      className="flex items-center space-x-3 bg-gray-800 p-3 rounded-lg"
-                    >
-                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      <span className="text-gray-300">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <FolderOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400 text-lg">
-                Select a project to view details
-              </p>
-            </div>
-          </div>
-        )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

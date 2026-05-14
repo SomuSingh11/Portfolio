@@ -6,24 +6,24 @@ import { useRef } from "react";
 import { Card, CardHeader } from "@/components/ui/card";
 
 // Icon imports
-import JavaScriptIcon from "@/public/icons/squarejs.svg";
-import HTMLIcon from "@/public/icons/html5.svg";
-import CSSIcon from "@/public/icons/css3.svg";
-import ReactIcon from "@/public/icons/react.svg";
-import GithubIcon from "@/public/icons/github.svg";
-import JavaIcon from "@/public/icons/java.svg";
-import LinuxIcon from "@/public/icons/linux.svg";
-import TailwindIcon from "@/public/icons/tailwind.svg";
-import TypeScriptIcon from "@/public/icons/typescript.svg";
-import NodeIcon from "@/public/icons/node.svg";
-import MongoIcon from "@/public/icons/mongodb.svg";
-import ExpressIcon from "@/public/icons/express.svg";
-import CIcon from "@/public/icons/c.svg";
-import BootstrapIcon from "@/public/icons/bootstrap.svg";
-import PostmanIcon from "@/public/icons/postman.svg";
-import PrismaIcon from "@/public/icons/prisma.svg";
-import SqlIcon from "@/public/icons/sql.svg";
-import NextIcon from "@/public/icons/next.svg";
+import JavaScriptIcon from "@/public/icons/techstack/squarejs.svg";
+import HTMLIcon from "@/public/icons/techstack/html5.svg";
+import CSSIcon from "@/public/icons/techstack/css3.svg";
+import ReactIcon from "@/public/icons/techstack/react.svg";
+import GithubIcon from "@/public/icons/techstack/github.svg";
+import JavaIcon from "@/public/icons/techstack/java.svg";
+import LinuxIcon from "@/public/icons/techstack/linux.svg";
+import TailwindIcon from "@/public/icons/techstack/tailwind.svg";
+import TypeScriptIcon from "@/public/icons/techstack/typescript.svg";
+import NodeIcon from "@/public/icons/techstack/node.svg";
+import MongoIcon from "@/public/icons/techstack/mongodb.svg";
+import ExpressIcon from "@/public/icons/techstack/express.svg";
+import CIcon from "@/public/icons/techstack/c.svg";
+import BootstrapIcon from "@/public/icons/techstack/bootstrap.svg";
+import PostmanIcon from "@/public/icons/techstack/postman.svg";
+import PrismaIcon from "@/public/icons/techstack/prisma.svg";
+import SqlIcon from "@/public/icons/techstack/sql.svg";
+import NextIcon from "@/public/icons/techstack/next.svg";
 
 // The tech stack data array with corrected positioning and colors
 const techStack = [

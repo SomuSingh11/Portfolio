@@ -6,7 +6,7 @@ import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 export default function Resume() {
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
   return (
-    <div className="h-full flex flex-col pb-8 bg-gray-900">
+    <div className="h-full flex flex-col bg-gray-900">
       <div
         className="flex-1 overflow-auto"
         style={{ width: "100%", height: "100%" }}
