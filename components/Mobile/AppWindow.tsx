@@ -17,7 +17,7 @@ import Skills from "@/components/Applications/Skills";
 import Contact from "@/components/Applications/Contact";
 import Preferences from "@/components/Applications/Preferences";
 import Achievements from "../Utilities/Achievements";
-import { ChevronLeft } from "lucide-react";
+import { Home } from "lucide-react";
 
 function AppContent({ appId }: { appId: AppId }) {
   switch (appId) {
@@ -101,14 +101,14 @@ export default function AppWindow({ appId, onClose }: AppWindowProps) {
           </AppErrorBoundary>
         </div>
 
-        {/* Home indicator / back button */}
-        <div className="flex-shrink-0 backdrop-blur-2xl bg-gradient-to-t from-black/40 via-black/20 to-transparent border-t border-white/10 flex items-center justify-center py-2">
+        {/* Bottom nav bar */}
+        <div className="flex-shrink-0 bg-gray-900 border-t border-gray-700/50 flex items-center justify-center py-2.5 safe-area-pb">
           <motion.button
             onTap={onClose}
-            whileTap={{ scale: 0.94, opacity: 0.7 }}
-            className="flex flex-col items-center gap-1 px-6 py-1 text-white/40 active:text-white/70"
+            whileTap={{ scale: 0.93 }}
+            className="flex items-center gap-1.5 bg-gray-800/80 active:bg-gray-700 text-white/70 active:text-white px-4 py-2 rounded-lg text-xs font-medium transition-colors"
           >
-            <ChevronLeft size={18} className="rotate-[-90deg]" />
+            <Home size={15} />
             Home
           </motion.button>
         </div>
