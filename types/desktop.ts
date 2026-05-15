@@ -19,7 +19,6 @@ export type AppId =
   | "contact"
   | "github"
   | "resume"
-  | "hashnode"
   | "achievements"
   | "preferences";
 

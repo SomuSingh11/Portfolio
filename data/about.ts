@@ -14,11 +14,6 @@ export const BIO = {
       url: "https://linkedin.com/in/yourusername",
       icon: "linkedin",
     },
-    {
-      label: "Hashnode",
-      url: "https://hashnode.com/@yourusername",
-      icon: "hashnode",
-    },
     { label: "Email", url: "mailto:you@email.com", icon: "mail" },
   ],
   badges: [

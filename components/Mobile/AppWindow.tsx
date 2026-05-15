@@ -12,7 +12,6 @@ import Terminal from "@/components/Applications/Terminal";
 import Resume from "@/components/Applications/Resume";
 import GitHub from "@/components/Applications/GitHub";
 import Projects from "@/components/Applications/Projects";
-import HashNode from "@/components/Applications/HashNode";
 import Skills from "@/components/Applications/Skills";
 import Contact from "@/components/Applications/Contact";
 import Preferences from "@/components/Applications/Preferences";
@@ -31,8 +30,6 @@ function AppContent({ appId }: { appId: AppId }) {
       return <GitHub />;
     case "projects":
       return <Projects />;
-    case "hashnode":
-      return <HashNode />;
     case "skills":
       return <Skills />;
     case "contact":

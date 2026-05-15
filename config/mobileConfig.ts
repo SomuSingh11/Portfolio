@@ -38,12 +38,6 @@ export const MOBILE_APPS: MobileAppConfig[] = [
     bgGradient: "from-gray-600 to-gray-900",
   },
   {
-    id: "hashnode",
-    label: "Hashnode",
-    icon: "Hashnode_icon.svg",
-    bgGradient: "from-blue-600 to-indigo-800",
-  },
-  {
     id: "resume",
     label: "Resume",
     icon: "resume.svg",

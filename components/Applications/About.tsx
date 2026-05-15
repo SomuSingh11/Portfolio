@@ -65,7 +65,6 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
 const SOCIAL_ICONS: Record<string, React.ElementType> = {
   github: Github,
   linkedin: Linkedin,
-  hashnode: ExternalLink,
   mail: Mail,
 };
 

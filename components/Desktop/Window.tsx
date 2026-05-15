@@ -42,7 +42,6 @@ import Skills from "@/components/Applications/Skills";
 import Contact from "@/components/Applications/Contact";
 import GitHub from "@/components/Applications/GitHub";
 import Resume from "@/components/Applications/Resume";
-import HashNode from "@/components/Applications/HashNode";
 import Preferences from "@/components/Applications/Preferences";
 
 // Minimum visible pixels of the title bar that must remain in-viewport
@@ -70,8 +69,6 @@ function WindowContent({ appId }: { appId: WindowData["content"] }) {
       return <GitHub />;
     case "resume":
       return <Resume />;
-    case "hashnode":
-      return <HashNode />;
     case "preferences":
       return <Preferences />;
     default:

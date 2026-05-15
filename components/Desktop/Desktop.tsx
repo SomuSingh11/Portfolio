@@ -39,11 +39,7 @@ import { DESKTOP_ICON_LAYOUT, ANIMATION_PRESETS } from "@/config/constants";
 import type { AppId } from "@/types/desktop";
 import GuidanceModal from "@/components/Utilities/GuidanceModal";
 
-// Add preferences icon to the desktop layout
-const FULL_ICON_LAYOUT = [
-  ...DESKTOP_ICON_LAYOUT,
-  { id: "preferences" as AppId, position: { x: 158, y: 344 } },
-];
+
 
 export default function Desktop() {
   const { windows, openWindow, closeWindow, focusWindow, minimizeWindow } =
@@ -118,7 +114,7 @@ export default function Desktop() {
 
       {/* Desktop Icons */}
       {prefs.showDesktopIcons &&
-        FULL_ICON_LAYOUT.map((iconConfig, index) => (
+        DESKTOP_ICON_LAYOUT.map((iconConfig, index) => (
           <DesktopIcon
             key={iconConfig.id}
             iconId={iconConfig.id}
