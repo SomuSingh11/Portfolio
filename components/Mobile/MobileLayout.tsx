@@ -27,7 +27,7 @@ export default function MobileLayout() {
   }, []);
 
   return (
-    <div className="h-screen w-screen overflow-hidden relative bg-black">
+    <div className="h-dvh w-screen overflow-hidden relative bg-black">
       {/* Lock Screen */}
       <AnimatePresence>
         {screen === "lockscreen" && (
