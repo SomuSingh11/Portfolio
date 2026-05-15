@@ -10,11 +10,6 @@ export interface MobileAppConfig {
   badgeCount?: number;
 }
 
-export const PERSONAL_INFO = {
-  name: "Somu Singh",
-  title: "Just playing around!!",
-};
-
 export const MOBILE_WALLPAPER = "/wallpaper/pain.jpg";
 
 export const MOBILE_APPS: MobileAppConfig[] = [
