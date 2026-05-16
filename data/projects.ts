@@ -162,346 +162,89 @@ const projects: Project[] = [
     repo: "https://github.com/SomuSingh11/Catalyst",
     relatedProjects: [2, 3],
   },
+  
   {
     id: 2,
-    slug: "sync-city",
-    name: "Sync-City",
-    category: "GovTech | HackByte 3.0 Finalist",
-    status: "Hackathon Finalist",
-    date: "2025-04-11",
-    duration: "48-hour hackathon",
-    teamSize: "Team of 4",
-    tagline: "Preventing government project conflicts before they cost crores.",
-    description:
-      "A centralized collaboration platform for government departments designed to prevent resource wastage and project conflicts through real-time coordination, AI-powered conflict detection, and geospatial awareness.",
-    problem:
-      "Government departments in India frequently initiate overlapping infrastructure projects — roads dug up weeks after new pavement, utility lines laid through active construction zones. Departments operate in silos with no shared visibility into each other's projects.",
-    solution:
-      "Sync-City provides a unified dashboard where all departments register their projects geospatially. An AI layer continuously monitors for conflicts and generates custom SOPs for resolution when conflicts are detected.",
-    tech: ["Next.js", "Convex", "Dialogflow CX", "Google Vertex AI"],
-    techGroups: [
-      { category: "Frontend", items: ["Next.js", "TailwindCSS", "Leaflet.js"] },
-      { category: "Backend", items: ["Convex"] },
-      { category: "AI", items: ["Dialogflow CX", "Google Vertex AI"] },
-      { category: "Maps", items: ["Leaflet.js", "OpenStreetMap"] },
-    ],
-    media: imgs([
-      "/projectPhotos/Synccity/1.jpeg",
-      "/projectPhotos/Synccity/2.jpeg",
-      "/projectPhotos/Synccity/3.jpeg",
-      "/projectPhotos/Synccity/4.jpeg",
-      "/projectPhotos/Synccity/5.jpeg",
-    ]),
-    featuresDeep: [
-      {
-        icon: "🗺️",
-        title: "Geospatial Project Registry",
-        description:
-          "Departments plot their projects on an interactive map with timeline overlays, making spatial conflicts immediately visible.",
-      },
-      {
-        icon: "⚡",
-        title: "AI Conflict Detection",
-        description:
-          "Vertex AI analyses project overlaps across time, geography, and resource type — flagging conflicts before they begin.",
-      },
-      {
-        icon: "📋",
-        title: "Auto-generated SOPs",
-        description:
-          "When a conflict is detected, the system generates a custom Standard Operating Procedure based on the specific conflict type.",
-      },
-      {
-        icon: "🔄",
-        title: "Real-time Coordination",
-        description:
-          "Powered by Convex — when one department updates a project, all affected departments are notified instantly.",
-      },
-    ],
-    myRole:
-      "Led frontend development and the AI conflict detection integration. Built the interactive Leaflet.js map, integrated Dialogflow CX for the department chatbot, and handled Convex real-time subscriptions.",
-    contributions: [
-      "Built the entire interactive map interface with Leaflet.js",
-      "Integrated Dialogflow CX for natural language department queries",
-      "Designed the conflict detection data model",
-      "Led the live demo presentation to judges",
-    ],
-    challenges: [
-      {
-        title: "Real-time geospatial conflict detection in 48 hours",
-        problem:
-          "Implementing polygon intersection detection for arbitrary project boundaries with real-time updates under hackathon time pressure.",
-        solution:
-          "Used bounding box approximation for the MVP with Leaflet's built-in bounds intersection, with a note that production would use Turf.js.",
-      },
-    ],
-    results: [
-      {
-        metric: "Top 10",
-        label: "out of 120+ teams at HackByte 3.0",
-        icon: "🏆",
-      },
-      { metric: "48hrs", label: "to build the full prototype", icon: "⚡" },
-    ],
-    resultsDescription:
-      "Reached the finals at HackByte 3.0, one of the largest collegiate hackathons in Central India. Judges highlighted the real-world applicability and AI conflict detection as standout features.",
-    learnings:
-      "Hackathons taught me that architectural decisions made in the first two hours determine whether you ship or not. Choosing Convex instead of building custom WebSockets saved roughly eight hours.",
-    demo: "https://devfolio.co/projects/synccity-a778",
-    repo: "https://github.com/SomuSingh11/syncV1",
-    relatedProjects: [1, 3],
-  },
-  {
-    id: 3,
-    slug: "huddle",
-    name: "Huddle",
-    category: "Real-Time Communication Platform",
-    status: "Completed",
-    date: "2025-01-10",
-    duration: "3 Months",
-    teamSize: "Solo",
-    tagline:
-      "A production-ready real-time communication platform with servers, channels, and DMs. Supports role-based access, message editing, secure file uploads, and WebRTC-powered video/audio calls via LiveKit.",
-    description:
-      "A production-ready real-time communication platform with servers, channels, and DMs. Supports role-based access, message editing, secure file uploads, and WebRTC-powered video/audio calls via LiveKit.",
-    problem:
-      "Most real-time chat tutorials stop at basic WebSockets with no auth, no roles, no file uploads, no video calls. I wanted to build something that solved all of those problems together at production quality.",
-    solution:
-      "Huddle implements the full Discord feature set — server creation, channel management, role-based access control with three permission levels, real-time messaging with Socket.IO, file uploads, and WebRTC video and audio calls via LiveKit.",
-    tech: [
-      "Next.js",
-      "Prisma",
-      "Clerk",
-      "Socket.IO",
-      "LiveKit",
-      "PostgreSQL",
-      "Zustand",
-      "React Query",
-    ],
-    techGroups: [
-      {
-        category: "Frontend",
-        items: [
-          "Next.js 14 (App Router)",
-          "TypeScript",
-          "Tailwind CSS",
-          "Radix UI / shadcn",
-          "Zustand",
-          "React Query",
-          "React Hook Form + Zod",
-        ],
-      },
-      {
-        category: "Backend",
-        items: [
-          "Next.js API Routes",
-          "Socket.IO",
-          "Prisma ORM",
-          "PostgreSQL",
-          "Clerk",
-          "UploadThing",
-          "LiveKit Server SDK",
-        ],
-      },
-      { category: "Real-time Video", items: ["LiveKit", "WebRTC"] },
-      { category: "File Storage", items: ["UploadThing"] },
-    ],
-    media: imgs([
-      "/projectPhotos/Huddle/1.jpg",
-      "/projectPhotos/Huddle/2.jpg",
-      "/projectPhotos/Huddle/3.jpg",
-      "/projectPhotos/Huddle/4.jpg",
-      "/projectPhotos/Huddle/5.jpg",
-      "/projectPhotos/Huddle/6.jpg",
-    ]),
-    featuresDeep: [
-      {
-        icon: "⚡",
-        title: "Real-Time Messaging",
-        description:
-          "Messages broadcast instantly via Socket.IO with React Query cache hydration. Falls back to 1s polling when WebSocket is unavailable.",
-      },
-      {
-        icon: "🛡️",
-        title: "Role-Based Access Control",
-        description:
-          "ADMIN, MODERATOR, GUEST roles enforced in every Prisma query and mirrored in the UI. Admins can manage members, roles, and server settings.",
-      },
-      {
-        icon: "📹",
-        title: "Video & Audio Calls",
-        description:
-          "LiveKit WebRTC rooms per channel or DM. Server-side JWT tokens scoped per room and user identity.",
-      },
-      {
-        icon: "📁",
-        title: "Secure File Uploads",
-        description:
-          "UploadThing integration with file type validation, size limits, and direct-to-storage uploads that bypass the API server.",
-      },
-    ],
-    myRole:
-      "Built entirely solo. Designed the PostgreSQL schema, implemented the Socket.IO real-time layer, integrated LiveKit for WebRTC calls, set up Clerk authentication, and built the full Next.js frontend with Zustand and React Query.",
-    contributions: [
-      "Designed the server/channel/member database schema",
-      "Implemented Socket.IO real-time messaging with optimistic UI",
-      "Integrated LiveKit WebRTC for video and audio calls",
-      "Set up Clerk auth with server-level permissions",
-    ],
-
-    demo: "https://huddle-mb7x.onrender.com/",
-    repo: "https://github.com/SomuSingh11/Huddle",
-
-    challenges: [
-      {
-        title: "Message ordering under concurrent load",
-        problem:
-          "Messages occasionally rendered out of order due to race conditions between optimistic UI updates and server-confirmed events.",
-        solution:
-          "Added sequence numbers at the server level and implemented client-side re-sorting on the React Query cache before rendering.",
-      },
-      {
-        title: "LiveKit room lifecycle management",
-        problem:
-          "LiveKit rooms persisted after all participants left, causing stale room state on reconnection.",
-        solution:
-          "Implemented server-side room cleanup webhooks from LiveKit that update database state on participant-left events.",
-      },
-    ],
-    results: [
-      { metric: "6", label: "major features shipped solo", icon: "🚀" },
-      { metric: "100%", label: "of Discord's core feature set", icon: "✅" },
-    ],
-    learnings:
-      "Building Huddle gave me deep intuition for the difference between real-time and eventual consistency. You need to design your UI to handle the gap between optimistic state and confirmed state gracefully.",
-    futurePlans:
-      "Adding thread support, message reactions, and a React Native mobile app using the same backend.",
-
-    relatedProjects: [1, 2],
-  },
-  {
-    // ── Core Metadata ─────────────────────────────────────────
-    id: 4,
-    slug: "ashura-core-esp32",
-    name: "Ashura Firmware",
+    slug: "ashura-core-s3-idf",
+    name: "Ashura Core (ESP-IDF)",
     category: "Embedded Systems / IoT",
     status: "In Progress",
-    date: "2024-06-15",
-    tagline: "A custom ESP32-based OS for an expressive smart desk companion",
-    duration: "6 months (ongoing)",
+    date: "2024-11-20",
+    tagline: "A custom dual-core ESP-IDF OS architected for a highly expressive smart desk companion.",
+    duration: "Ongoing",
     teamSize: "Solo",
-
-    // ── Overview ──────────────────────────────────────────────
     description:
-      "Ashura is a comprehensive embedded OS firmware built for ESP32 microcontrollers, powering a real-time interactive desk companion device. It features an animated companion system with expressive mood states, a Flipper Zero-style app launcher, WLED LED control integration, persistent storage via NVS, and a robust WebSocket client for remote command handling. The architecture emphasizes modularity, event-driven design, and optimal memory management in a constrained embedded environment.",
-
+      "Ashura is a comprehensive embedded OS firmware natively built in ESP-IDF for the ESP32-S3, powering a real-time interactive desk companion device. It features an animated companion system with expressive mood states, a Flipper Zero-style app launcher, WLED LED control integration, persistent storage via NVS, and a robust WebSocket client. The architecture emphasizes true dual-core FreeRTOS multitasking, event-driven design, and optimal memory management.",
     problem:
-      "Existing ESP32 projects lack cohesive system architecture, proper state management, and scalable UI patterns. Building sophisticated interactive experiences on microcontrollers with limited RAM requires careful abstraction to balance features with performance.",
-
+      "Building a highly expressive smart desk companion requires balancing fluid OLED animations, complex UI state, persistent Wi-Fi WebSockets, and heavy future audio processing pipelines. Constructing this on constrained microcontrollers without a rigid, OS-like architecture inevitably leads to blocking code, memory exhaustion, and janky display updates.",
     solution:
-      "Designed a layered architecture mirroring desktop OS kernels: boot sequence with prioritized service initialization, an event bus for decoupled pub/sub communication, stack-based scene navigation for UI management, and modular application services. Optimized for PROGMEM storage of animation frames, efficient string handling with ArduinoJson, and non-blocking WebSocket reconnection with exponential backoff.",
-
-    // ── Technology Stack ─────────────────────────────────────
+      "Engineered a scalable, layered microcontroller OS natively in ESP-IDF. The system leverages FreeRTOS for true dual-core multitasking—isolating the UI rendering, networking, and application logic on Core 1, while strictly reserving Core 0 for an upcoming ML-powered audio processing pipeline. The architecture utilizes a decoupled EventBus, stack-based scene navigation, and PROGMEM optimization to ensure silky-smooth performance.",
     tech: [
       "C++",
-      "Arduino Framework",
-      "ESP32 / ESP32-S3",
-      "ArduinoWebsockets",
-      "ArduinoJson",
+      "ESP-IDF",
+      "ESP32-S3",
+      "FreeRTOS",
       "U8g2 (OLED driver)",
+      "WebSockets",
       "NVS Storage",
-      "mDNS Discovery",
-      "NTP Time Sync",
-      "PlatformIO",
+      "I2S",
     ],
-
     techGroups: [
       {
         category: "Microcontroller & Core",
-        items: ["ESP32-S3", "Arduino Framework", "PlatformIO"],
-      },
-      {
-        category: "Connectivity",
-        items: [
-          "WiFi",
-          "WebSocket (ArduinoWebsockets)",
-          "mDNS",
-          "NTP",
-          "HTTP Client",
-        ],
-      },
-      {
-        category: "Storage & Data",
-        items: ["NVS Preferences", "PROGMEM (Flash)", "ArduinoJson"],
+        items: ["ESP32-S3", "ESP-IDF", "FreeRTOS", "C++"],
       },
       {
         category: "Display & UI",
         items: ["U8g2 (SSD1306 OLED)", "XBM Graphics", "Custom Renderer"],
       },
       {
-        category: "Hardware Integration",
-        items: ["GPIO Button Input", "I2C (OLED)", "HTTP (WLED Control)"],
+        category: "Connectivity & Storage",
+        items: ["WiFi", "WebSockets", "NVS Preferences", "PROGMEM (Flash)"],
+      },
+      {
+        category: "Audio & Voice (Upcoming)",
+        items: ["I2S Driver", "WakeNet", "MultiNet"],
       },
     ],
-
-    // ── Links & Resources ────────────────────────────────────
-    demo: "https://github.com/yourusername/ashura-core-esp32",
-    repo: "https://github.com/yourusername/ashura-core-esp32",
-
-    // ── Media ─────────────────────────────────────────────────
-    media: [
-      {
-        type: "image",
-        src: "/projects/ashura/companion-eyes.png",
-        alt: "Animated companion eyes with expression system",
-      },
-      {
-        type: "image",
-        src: "/projects/ashura/app-launcher.png",
-        alt: "Flipper Zero-style icon menu interface",
-      },
-      {
-        type: "image",
-        src: "/projects/ashura/wled-control.png",
-        alt: "WLED device control screens",
-      },
-      {
-        type: "image",
-        src: "/projects/ashura/system-stats.png",
-        alt: "Live system statistics display",
-      },
-    ],
-
+    demo: "https://github.com/SomuSingh11/Ashura-core-s3-idf",
+    repo: "https://github.com/SomuSingh11/Ashura-core-s3-idf",
+    media: imgs([
+      "/projectPhotos/Ashura/1.jpg",
+      "/projectPhotos/Ashura/2.jpg",
+    ]),
     architectureDescription:
-      "Ashura follows a layered microcontroller OS architecture: (1) Boot Layer handles initialization sequence with prioritized service startup; (2) Core Services manage display, timing, WiFi, and WebSocket connections; (3) Application Layer contains feature modules (companion, animation, WLED); (4) UI Framework provides screen stacking and event routing; (5) Network Layer handles async WebSocket with state machine and exponential backoff; (6) Storage Layer abstracts NVS preferences. The EventBus pub/sub system decouples components, while the MessageRouter chains service handlers for incoming commands.",
-
+      "Ashura follows a modular, component-based OS architecture powered by FreeRTOS task pinning. Core 1 runs the primary event loop, orchestrating the `display` (U8g2), `ui` (stack-based scene navigation), `network` (WebSocket client), and `storage` (NVS) components. An `EventBus` provides decoupled pub/sub communication across the system, while a `MessageRouter` within the `services` component chains handlers for incoming remote commands. Core 0 is deliberately reserved for the `audio` and `voice` components (currently in development) to poll an I2S microphone for intent recognition. All inter-core communication is handled safely via bounded FreeRTOS Queues.",
     myRole: "Sole Developer / Architect",
-
+    architectureDiagram: "/projectPhotos/Ashura/Ashura-Core-background.png",
     contributions: [
-      "Architected layered OS kernel with boot sequence and update loop mirroring desktop OS patterns",
-      "Designed event-driven pub/sub system (EventBus) for decoupled component communication",
-      "Implemented state machine WebSocket client with exponential backoff and heartbeat mechanism",
-      "Built modular UI framework with screen stacking, dirty flag optimization, and input routing",
+      "Architected a modular ESP-IDF kernel with prioritized service initialization and FreeRTOS dual-core task pinning",
+      "Engineered a thread-safe, cross-core EventBus using FreeRTOS Queues for decoupled component communication",
       "Created MoodEngine companion system with 8 mood states, smooth lerp transitions, and autonomous behaviors",
+      "Built a modular UI framework with screen stacking, dirty flag optimization, and input routing",
+      "Implemented a robust MessageRouter to handle and dispatch incoming WebSocket JSON commands",
       "Optimized PROGMEM animation storage via XBM format for zero-copy frame playback",
       "Developed WLED integration with mDNS device discovery and HTTP control API",
-      "Implemented NVS-backed persistent preferences system for user configuration",
-      "Built message routing system with service registry for async command handling",
-      "Engineered button debounce logic with long-press detection for 4-button input",
+      "Designed an upcoming audio pipeline structure for the INMP441 I2S microphone with DMA buffer management",
     ],
-
-    // ── Features Deep Dive ────────────────────────────────────
     featuresDeep: [
+      {
+        icon: "cpu",
+        title: "Dual-Core Processing",
+        description:
+          "Strict separation of concerns: Core 1 drives the fluid OLED display and networking, while Core 0 is reserved for intensive upcoming audio DSP and ML inference.",
+      },
+      {
+        icon: "layers",
+        title: "Event-Driven Architecture",
+        description:
+          "Custom Pub/Sub EventBus built on FreeRTOS Queues for thread-safe cross-core communication, paired with a chain-of-responsibility MessageRouter for JSON payload dispatching.",
+      },
       {
         icon: "eye",
         title: "Animated Companion System",
         description:
-          "Expressive eye-based companion with 8 mood states (idle, happy, bored, sleepy, focused, surprised, annoyed, excited), smooth easing between mood transitions, autonomous blinking, and micro-behaviors like random glances and wide-eye expressions.",
-        media: {
-          type: "image",
-          src: "/projects/ashura/moods.png",
-          alt: "Companion mood state visualization",
-        },
+          "Expressive eye-based companion with 8 mood states, smooth easing between mood transitions, autonomous blinking, and micro-behaviors like random glances.",
       },
       {
         icon: "apps",
@@ -513,92 +256,63 @@ const projects: Project[] = [
         icon: "lightbulb",
         title: "WLED Integration",
         description:
-          "Full-featured LED control system supporting power toggle, brightness/speed/intensity sliders, effect selection with live preview, color picking, and automatic device discovery via mDNS.",
-        media: {
-          type: "image",
-          src: "/projects/ashura/wled-interface.png",
-          alt: "WLED control interface",
-        },
+          "Full-featured LED control system supporting power toggle, brightness/speed/intensity sliders, effect selection, and automatic device discovery via mDNS.",
       },
       {
         icon: "wifi",
         title: "WebSocket Client",
         description:
-          "Persistent WebSocket connection with automatic reconnection, exponential backoff (1s → 2s → 4s → 8s → 16s → 30s), device registration flow, heartbeat monitoring, and JSON message routing.",
+          "Persistent WebSocket connection with automatic reconnection, exponential backoff (1s → 30s), device registration flow, heartbeat monitoring, and JSON message routing.",
+      },
+      {
+        icon: "mic",
+        title: "Native Voice Commands (Ongoing)",
+        description:
+          "Architecting real-time voice activity detection (VAD) and offline command recognition (e.g., 'open settings') without requiring cloud processing. Currently in active development.",
       },
       {
         icon: "film",
         title: "Animation Vibe System",
         description:
-          "PROGMEM-optimized XBM animation player supporting two modes: autonomous full-screen playback or composited frame rendering. Includes animation picker, preview with compositing, and persistent selected vibe storage.",
+          "PROGMEM-optimized XBM animation player supporting two modes: autonomous full-screen playback or composited frame rendering.",
       },
       {
         icon: "clock",
-        title: "Clock Application",
+        title: "System Apps",
         description:
-          "Dual-mode clock display with analog face (minute/hour hands) and digital time readout. Synchronized via NTP, updates in real-time, and integrated into home screen.",
-      },
-      {
-        icon: "activity",
-        title: "System Statistics Display",
-        description:
-          "Live scrollable readout of system metrics: uptime, free heap memory, WiFi signal strength, assigned IP address, MAC address, CPU frequency, flash size, chip information, and SDK version.",
-      },
-      {
-        icon: "moon",
-        title: "Screensaver System",
-        description:
-          "Auto-launching screensaver after configurable idle timeout. Plays selected vibe animation or boot animation. Dismissed by any button press, returns to home screen.",
+          "Includes a dual-mode Clock Display synchronized via NTP, and a live System Statistics readout tracking heap memory, uptime, and WiFi signal.",
       },
     ],
-
-    // ── Technical Challenges & Solutions ─────────────────────
     challenges: [
+      {
+        title: "Cross-Core Communication",
+        problem:
+          "Passing complex event data between the audio core and the UI core caused race conditions and memory leaks.",
+        solution:
+          "Implemented a lightweight `VoiceEvent` struct passed via a bounded FreeRTOS Queue. The UI core drains this queue safely on every tick.",
+      },
       {
         title: "PROGMEM Optimization for Animation Storage",
         problem:
           "ESP32 has limited RAM (~520KB). Storing full animation frame buffers would exhaust heap within seconds. XBM frames need to be stored in flash and read on-demand.",
         solution:
-          "Implemented PROGMEM storage for animation arrays and individual frame buffers. Used pgm_read_ptr() for frame reference, allowed U8g2 to read XBM data directly from flash during rendering. Zero RAM overhead per animation.",
+          "Implemented PROGMEM storage for animation arrays and individual frame buffers. Used pgm_read_ptr() for frame reference, allowing U8g2 to read directly from flash.",
       },
       {
         title: "WebSocket Reconnection Under Spotty WiFi",
         problem:
-          "Mobile/unstable networks cause frequent disconnections. Naive reconnection attempts drain power and spam logs. Need graceful degradation.",
+          "Mobile/unstable networks cause frequent disconnections. Naive reconnection attempts drain power and spam logs.",
         solution:
-          "Designed state machine with exponential backoff: idle → connecting (1s) → 2s → 4s → 8s → 16s → 30s → failed. Provides manual retry from UI. EventBus publishes state changes for UI feedback.",
+          "Designed state machine with exponential backoff: idle → connecting (1s) → 2s → 4s → 8s → 16s → 30s → failed. Provides manual retry from UI.",
       },
       {
         title: "Screen Stack Navigation with Limited RAM",
         problem:
           "Keeping screen objects alive while navigating (push/pop) consumes memory if each screen holds large state.",
         solution:
-          "Lightweight screen interface with minimal state. Each screen stores only essential data (current selection, scroll offset). Lazy-initialize heavy resources (WLED device list) on screen enter.",
-      },
-      {
-        title: "Button Debouncing in Real-Time Loop",
-        problem:
-          "Raw GPIO reads are noisy at ms timescales. Need debounce without blocking 60 FPS display updates.",
-        solution:
-          "Implemented state machine debouncer with configurable threshold (~50ms). Tracks last state change timestamp. Detects long press (500ms) separately for context menu actions.",
-      },
-      {
-        title: "Companion Mood Persistence Across App Switches",
-        problem:
-          "Mood state should survive screen transitions and be responsive to system events (WiFi connect, notifications).",
-        solution:
-          "Decoupled MoodEngine via EventBus subscriptions. Mood automatically transitions based on published events (WifiConnected → happy, etc). Companion renderer drawn on all screens.",
-      },
-      {
-        title: "JSON Message Routing to Appropriate Services",
-        problem:
-          "WebSocket receives varied message types (WLED commands, notifications, display messages). Router must dispatch correctly without tight coupling.",
-        solution:
-          "Implemented MessageRouter with chain-of-responsibility pattern. Each service (DeviceService, WledService) implements IService interface. Router iterates handlers and calls canHandle() → handle() flow.",
+          "Lightweight screen interface with minimal state. Each screen stores only essential data (current selection, scroll offset). Lazy-initialize heavy resources.",
       },
     ],
-
-    // ── Results & Metrics ────────────────────────────────────
     results: [
       {
         metric: "128×64",
@@ -606,9 +320,19 @@ const projects: Project[] = [
         icon: "monitor",
       },
       {
+        metric: "Smooth",
+        label: "Jank-free UI animation frame rate",
+        icon: "zap",
+      },
+      {
         metric: "8",
         label: "Companion Mood States with smooth transitions",
         icon: "smile",
+      },
+      {
+        metric: "2 Cores",
+        label: "True parallel processing with FreeRTOS",
+        icon: "cpu",
       },
       {
         metric: "500KB+",
@@ -616,56 +340,27 @@ const projects: Project[] = [
         icon: "database",
       },
       {
-        metric: "60 FPS",
-        label: "Display refresh rate (stable across all screens)",
-        icon: "zap",
-      },
-      {
         metric: "< 50ms",
         label: "Button debounce latency",
         icon: "hand-pointer",
       },
-      {
-        metric: "9",
-        label: "Major app screens implemented",
-        icon: "layers",
-      },
-      {
-        metric: "~120KB",
-        label: "Typical heap usage (headroom for expansion)",
-        icon: "activity",
-      },
-      {
-        metric: "30s",
-        label: "Max WebSocket reconnection backoff",
-        icon: "wifi",
-      },
     ],
-
     resultsDescription:
-      "Successfully built a production-ready embedded OS firmware that balances feature richness with resource constraints. Achieved stable 60 FPS display updates, responsive button input with < 50ms latency, and seamless mood transitions. The modular architecture enables straightforward feature addition without breaking existing systems. PROGMEM optimization allows 500KB+ animations without impacting runtime memory.",
-
-    // ── Learnings & Future ────────────────────────────────────
+      "Successfully built a professional-grade embedded OS that balances feature richness with tight resource constraints. Achieved silky-smooth display updates, responsive button input with < 50ms latency, and seamless mood transitions. The FreeRTOS architecture unlocks the full potential of the ESP32-S3's dual cores, leaving ample headroom for the upcoming voice pipeline.",
     learnings:
-      "Designing embedded systems requires ruthless prioritization: every decision on data structures and algorithms compounds in a 520KB memory budget. Event-driven architecture (EventBus) is invaluable for decoupling—the mood engine depends on nothing but events, making it reusable and testable. PROGMEM optimization is non-negotiable for rich embedded experiences. State machines (WebSocket, buttons) provide clarity in async systems with sporadic inputs.",
-
+      "Designing a custom embedded OS requires rigorous understanding of FreeRTOS task scheduling and memory management. Event-driven architecture (EventBus) is invaluable for decoupling—the mood engine depends on nothing but events, making it reusable and testable.",
     futurePlans:
-      "Add voice integration via connected microphone; implement Pomodoro timer with mood transitions; expand WLED integration with rhythm-reactive effects; add Spotify playback status sync (playing → excited mood); support OTA firmware updates; implement settings UI overlay for WiFi/server credentials (currently NVS-only); build companion gesture system (head nods, winks); create notification inbox with persistent toast overlay.",
-
-    // ── Hardware Details ───────────────────────────────────────
-    architectureDiagram: "/projects/ashura/architecture-diagram.png",
-
-    // ── Relationships & References ────────────────────────────
-    relatedProjects: [],
+      "Finalize the local voice recognition pipeline, implement cloud fallback for ambiguous voice commands, implement Pomodoro timer with mood transitions, expand WLED integration with rhythm-reactive effects, and build companion gesture system (head nods, winks).",
   },
+  
   {
-    id: 5,
+    id: 3,
     slug: "huddle",
     name: "Huddle",
     category: "Full Stack",
     status: "Completed",
     date: "2024-06-17",
-    tagline: "One Space. All Voices.",
+    tagline: "A production-ready real-time communication platform with servers, channels, and DMs. Supports role-based access, message editing, secure file uploads, and WebRTC-powered video/audio calls via LiveKit.",
     duration: "3 months",
     teamSize: "Solo",
 
@@ -676,7 +371,7 @@ const projects: Project[] = [
       "Building a cohesive real-time chat platform requires solving WebSocket state in a server-rendered framework, paginated message history synchronized with live events, WebRTC media rooms, and fine-grained permissions — all at once.",
 
     solution:
-      "Mounted Socket.IO on the underlying Node.js HTTP server via a Pages Router API route, sharing the instance across all message handlers. React Query manages cursor-paginated history while a custom hook surgically hydrates the cache from socket events. LiveKit handles WebRTC rooms with server-side JWT scoping.",
+      "Huddle is a real-time collaboration platform featuring server and channel management, role-based access control, live messaging, file uploads, and WebRTC-powered audio/video communication via LiveKit. Real-time communication is handled using Socket.IO mounted on the Node.js HTTP server, while React Query manages cursor-paginated chat history with live cache synchronization through custom socket event handlers.",
 
     tech: [
       "Next.js 14",
@@ -732,42 +427,19 @@ const projects: Project[] = [
     demo: "https://huddle-mb7x.onrender.com/",
     repo: "https://github.com/yourusername/huddle",
 
-    media: [
-      {
-        type: "image",
-        src: "/projects/huddle/server-channel.png",
-        alt: "Server and channel view",
-      },
-      {
-        type: "image",
-        src: "/projects/huddle/real-time-messaging.png",
-        alt: "Real-time messaging",
-      },
-      {
-        type: "image",
-        src: "/projects/huddle/member-management.png",
-        alt: "Member management",
-      },
-      {
-        type: "image",
-        src: "/projects/huddle/direct-messaging.png",
-        alt: "Direct messaging",
-      },
-      {
-        type: "image",
-        src: "/projects/huddle/livekit-video-call.png",
-        alt: "LiveKit video call",
-      },
-      {
-        type: "image",
-        src: "/projects/huddle/mobile-responsive-layout.png",
-        alt: "Mobile responsive layout",
-      },
-    ],
-
+    media: imgs([
+      "/projectPhotos/Huddle/1.jpg",
+      "/projectPhotos/Huddle/2.jpg",
+      "/projectPhotos/Huddle/3.jpg",
+      "/projectPhotos/Huddle/4.jpg",
+      "/projectPhotos/Huddle/5.jpg",
+      "/projectPhotos/Huddle/6.jpg",
+    ]),
+    
     architectureDescription:
       "Next.js 14 monorepo combining App Router for rendering with Pages Router for Socket.IO. The socket server mounts on the Node.js HTTP layer and is shared across all message handlers. Prisma models 7 entities with cascading deletes. React Query handles cursor-paginated history; a custom useChatSocket hook updates the cache live from socket events. LiveKit rooms are keyed by channel/conversation ID with server-side JWTs.",
 
+    architectureDiagram: "/projectPhotos/Huddle/Huddle-architecture.png",
     myRole: "Sole Developer / Architect",
 
     contributions: [
@@ -893,9 +565,165 @@ const projects: Project[] = [
     futurePlans:
       "Message threads, emoji reactions, push notifications via PWA, message search with full-text indexing, and migrating Socket.IO to a managed provider for horizontal scaling.",
 
-    architectureDiagram: "/projects/huddle/architecture-diagram.png",
-
-    relatedProjects: [],
+    relatedProjects: [1, 2],
+  },
+  
+  {
+    id: 4,
+    slug: "sync-city",
+    name: "Sync-City",
+    category: "GovTech | HackByte 3.0 Finalist",
+    status: "Hackathon Finalist",
+    date: "2025-04-11",
+    duration: "48-hour hackathon",
+    teamSize: "Team of 4",
+    tagline: "Preventing government project conflicts before they cost crores.",
+    description:
+      "A centralized collaboration platform for government departments designed to prevent resource wastage and project conflicts through real-time coordination, AI-powered conflict detection, and geospatial awareness.",
+    problem:
+      "Government departments in India frequently initiate overlapping infrastructure projects — roads dug up weeks after new pavement, utility lines laid through active construction zones. Departments operate in silos with no shared visibility into each other's projects.",
+    solution:
+      "Sync-City provides a unified dashboard where all departments register their projects geospatially. An AI layer continuously monitors for conflicts and generates custom SOPs for resolution when conflicts are detected.",
+    tech: ["Next.js", "Convex", "Dialogflow CX", "Google Vertex AI"],
+    techGroups: [
+      { category: "Frontend", items: ["Next.js", "TailwindCSS", "Leaflet.js"] },
+      { category: "Backend", items: ["Convex"] },
+      { category: "AI", items: ["Dialogflow CX", "Google Vertex AI"] },
+      { category: "Maps", items: ["Leaflet.js", "OpenStreetMap"] },
+    ],
+    media: imgs([
+      "/projectPhotos/Synccity/1.jpeg",
+      "/projectPhotos/Synccity/2.jpeg",
+      "/projectPhotos/Synccity/3.jpeg",
+      "/projectPhotos/Synccity/4.jpeg",
+      "/projectPhotos/Synccity/5.jpeg",
+    ]),
+    featuresDeep: [
+      {
+        icon: "🗺️",
+        title: "Geospatial Project Registry",
+        description:
+          "Departments plot their projects on an interactive map with timeline overlays, making spatial conflicts immediately visible.",
+      },
+      {
+        icon: "⚡",
+        title: "AI Conflict Detection",
+        description:
+          "Vertex AI analyses project overlaps across time, geography, and resource type — flagging conflicts before they begin.",
+      },
+      {
+        icon: "📋",
+        title: "Auto-generated SOPs",
+        description:
+          "When a conflict is detected, the system generates a custom Standard Operating Procedure based on the specific conflict type.",
+      },
+      {
+        icon: "🔄",
+        title: "Real-time Coordination",
+        description:
+          "Powered by Convex — when one department updates a project, all affected departments are notified instantly.",
+      },
+    ],
+    myRole:
+      "Led frontend development and the AI conflict detection integration. Built the interactive Leaflet.js map, integrated Dialogflow CX for the department chatbot, and handled Convex real-time subscriptions.",
+    contributions: [
+      "Built the entire interactive map interface with Leaflet.js",
+      "Integrated Dialogflow CX for natural language department queries",
+      "Designed the conflict detection data model",
+      "Led the live demo presentation to judges",
+    ],
+    challenges: [
+      {
+        title: "Real-time geospatial conflict detection in 48 hours",
+        problem:
+          "Implementing polygon intersection detection for arbitrary project boundaries with real-time updates under hackathon time pressure.",
+        solution:
+          "Used bounding box approximation for the MVP with Leaflet's built-in bounds intersection, with a note that production would use Turf.js.",
+      },
+    ],
+    results: [
+      {
+        metric: "Top 10",
+        label: "out of 120+ teams at HackByte 3.0",
+        icon: "🏆",
+      },
+      { metric: "48hrs", label: "to build the full prototype", icon: "⚡" },
+    ],
+    resultsDescription:
+      "Reached the finals at HackByte 3.0, one of the largest collegiate hackathons in Central India. Judges highlighted the real-world applicability and AI conflict detection as standout features.",
+    learnings:
+      "Hackathons taught me that architectural decisions made in the first two hours determine whether you ship or not. Choosing Convex instead of building custom WebSockets saved roughly eight hours.",
+    demo: "https://devfolio.co/projects/synccity-a778",
+    repo: "https://github.com/SomuSingh11/syncV1",
+    relatedProjects: [1, 3],
+  },
+  
+  {
+    id: 5,
+    slug: "orbitos",
+    name: "OrbitOS",
+    category: "Frontend / Creative Portfolio",
+    status: "Completed",
+    date: "2024-05-16",
+    tagline: "A full-fledged desktop operating system environment running entirely in the browser.",
+    duration: "Ongoing",
+    teamSize: "Solo",
+    description: "OrbitOS is my personal portfolio reimagined as a web-based operating system. It features a window management system, functional built-in applications like a Terminal and Browser, AI integration for an interactive assistant, and a highly customizable UI.",
+    problem: "Traditional portfolios can be static and fail to demonstrate complex state management, real-time interactivity, and system-level design thinking in modern frontend development.",
+    solution: "Built a simulated desktop environment with React and Next.js, featuring draggable/resizable windows, z-index management, a functional terminal, context-aware AI interactions, and mobile responsiveness.",
+    tech: ["Next.js", "React", "Tailwind CSS", "Framer Motion", "Gemini AI"],
+    techGroups: [
+      { category: "Frontend", items: ["Next.js 15", "React 19", "TailwindCSS v4", "Framer Motion"] },
+      { category: "AI & APIs", items: ["Google Gemini SDK"] },
+      { category: "UI/UX", items: ["Lucide React"] }
+    ],
+    demo: "/",
+    repo: "https://github.com/SomuSingh11/Portfolio",
+    media: [],
+    featuresDeep: [
+      {
+        icon: "apps",
+        title: "Window Management System",
+        description: "Built a robust window manager supporting dragging, resizing, maximizing, minimizing, and dynamic z-index stacking."
+      },
+      {
+        icon: "monitor",
+        title: "Functional Terminal",
+        description: "A custom terminal emulator with built-in commands, auto-completion, and customizable themes."
+      },
+      {
+        icon: "zap",
+        title: "AI Integration",
+        description: "Integrated Google's Gemini SDK for a conversational AI assistant directly within the OS environment."
+      },
+      {
+        icon: "smartphone",
+        title: "Mobile Responsiveness",
+        description: "A dedicated mobile experience mimicking a smartphone OS with a lock screen, notification panel, and app launcher."
+      }
+    ],
+    myRole: "Sole Developer / Designer",
+    contributions: [
+      "Designed and implemented the core window management system with Framer Motion.",
+      "Integrated the @google/genai SDK for the AI assistant application.",
+      "Built the global preferences store for dynamic theming (fonts, wallpapers, terminal themes).",
+      "Developed mobile-specific interfaces including a lock screen and Home Screen."
+    ],
+    challenges: [
+      {
+        title: "Complex State Management for Windows",
+        problem: "Managing the state of multiple draggable, resizable windows, including their focus, z-index, and minimized states without causing excessive re-renders.",
+        solution: "Used centralized state management with targeted updates and memoization to keep the window manager performant and responsive."
+      }
+    ],
+    results: [
+      { metric: "1", label: "Unified OS Interface", icon: "monitor" },
+      { metric: "Mobile", label: "Native-feeling mobile view", icon: "smartphone" }
+    ],
+    resultsDescription: "Successfully created an interactive, highly personalized portfolio that effectively showcases frontend capabilities, state management, and creative design.",
+    learnings: "Building a simulated OS from scratch provided deep insights into complex state management, DOM event handling (dragging, resizing), and creating responsive layouts that adapt radically between desktop and mobile paradigms.",
+    futurePlans: "Implement a fully functional file system API using IndexedDB, add more interactive applications, and expand the AI assistant's system-level context.",
+    relatedProjects: [1, 3],
   },
 ];
 

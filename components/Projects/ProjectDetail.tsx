@@ -17,6 +17,28 @@ import {
   ArrowRight,
   AlertCircle,
   CheckCircle,
+  Eye,
+  LayoutGrid,
+  Wifi,
+  Film,
+  Activity,
+  Moon,
+  Monitor,
+  Smile,
+  Database,
+  Zap,
+  Pointer,
+  Layers,
+  MessageSquare,
+  Shield,
+  Video,
+  Mail,
+  Paperclip,
+  Edit,
+  Hash,
+  Smartphone,
+  Cpu,
+  Mic,
 } from "lucide-react";
 import type {
   Project,
@@ -60,6 +82,34 @@ const Section = memo(function Section({
 });
 
 const Divider = () => <div className="border-t border-gray-800" />;
+
+// ─── Icon Mapping ─────────────────────────────────────────────────────────────
+const LUCIDE_ICONS: Record<string, React.ElementType> = {
+  eye: Eye,
+  apps: LayoutGrid,
+  lightbulb: Lightbulb,
+  wifi: Wifi,
+  film: Film,
+  clock: Clock,
+  activity: Activity,
+  moon: Moon,
+  monitor: Monitor,
+  smile: Smile,
+  database: Database,
+  zap: Zap,
+  "hand-pointer": Pointer,
+  layers: Layers,
+  "message-square": MessageSquare,
+  shield: Shield,
+  video: Video,
+  mail: Mail,
+  paperclip: Paperclip,
+  edit: Edit,
+  hash: Hash,
+  smartphone: Smartphone,
+  cpu: Cpu,
+  mic: Mic
+};
 
 // ─── Status badge ─────────────────────────────────────────────────────────────
 const STATUS_STYLES: Record<Project["status"], string> = {
@@ -113,22 +163,31 @@ function TechBadges({ items }: { items: string[] }) {
 function FeatureCards({ features }: { features: FeatureCard[] }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      {features.map((f) => (
-        <div
-          key={f.title}
-          className="bg-gray-800/60 border border-gray-700/60 rounded-xl p-4 space-y-2"
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-xl">{f.icon}</span>
-            <h4 className="text-sm font-semibold text-white leading-tight">
-              {f.title}
-            </h4>
+      {features.map((f) => {
+        const isLucideIcon = f.icon && f.icon in LUCIDE_ICONS;
+        const IconComponent = isLucideIcon ? LUCIDE_ICONS[f.icon] : null;
+
+        return (
+          <div
+            key={f.title}
+            className="bg-gray-800/60 border border-gray-700/60 rounded-xl p-4 space-y-2"
+          >
+            <div className="flex items-center gap-2">
+              {IconComponent ? (
+                <IconComponent className="w-5 h-5 text-blue-400" />
+              ) : (
+                <span className="text-xl">{f.icon}</span>
+              )}
+              <h4 className="text-sm font-semibold text-white leading-tight">
+                {f.title}
+              </h4>
+            </div>
+            <p className="text-gray-400 text-xs leading-relaxed">
+              {f.description}
+            </p>
           </div>
-          <p className="text-gray-400 text-xs leading-relaxed">
-            {f.description}
-          </p>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -167,21 +226,35 @@ function ChallengeCard({ challenge }: { challenge: Challenge }) {
 }
 
 // ─── Results metrics ─────────────────────────────────────────────────────────
+
 function ResultCards({ results }: { results: Result[] }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-      {results.map((r) => (
-        <div
-          key={r.metric}
-          className="bg-gradient-to-br from-blue-600/10 to-purple-600/10 border border-blue-500/20 rounded-xl p-4 text-center"
-        >
-          {r.icon && <div className="text-2xl mb-1">{r.icon}</div>}
-          <div className="text-xl font-bold text-white">{r.metric}</div>
-          <div className="text-[11px] text-gray-400 mt-0.5 leading-tight">
-            {r.label}
+      {results.map((r) => {
+        const isLucideIcon = r.icon && r.icon in LUCIDE_ICONS;
+        const IconComponent = isLucideIcon ? LUCIDE_ICONS[r.icon!] : null;
+
+        return (
+          <div
+            key={r.metric}
+            className="bg-gradient-to-br from-blue-600/10 to-purple-600/10 border border-blue-500/20 rounded-xl p-4 text-center"
+          >
+            {r.icon && (
+              <div className="flex justify-center mb-1">
+                {IconComponent ? (
+                  <IconComponent className="w-6 h-6 text-blue-400" />
+                ) : (
+                  <span className="text-2xl">{r.icon}</span>
+                )}
+              </div>
+            )}
+            <div className="text-xl font-bold text-white">{r.metric}</div>
+            <div className="text-[11px] text-gray-400 mt-0.5 leading-tight">
+              {r.label}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
