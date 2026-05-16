@@ -15,8 +15,8 @@ const BOOT_LINES = [
 ];
 
 const LOGIN_LINE = "orbitos login: guest";
-const CHAR_DELAY = 35; // ms per character
-const LINE_PAUSE = 120; // ms between lines
+const CHAR_DELAY = 10; // ms per character
+const LINE_PAUSE = 30; // ms between lines
 
 interface SetupScreenProps {
   onComplete: () => void;

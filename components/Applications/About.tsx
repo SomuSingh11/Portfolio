@@ -261,7 +261,7 @@ const InterestsSection = memo(function InterestsSection() {
         <div className="flex items-center gap-2 mb-3">
           <Gamepad2 className="w-3.5 h-3.5 text-violet-400" />
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">
-            Games Completed
+            Adventures So Far
           </span>
         </div>
         <HScroll>
