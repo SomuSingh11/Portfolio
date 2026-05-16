@@ -20,7 +20,8 @@ export type AppId =
   | "github"
   | "resume"
   | "achievements"
-  | "preferences";
+  | "preferences"
+  | "assistant";
 
 // Single source of truth for window state — can't be both minimized AND maximized
 export type WindowState = "normal" | "minimized" | "maximized";

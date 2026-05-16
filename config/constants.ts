@@ -104,6 +104,11 @@ export const APP_META: Record<
     icon: "preferences.svg",
     description: "Customize your experience",
   },
+  assistant: {
+    title: "AI Chat",
+    icon: "assistant.svg",
+    description: "Chat with an AI about Somu",
+  },
 };
 
 // ─── Desktop Icon Positions ───────────────────────────────────────────────────
@@ -119,6 +124,7 @@ export const DESKTOP_ICON_LAYOUT: Array<{
   { id: "github", position: { x: 170, y: 52 } },
   { id: "resume", position: { x: 165, y: 150 } },
   { id: "preferences", position: { x: 165, y: 250 } },
+  { id: "assistant", position: { x: 165, y: 350 } },
 ];
 
 // ─── Animation Presets ────────────────────────────────────────────────────────

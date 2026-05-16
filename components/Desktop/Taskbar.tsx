@@ -119,7 +119,7 @@ export default function Taskbar({
               title={`Restore ${win.title}`}
             >
               <Image
-                src={`/icons/breeze/${APP_META[win.id].icon}`}
+                src={`/icons/mobile/${APP_META[win.id].icon}`}
                 alt={win.title}
                 width={16}
                 height={16}

@@ -16,6 +16,7 @@ import Skills from "@/components/Applications/Skills";
 import Contact from "@/components/Applications/Contact";
 import Preferences from "@/components/Applications/Preferences";
 import Achievements from "../Utilities/Achievements";
+import Assistant from "@/components/Applications/Assistant";
 import { Home } from "lucide-react";
 
 function AppContent({ appId }: { appId: AppId }) {
@@ -38,6 +39,8 @@ function AppContent({ appId }: { appId: AppId }) {
       return <Achievements />;
     case "preferences":
       return <Preferences />;
+    case "assistant":
+      return <Assistant />;
     default:
       return <About />;
   }

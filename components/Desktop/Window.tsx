@@ -43,6 +43,7 @@ import Contact from "@/components/Applications/Contact";
 import GitHub from "@/components/Applications/GitHub";
 import Resume from "@/components/Applications/Resume";
 import Preferences from "@/components/Applications/Preferences";
+import Assistant from "@/components/Applications/Assistant";
 
 // Minimum visible pixels of the title bar that must remain in-viewport
 const MIN_VISIBLE_X = 100;
@@ -71,6 +72,8 @@ function WindowContent({ appId }: { appId: WindowData["content"] }) {
       return <Resume />;
     case "preferences":
       return <Preferences />;
+    case "assistant":
+      return <Assistant />;
     default:
       return (
         <div className="p-4 text-white text-sm font-mono">

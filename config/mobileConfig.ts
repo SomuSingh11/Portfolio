@@ -67,6 +67,12 @@ export const MOBILE_APPS: MobileAppConfig[] = [
     icon: "preferences.svg",
     bgGradient: "from-slate-500 to-slate-700",
   },
+  {
+    id: "assistant",
+    label: "AI Chat",
+    icon: "assistant.svg",
+    bgGradient: "from-violet-500 to-indigo-700",
+  },
 ];
 
-export const DOCK_APPS: AppId[] = ["terminal", "projects", "contact", "about"];
+export const DOCK_APPS: AppId[] = ["terminal", "contact", "preferences", "achievements"];

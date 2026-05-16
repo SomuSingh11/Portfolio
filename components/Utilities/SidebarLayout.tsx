@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, ReactNode } from "react";
+import { useState, useCallback, ReactNode, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ArrowLeft } from "lucide-react";
 
@@ -25,6 +25,15 @@ export default function SidebarLayout({
   defaultSection,
 }: SidebarLayoutProps) {
   const [active, setActive] = useState<string | null>(defaultSection ?? null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isMobile = window.innerWidth < 768;
+      if (isMobile && active === defaultSection) {
+        setActive(null);
+      }
+    }
+  }, []);
 
   const handleSelect = useCallback((id: string) => setActive(id), []);
   const handleBack = useCallback(() => setActive(null), []);
