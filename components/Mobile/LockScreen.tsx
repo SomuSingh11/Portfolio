@@ -104,7 +104,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
                 <div className="mt-10 flex flex-col items-center">
                   <div className="w-12 h-px bg-white/25 mb-5" />
                   <p className="text-white/50 text-xs font-light tracking-[0.25em] uppercase">
-                    Codex OS
+                    OrbitOS
                   </p>
                   <p className="text-white text-xl font-medium mt-1.5">
                     {PERSONAL_INFO.name}

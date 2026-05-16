@@ -460,7 +460,7 @@ function AboutSection({ onReset }: { onReset: () => void }) {
             className="w-12 h-12 rounded-full border-2 border-gray-600 flex-shrink-0"
           />
           <div className="min-w-0">
-            <p className="text-white font-bold">Codex OS</p>
+            <p className="text-white font-bold">OrbitOS</p>
             <p className="text-gray-400 text-xs">Version 1.0.0</p>
             <p className="text-gray-500 text-xs mt-0.5">
               Built by{" "}

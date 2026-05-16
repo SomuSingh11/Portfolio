@@ -266,7 +266,7 @@ const PreferencesContext = createContext<PreferencesContextType | undefined>(
   undefined,
 );
 
-const STORAGE_KEY = "codex-os-preferences";
+const STORAGE_KEY = "orbitos-preferences";
 
 function loadFromStorage(): Preferences {
   if (typeof window === "undefined") return DEFAULT_PREFERENCES;

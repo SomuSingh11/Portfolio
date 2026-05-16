@@ -27,12 +27,12 @@ const MATRIX_ART = `
 ⠀⡠⠟⠁⠙⠟⠛⠛⢿⣿⣾⣿⣿⣿⣿⣧⡀⠀⠀⠀⠀⠀⠀`;
 
 const BOOT_MESSAGES = [
-  "Initializing Codex OS v1.0...",
+  "Initializing OrbitOS v1.0...",
   "Mounting virtual environment... ✓",
   "Loading file system... ✓",
   "System ready.",
   "",
-  "Welcome to Codex OS Terminal",
+  "Welcome to OrbitOS Terminal",
   "Copyright (c) 2025 Somu Singh. All rights reserved.",
   `Type "help" for available commands.`,
 ];
@@ -178,9 +178,9 @@ export default function Terminal() {
 
   const PROMPT = (
     <span className="flex items-center flex-shrink-0">
-      <span className="text-cyan-400">somu@codex</span>
+      <span className="text-cyan-400">somu@orbitos</span>
       <span className="text-white">:</span>
-      <span className="text-purple-400">~/codex</span>
+      <span className="text-purple-400">~/orbitos</span>
       <span className="text-white">$&nbsp;</span>
     </span>
   );
@@ -197,7 +197,7 @@ export default function Terminal() {
           }}
         >
           <span className="text-[#a8ff78] text-xs tracking-[0.15em]">
-            CODEX OS v1.0
+            ORBITOS v1.0
           </span>
           <div className="w-48 h-[3px] bg-[#1e2030] rounded-full overflow-hidden">
             <div

@@ -38,7 +38,7 @@ export default function GuidanceModal({
       <DialogContent className="bg-gray-800 border-gray-600 text-white min-w-3xl">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
-            Welcome to Codex OS!
+            Welcome to OrbitOS!
           </DialogTitle>{" "}
           <DialogDescription className="text-gray-300 pt-2 text-base">
             {" "}

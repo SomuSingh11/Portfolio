@@ -145,7 +145,7 @@ export default function Desktop() {
           >
             {[
               { label: "⚙️ Preferences", action: handleOpenPreferences },
-              { label: "❓ Codex OS Guide", action: handleShowGuidance },
+              { label: "❓ OrbitOS Guide", action: handleShowGuidance },
             ].map(({ label, action }) => (
               <button
                 key={label}

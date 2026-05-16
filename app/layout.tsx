@@ -19,16 +19,16 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Somu Singh",
+  title: "OrbitOS — Somu Singh",
   description: "An interactive OS-themed portfolio.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Codex OS",
+    title: "OrbitOS — Somu Singh",
   },
   openGraph: {
     type: "website",
-    title: "Somu Singh | Codex OS Portfolio",
+    title: "Somu Singh | Orbit OS Portfolio",
     description: "An interactive OS-themed portfolio.",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
