@@ -15,7 +15,7 @@ export const MOBILE_WALLPAPER = "/wallpaper/pain.jpg";
 export const MOBILE_APPS: MobileAppConfig[] = [
   {
     id: "about",
-    label: "whoami",
+    label: "About Me",
     icon: "fingerprint.svg",
     bgGradient: "from-blue-500 to-blue-700",
   },

@@ -4,11 +4,8 @@
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import {
-  Palette,
   Monitor,
-  Type,
   Terminal as TerminalIcon,
-  Accessibility,
   Info,
   RotateCcw,
   Check,
@@ -27,11 +24,7 @@ import { WALLPAPERS, PERSONAL_INFO } from "@/config/constants";
 
 type Section =
   | "wallpaper"
-  | "appearance"
-  | "typography"
   | "terminal"
-  | "desktop"
-  | "accessibility"
   | "about";
 
 const SECTIONS: Array<{
@@ -47,34 +40,10 @@ const SECTIONS: Array<{
     description: "Desktop background",
   },
   {
-    id: "appearance",
-    label: "Appearance",
-    icon: Palette,
-    description: "Colors & animations",
-  },
-  {
-    id: "typography",
-    label: "Typography",
-    icon: Type,
-    description: "Fonts & sizes",
-  },
-  {
     id: "terminal",
     label: "Terminal",
     icon: TerminalIcon,
     description: "Terminal theme",
-  },
-  {
-    id: "desktop",
-    label: "Desktop",
-    icon: Monitor,
-    description: "Layout & clock",
-  },
-  {
-    id: "accessibility",
-    label: "Accessibility",
-    icon: Accessibility,
-    description: "Motion & contrast",
   },
   { id: "about", label: "About", icon: Info, description: "System info" },
 ];
@@ -225,106 +194,6 @@ function WallpaperSection() {
   );
 }
 
-function AppearanceSection() {
-  const { prefs, set } = usePreferences();
-  return (
-    <div className="space-y-1">
-      <SettingRow
-        label="Mode"
-        description="Light mode applies a lighter color scheme"
-      >
-        <SegmentedControl
-          value={prefs.appearance}
-          onChange={(v) => set("appearance", v as any)}
-          options={[
-            { value: "dark", label: "Dark" },
-            { value: "light", label: "Light" },
-          ]}
-        />
-      </SettingRow>
-      <SettingRow
-        label="Accent Color"
-        description="Buttons, highlights and interactive elements"
-      >
-        <div className="flex gap-2 flex-wrap justify-end max-w-[180px]">
-          {(Object.entries(ACCENT_CONFIG) as [AccentColor, any][]).map(
-            ([key, config]) => (
-              <button
-                key={key}
-                onClick={() => set("accentColor", key)}
-                title={config.label}
-                className={`w-6 h-6 rounded-full transition-transform hover:scale-110 ${
-                  prefs.accentColor === key
-                    ? "ring-2 ring-white ring-offset-2 ring-offset-gray-900 scale-110"
-                    : ""
-                }`}
-                style={{ backgroundColor: config.hex }}
-              />
-            ),
-          )}
-        </div>
-      </SettingRow>
-      <SettingRow label="Animation Speed">
-        <SegmentedControl
-          value={prefs.animationSpeed}
-          onChange={(v) => set("animationSpeed", v as any)}
-          options={[
-            { value: "full", label: "Full" },
-            { value: "reduced", label: "Less" },
-            { value: "none", label: "Off" },
-          ]}
-        />
-      </SettingRow>
-    </div>
-  );
-}
-
-function TypographySection() {
-  const { prefs, set } = usePreferences();
-  return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        {(Object.entries(FONT_CONFIG) as [FontFamily, any][]).map(
-          ([key, config]) => (
-            <button
-              key={key}
-              onClick={() => set("fontFamily", key)}
-              className={`w-full flex items-center justify-between p-3.5 rounded-xl border transition-colors ${
-                prefs.fontFamily === key
-                  ? "border-[hsl(var(--accent-hsl))] bg-[hsl(var(--accent-hsl))]/10"
-                  : "border-gray-700 bg-gray-800/50 hover:border-gray-600"
-              }`}
-            >
-              <div className="text-left min-w-0">
-                <p className="text-sm font-medium text-white">{config.label}</p>
-                <p className="text-xs text-gray-500 mt-0.5 truncate">
-                  {config.description}
-                </p>
-              </div>
-              <span
-                className="text-base text-gray-300 ml-3 flex-shrink-0"
-                style={{ fontFamily: config.cssVar }}
-              >
-                {config.preview}
-              </span>
-            </button>
-          ),
-        )}
-      </div>
-      <SettingRow label="Font Size">
-        <SegmentedControl
-          value={prefs.fontSize}
-          onChange={(v) => set("fontSize", v as any)}
-          options={[
-            { value: "sm", label: "S" },
-            { value: "base", label: "M" },
-            { value: "lg", label: "L" },
-          ]}
-        />
-      </SettingRow>
-    </div>
-  );
-}
 
 function TerminalSection() {
   const { prefs, set } = usePreferences();
@@ -388,58 +257,6 @@ function TerminalSection() {
   );
 }
 
-function DesktopSection() {
-  const { prefs, set } = usePreferences();
-  return (
-    <div className="space-y-1">
-      <SettingRow
-        label="Desktop Icons"
-        description="Show icons on the desktop surface"
-      >
-        <Toggle
-          value={prefs.showDesktopIcons}
-          onChange={(v) => set("showDesktopIcons", v)}
-        />
-      </SettingRow>
-      <SettingRow label="Clock Format">
-        <SegmentedControl
-          value={prefs.clockFormat}
-          onChange={(v) => set("clockFormat", v as any)}
-          options={[
-            { value: "12h", label: "12h" },
-            { value: "24h", label: "24h" },
-          ]}
-        />
-      </SettingRow>
-    </div>
-  );
-}
-
-function AccessibilitySection() {
-  const { prefs, set } = usePreferences();
-  return (
-    <div className="space-y-1">
-      <SettingRow
-        label="Reduce Motion"
-        description="Minimises animations throughout the OS"
-      >
-        <Toggle
-          value={prefs.reduceMotion}
-          onChange={(v) => set("reduceMotion", v)}
-        />
-      </SettingRow>
-      <SettingRow
-        label="High Contrast"
-        description="Increases contrast for text and borders"
-      >
-        <Toggle
-          value={prefs.highContrast}
-          onChange={(v) => set("highContrast", v)}
-        />
-      </SettingRow>
-    </div>
-  );
-}
 
 function AboutSection({ onReset }: { onReset: () => void }) {
   const stack = [
@@ -527,16 +344,8 @@ export default function Preferences() {
     switch (id as Section) {
       case "wallpaper":
         return <WallpaperSection />;
-      case "appearance":
-        return <AppearanceSection />;
-      case "typography":
-        return <TypographySection />;
       case "terminal":
         return <TerminalSection />;
-      case "desktop":
-        return <DesktopSection />;
-      case "accessibility":
-        return <AccessibilitySection />;
       case "about":
         return <AboutSection onReset={reset} />;
       default:

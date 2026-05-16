@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { AnimatePresence } from "framer-motion";
 import { DesktopProvider } from "@/store/desktop-store";
 import { useDevice } from "@/provider/device-provider";
@@ -14,7 +14,11 @@ function AppContent() {
   const { isMobile } = useDevice();
 
   if (isMobile) {
-    return <MobileLayout />;
+    return (
+      <Suspense fallback={null}>
+        <MobileLayout />
+      </Suspense>
+    );
   }
 
   return <Desktop />;

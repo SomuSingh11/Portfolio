@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import commands from "@/data/TerminalCommands";
 import { useCommandHistory } from "@/hooks/system/useCommandHistory";
+import { usePreferences } from "@/store/preferences-store";
 
 interface HistoryEntry {
   input: string;
@@ -45,13 +46,16 @@ function linkify(text: string): string {
 }
 
 export default function Terminal() {
+  const { prefs } = usePreferences();
+  const { terminalFontSize, showBootScreen } = prefs;
+
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [currentInput, setCurrentInput] = useState("");
-  const [isBooting, setIsBooting] = useState(true);
+  const [isBooting, setIsBooting] = useState(showBootScreen);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [bootProgress, setBootProgress] = useState(0);
   const [bootLabel, setBootLabel] = useState("Initializing...");
-  const [bootDone, setBootDone] = useState(false);
+  const [bootDone, setBootDone] = useState(!showBootScreen);
 
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -67,6 +71,14 @@ export default function Terminal() {
 
   // Boot sequence
   useEffect(() => {
+    if (!showBootScreen) {
+      setHistory([
+        { input: "", output: MATRIX_ART },
+        ...BOOT_MESSAGES.map((msg) => ({ input: "", output: msg })),
+      ]);
+      return;
+    }
+
     let mounted = true;
 
     const sleep = (ms: number) =>
@@ -111,7 +123,7 @@ export default function Terminal() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [showBootScreen]);
 
   useEffect(() => {
     if (!isBooting) {
@@ -177,35 +189,45 @@ export default function Terminal() {
   );
 
   const PROMPT = (
-    <span className="flex items-center flex-shrink-0">
-      <span className="text-cyan-400">somu@orbitos</span>
-      <span className="text-white">:</span>
-      <span className="text-purple-400">~/orbitos</span>
-      <span className="text-white">$&nbsp;</span>
+    <span className="flex items-center flex-shrink-0" style={{ color: "var(--terminal-prompt)" }}>
+      <span>somu@orbitos</span>
+      <span className="text-white/50 px-1">:</span>
+      <span>~/orbitos</span>
+      <span className="text-white/50 pl-1">$&nbsp;</span>
     </span>
   );
 
+  const fontSizeClass = {
+    sm: "text-xs",
+    base: "text-sm",
+    lg: "text-base",
+  }[terminalFontSize];
+
   return (
-    <div className="relative h-full flex flex-col bg-[#0a0a0f] rounded-lg overflow-hidden border border-[#1e2030] font-mono text-sm">
+    <div 
+      className={`relative h-full flex flex-col rounded-lg overflow-hidden border border-white/10 font-mono ${fontSizeClass}`}
+      style={{ backgroundColor: "var(--terminal-bg)" }}
+    >
       {/* Boot overlay */}
       {isBooting && !bootDone && (
         <div
-          className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[#0a0a0f] rounded-lg transition-opacity duration-400"
+          className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-lg transition-opacity duration-400"
           style={{
+            backgroundColor: "var(--terminal-bg)",
             opacity: bootDone ? 0 : 1,
             pointerEvents: bootDone ? "none" : "auto",
           }}
         >
-          <span className="text-[#a8ff78] text-xs tracking-[0.15em]">
+          <span className="text-xs tracking-[0.15em]" style={{ color: "var(--terminal-text)" }}>
             ORBITOS v1.0
           </span>
-          <div className="w-48 h-[3px] bg-[#1e2030] rounded-full overflow-hidden">
+          <div className="w-48 h-[3px] bg-white/10 rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#a8ff78] rounded-full transition-all duration-300"
-              style={{ width: `${bootProgress}%` }}
+              className="h-full rounded-full transition-all duration-300"
+              style={{ width: `${bootProgress}%`, backgroundColor: "var(--terminal-text)" }}
             />
           </div>
-          <span className="text-[#4a5568] text-xs">{bootLabel}</span>
+          <span className="text-white/50 text-xs">{bootLabel}</span>
         </div>
       )}
 
@@ -228,10 +250,9 @@ export default function Terminal() {
                 <div
                   key={li}
                   className={`whitespace-pre-wrap leading-relaxed ${
-                    entry.input === ""
-                      ? "text-[#a8ff78] leading-tight"
-                      : "text-[#a8ff78]"
+                    entry.input === "" ? "leading-tight" : ""
                   }`}
+                  style={{ color: "var(--terminal-text)" }}
                   dangerouslySetInnerHTML={{
                     __html: linkify(line) || "&nbsp;",
                   }}
@@ -246,13 +267,14 @@ export default function Terminal() {
           <div className="flex items-center">
             {PROMPT}
             <div className="flex-1 flex items-center relative">
-              <span className="text-white whitespace-pre">{currentInput}</span>
+              <span style={{ color: "var(--terminal-text)" }} className="whitespace-pre">{currentInput}</span>
               <span
-                className={`inline-block w-[7px] h-[14px] bg-[#a8ff78] align-middle ml-px ${
+                className={`inline-block w-[7px] h-[14px] align-middle ml-px ${
                   isInputFocused
                     ? "animate-[blink_1s_step-end_infinite]"
                     : "opacity-0"
                 }`}
+                style={{ backgroundColor: "var(--terminal-text)" }}
               />
               <input
                 ref={inputRef}
@@ -262,7 +284,8 @@ export default function Terminal() {
                 onKeyDown={handleKeyDown}
                 onFocus={() => setIsInputFocused(true)}
                 onBlur={() => setIsInputFocused(false)}
-                className="absolute inset-0 opacity-0 cursor-default w-full bg-transparent border-none outline-none"
+                className="absolute inset-0 opacity-0 cursor-default w-full bg-transparent border-none outline-none text-transparent"
+                style={{ caretColor: "transparent" }}
                 autoComplete="off"
                 spellCheck={false}
                 aria-label="Terminal input"
