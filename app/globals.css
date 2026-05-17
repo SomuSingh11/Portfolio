@@ -138,6 +138,12 @@ body,
   }
 }
 
+/* AI streaming cursor */
+@keyframes cursorBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 .terminal-cursor {
   animation: blink 1s infinite;
 }
@@ -237,4 +243,70 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ─── AI Assistant Markdown Prose ─────────────────────────────────────────── */
+.ai-prose {
+  line-height: 1.6;
+}
+
+.ai-prose .ai-code-block {
+  display: block;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 8px 0;
+  font-family: 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 11px;
+  color: #a5f3fc;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.ai-prose .ai-inline-code {
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  color: #c4b5fd;
+}
+
+.ai-prose .ai-link {
+  color: #818cf8;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ai-prose .ai-link:hover {
+  color: #a5b4fc;
+}
+
+.ai-prose .ai-list-item {
+  display: flex;
+  gap: 6px;
+  margin: 3px 0;
+}
+
+.ai-prose .ai-list-item::before {
+  content: '•';
+  color: #7c3aed;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ai-prose .ai-list-item.ai-list-numbered::before {
+  content: '›';
+}
+
+.ai-prose strong {
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.ai-prose em {
+  color: #cbd5e1;
+  font-style: italic;
 }

@@ -10,17 +10,12 @@ export interface MobileAppConfig {
   badgeCount?: number;
 }
 
-export const PERSONAL_INFO = {
-  name: "Somu Singh",
-  title: "Just playing around!!",
-};
-
 export const MOBILE_WALLPAPER = "/wallpaper/pain.jpg";
 
 export const MOBILE_APPS: MobileAppConfig[] = [
   {
     id: "about",
-    label: "whoami",
+    label: "About Me",
     icon: "fingerprint.svg",
     bgGradient: "from-blue-500 to-blue-700",
   },
@@ -41,12 +36,6 @@ export const MOBILE_APPS: MobileAppConfig[] = [
     label: "GitHub",
     icon: "github.svg",
     bgGradient: "from-gray-600 to-gray-900",
-  },
-  {
-    id: "hashnode",
-    label: "Hashnode",
-    icon: "Hashnode_icon.svg",
-    bgGradient: "from-blue-600 to-indigo-800",
   },
   {
     id: "resume",
@@ -78,6 +67,12 @@ export const MOBILE_APPS: MobileAppConfig[] = [
     icon: "preferences.svg",
     bgGradient: "from-slate-500 to-slate-700",
   },
+  {
+    id: "assistant",
+    label: "AI Chat",
+    icon: "assistant.svg",
+    bgGradient: "from-violet-500 to-indigo-700",
+  },
 ];
 
-export const DOCK_APPS: AppId[] = ["terminal", "projects", "contact", "about"];
+export const DOCK_APPS: AppId[] = ["terminal", "contact", "preferences", "achievements"];

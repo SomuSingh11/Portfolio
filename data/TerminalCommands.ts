@@ -1,6 +1,6 @@
 const commands = {
   help: `
-Codex OS v1.0 - Help
+OrbitOS v1.0 - Help
 
 ─ Core Commands ───────────────
   whoami          Displays my professional summary.
@@ -41,16 +41,16 @@ drwxr-xr-x  1 somu_singh staff 2048 Sep  1 10:30 Resume/`,
 1237   window-manager    3%    67MB`,
 
   neofetch: `                   -'
-                  .o+'                 somu_singh@codex-os
+                  .o+'                 somu_singh@orbitos
                  'ooo/                 ----------------------
-                '+oooo:                OS: Codex OS 1.0
+                '+oooo:                OS: OrbitOS 1.0
                '+oooooo:               Host: Developer Workstation
                -+oooooo+:              Kernel: Blink (Chromium)
              '/:--++oooo+:             Uptime: 3 hours, 15 minutes
             '/++++/+++++++:            Packages: 56 (npm)
            '/++++++++++++++:           Shell: /bin/zsh
           '/+++ooooooooo+++/           Resolution: 1920x1080
-         ./ooosssso++osssssso+'        Terminal: codex-terminal
+         ./ooosssso++osssssso+'        Terminal: orbitos-terminal
         .oossssso-''''/ossssss+'       CPU: AMD Ryzen 5 5600H (12) @ 4.2GHz
        -osssssso.      :ssssssso.      Memory: 2048MiB / 16384MiB
       :osssssss/        osssso+++.

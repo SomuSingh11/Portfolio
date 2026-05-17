@@ -1,10 +1,19 @@
 "use client";
 
-import { useState, useMemo, memo } from "react";
+import { memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, ChevronRight } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { skillCategories, proficiencyLevels } from "@/data/skillsData";
 import type { Skill } from "@/data/skillsData";
+import SidebarLayout from "@/components/Utilities/SidebarLayout";
+
+// Build nav items from skillCategories for SidebarLayout
+const SKILLS_NAV = skillCategories.map((cat) => ({
+  id: cat.id,
+  label: cat.category,
+  description: cat.description,
+  icon: cat.icon,
+}));
 
 // ─── Skill Bar ────────────────────────────────────────────────────────────────
 const SkillBar = memo(function SkillBar({
@@ -71,87 +80,6 @@ const SkillBar = memo(function SkillBar({
   );
 });
 
-// ─── Category button — sidebar version (desktop) ──────────────────────────────
-function CategoryButtonDesktop({
-  category,
-  isSelected,
-  onClick,
-}: {
-  category: (typeof skillCategories)[0];
-  isSelected: boolean;
-  onClick: () => void;
-}) {
-  const Icon = category.icon;
-  return (
-    <motion.button
-      onClick={onClick}
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
-      className={`w-full p-3.5 rounded-xl text-left transition-all ${
-        isSelected
-          ? `bg-gradient-to-r ${category.bgGradient} ring-1 ring-gray-500`
-          : "bg-gray-700/50 hover:bg-gray-700"
-      }`}
-    >
-      <div className="flex items-center gap-3">
-        <div
-          className={`p-2 rounded-lg bg-gradient-to-r ${category.color} flex-shrink-0`}
-        >
-          <Icon className="w-4 h-4 text-white" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm text-white truncate">
-            {category.category}
-          </p>
-          <p className="text-[10px] text-gray-400 mt-0.5 truncate">
-            {category.description}
-          </p>
-        </div>
-        {isSelected && (
-          <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
-        )}
-      </div>
-      <p className="text-[10px] text-gray-500 mt-2 ml-11">
-        {category.skills.length} technologies
-      </p>
-    </motion.button>
-  );
-}
-
-// ─── Category button — tab version (mobile) ───────────────────────────────────
-function CategoryTabsMobile({
-  categories,
-  active,
-  onSelect,
-}: {
-  categories: typeof skillCategories;
-  active: string;
-  onSelect: (id: string) => void;
-}) {
-  return (
-    <div className="flex gap-2 overflow-x-auto scrollbar-none px-4 py-3 border-b border-gray-800">
-      {categories.map((cat) => {
-        const Icon = cat.icon;
-        const isActive = active === cat.id;
-        return (
-          <button
-            key={cat.id}
-            onClick={() => onSelect(cat.id)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap flex-shrink-0 transition-all ${
-              isActive
-                ? `bg-gradient-to-r ${cat.color} text-white shadow-sm`
-                : "bg-gray-800 text-gray-400 hover:text-white"
-            }`}
-          >
-            <Icon className="w-3.5 h-3.5" />
-            {cat.category}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 // ─── Skill detail panel ───────────────────────────────────────────────────────
 function SkillDetail({ category }: { category: (typeof skillCategories)[0] }) {
   const Icon = category.icon;
@@ -203,49 +131,18 @@ function SkillDetail({ category }: { category: (typeof skillCategories)[0] }) {
 
 // ─── Main Skills component ────────────────────────────────────────────────────
 export default function Skills() {
-  const [selectedCategory, setSelectedCategory] = useState("frontend");
-
-  const selectedCategoryData = useMemo(
-    () =>
-      skillCategories.find((c) => c.id === selectedCategory) ??
-      skillCategories[0],
-    [selectedCategory],
-  );
+  const renderSection = (id: string) => {
+    const category =
+      skillCategories.find((c) => c.id === id) ?? skillCategories[0];
+    return <SkillDetail category={category} />;
+  };
 
   return (
-    <div className="h-full bg-gray-900 text-white flex flex-col overflow-hidden">
-      {/* ── MOBILE: horizontal tab strip ── */}
-      <div className="md:hidden flex-shrink-0">
-        <CategoryTabsMobile
-          categories={skillCategories}
-          active={selectedCategory}
-          onSelect={setSelectedCategory}
-        />
-      </div>
-
-      {/* ── Body ── */}
-      <div className="flex flex-1 min-h-0 overflow-hidden">
-        {/* Sidebar — desktop only */}
-        <div className="hidden md:flex w-64 lg:w-72 flex-shrink-0 flex-col border-r border-gray-800 overflow-y-auto">
-          <div className="p-3 space-y-2">
-            {skillCategories.map((cat) => (
-              <CategoryButtonDesktop
-                key={cat.id}
-                category={cat}
-                isSelected={selectedCategory === cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Skill detail — full width on mobile, right pane on desktop */}
-        <div className="flex-1 overflow-y-auto min-w-0 min-h-0 flex justify-center">
-          <div className="w-full max-w-4xl">
-            <SkillDetail category={selectedCategoryData} />
-          </div>
-        </div>
-      </div>
-    </div>
+    <SidebarLayout
+      title="Skills"
+      nav={SKILLS_NAV}
+      renderSection={renderSection}
+      defaultSection="frontend"
+    />
   );
 }

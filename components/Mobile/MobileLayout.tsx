@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import type { AppId } from "@/types/desktop";
 import type { MobileScreen } from "@/config/mobileConfig";
 import LockScreen from "@/components/Mobile/LockScreen";
@@ -9,25 +10,54 @@ import HomeScreen from "@/components/Mobile/HomeScreen";
 import AppWindow from "@/components/Mobile/AppWindow";
 
 export default function MobileLayout() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const urlAppId = searchParams.get("app") as AppId | null;
+
   const [screen, setScreen] = useState<MobileScreen>("lockscreen");
   const [openAppId, setOpenAppId] = useState<AppId | null>(null);
 
-  const handleUnlock = useCallback(() => {
-    setScreen("home");
-  }, []);
+  // Sync state with URL params
+  useEffect(() => {
+    if (urlAppId) {
+      setOpenAppId(urlAppId);
+      if (screen !== "app") setScreen("app");
+    } else {
+      // User pressed back or we have no app query
+      if (screen === "app") {
+        setScreen("home");
+        setTimeout(() => setOpenAppId(null), 400); // Wait for the close animation
+      }
+    }
+  }, [urlAppId, screen]);
 
-  const handleOpenApp = useCallback((id: AppId) => {
-    setOpenAppId(id);
-    setScreen("app");
-  }, []);
+  const handleUnlock = useCallback(() => {
+    if (urlAppId) {
+      setScreen("app");
+    } else {
+      setScreen("home");
+    }
+  }, [urlAppId]);
+
+  const handleOpenApp = useCallback(
+    (id: AppId) => {
+      // Pushing to URL instead of manually setting state.
+      // The useEffect will handle the state update!
+      router.push(`${pathname}?app=${id}`);
+    },
+    [router, pathname]
+  );
 
   const handleCloseApp = useCallback(() => {
-    setScreen("home");
-    setTimeout(() => setOpenAppId(null), 400);
-  }, []);
+    // Going back triggers popstate, which clears the query param 
+    // and lets our useEffect close the app.
+    router.back();
+  }, [router]);
 
   return (
-    <div className="h-screen w-screen overflow-hidden relative bg-black">
+    <div className="h-dvh w-screen overflow-hidden relative bg-black">
       {/* Lock Screen */}
       <AnimatePresence>
         {screen === "lockscreen" && (

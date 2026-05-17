@@ -39,11 +39,7 @@ import { DESKTOP_ICON_LAYOUT, ANIMATION_PRESETS } from "@/config/constants";
 import type { AppId } from "@/types/desktop";
 import GuidanceModal from "@/components/Utilities/GuidanceModal";
 
-// Add preferences icon to the desktop layout
-const FULL_ICON_LAYOUT = [
-  ...DESKTOP_ICON_LAYOUT,
-  { id: "preferences" as AppId, position: { x: 158, y: 344 } },
-];
+
 
 export default function Desktop() {
   const { windows, openWindow, closeWindow, focusWindow, minimizeWindow } =
@@ -94,11 +90,14 @@ export default function Desktop() {
   }, []);
 
   return (
-    <div
+    <motion.div
       className="h-screen w-screen overflow-hidden relative"
       onClick={handleDesktopClick}
       onContextMenu={handleDesktopRightClick}
       ref={constraintsRef}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
     >
       {/* Wallpaper — crossfades when changed from Preferences */}
       <AnimatePresence mode="wait">
@@ -115,12 +114,13 @@ export default function Desktop() {
 
       {/* Desktop Icons */}
       {prefs.showDesktopIcons &&
-        FULL_ICON_LAYOUT.map((iconConfig) => (
+        DESKTOP_ICON_LAYOUT.map((iconConfig, index) => (
           <DesktopIcon
             key={iconConfig.id}
             iconId={iconConfig.id}
             position={iconConfig.position}
             onDoubleClick={() => handleIconDoubleClick(iconConfig.id)}
+            index={index}
           />
         ))}
 
@@ -145,7 +145,7 @@ export default function Desktop() {
           >
             {[
               { label: "⚙️ Preferences", action: handleOpenPreferences },
-              { label: "❓ Codex OS Guide", action: handleShowGuidance },
+              { label: "❓ OrbitOS Guide", action: handleShowGuidance },
             ].map(({ label, action }) => (
               <button
                 key={label}
@@ -168,6 +168,6 @@ export default function Desktop() {
       />
 
       <GuidanceModal open={showGuidance} onOpenChange={setShowGuidance} />
-    </div>
+    </motion.div>
   );
 }

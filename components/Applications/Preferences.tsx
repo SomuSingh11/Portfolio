@@ -2,19 +2,15 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  Palette,
   Monitor,
-  Type,
   Terminal as TerminalIcon,
-  Accessibility,
   Info,
   RotateCcw,
   Check,
-  ChevronRight,
-  ArrowLeft,
 } from "lucide-react";
+import SidebarLayout from "@/components/Utilities/SidebarLayout";
 import {
   usePreferences,
   FONT_CONFIG,
@@ -28,11 +24,7 @@ import { WALLPAPERS, PERSONAL_INFO } from "@/config/constants";
 
 type Section =
   | "wallpaper"
-  | "appearance"
-  | "typography"
   | "terminal"
-  | "desktop"
-  | "accessibility"
   | "about";
 
 const SECTIONS: Array<{
@@ -48,44 +40,15 @@ const SECTIONS: Array<{
     description: "Desktop background",
   },
   {
-    id: "appearance",
-    label: "Appearance",
-    icon: Palette,
-    description: "Colors & animations",
-  },
-  {
-    id: "typography",
-    label: "Typography",
-    icon: Type,
-    description: "Fonts & sizes",
-  },
-  {
     id: "terminal",
     label: "Terminal",
     icon: TerminalIcon,
     description: "Terminal theme",
   },
-  {
-    id: "desktop",
-    label: "Desktop",
-    icon: Monitor,
-    description: "Layout & clock",
-  },
-  {
-    id: "accessibility",
-    label: "Accessibility",
-    icon: Accessibility,
-    description: "Motion & contrast",
-  },
   { id: "about", label: "About", icon: Info, description: "System info" },
 ];
 
 // ─── Shared UI ────────────────────────────────────────────────────────────────
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="text-base font-semibold text-white mb-4">{children}</h2>
-  );
-}
 
 function SettingRow({
   label,
@@ -231,106 +194,6 @@ function WallpaperSection() {
   );
 }
 
-function AppearanceSection() {
-  const { prefs, set } = usePreferences();
-  return (
-    <div className="space-y-1">
-      <SettingRow
-        label="Mode"
-        description="Light mode applies a lighter color scheme"
-      >
-        <SegmentedControl
-          value={prefs.appearance}
-          onChange={(v) => set("appearance", v as any)}
-          options={[
-            { value: "dark", label: "Dark" },
-            { value: "light", label: "Light" },
-          ]}
-        />
-      </SettingRow>
-      <SettingRow
-        label="Accent Color"
-        description="Buttons, highlights and interactive elements"
-      >
-        <div className="flex gap-2 flex-wrap justify-end max-w-[180px]">
-          {(Object.entries(ACCENT_CONFIG) as [AccentColor, any][]).map(
-            ([key, config]) => (
-              <button
-                key={key}
-                onClick={() => set("accentColor", key)}
-                title={config.label}
-                className={`w-6 h-6 rounded-full transition-transform hover:scale-110 ${
-                  prefs.accentColor === key
-                    ? "ring-2 ring-white ring-offset-2 ring-offset-gray-900 scale-110"
-                    : ""
-                }`}
-                style={{ backgroundColor: config.hex }}
-              />
-            ),
-          )}
-        </div>
-      </SettingRow>
-      <SettingRow label="Animation Speed">
-        <SegmentedControl
-          value={prefs.animationSpeed}
-          onChange={(v) => set("animationSpeed", v as any)}
-          options={[
-            { value: "full", label: "Full" },
-            { value: "reduced", label: "Less" },
-            { value: "none", label: "Off" },
-          ]}
-        />
-      </SettingRow>
-    </div>
-  );
-}
-
-function TypographySection() {
-  const { prefs, set } = usePreferences();
-  return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        {(Object.entries(FONT_CONFIG) as [FontFamily, any][]).map(
-          ([key, config]) => (
-            <button
-              key={key}
-              onClick={() => set("fontFamily", key)}
-              className={`w-full flex items-center justify-between p-3.5 rounded-xl border transition-colors ${
-                prefs.fontFamily === key
-                  ? "border-[hsl(var(--accent-hsl))] bg-[hsl(var(--accent-hsl))]/10"
-                  : "border-gray-700 bg-gray-800/50 hover:border-gray-600"
-              }`}
-            >
-              <div className="text-left min-w-0">
-                <p className="text-sm font-medium text-white">{config.label}</p>
-                <p className="text-xs text-gray-500 mt-0.5 truncate">
-                  {config.description}
-                </p>
-              </div>
-              <span
-                className="text-base text-gray-300 ml-3 flex-shrink-0"
-                style={{ fontFamily: config.cssVar }}
-              >
-                {config.preview}
-              </span>
-            </button>
-          ),
-        )}
-      </div>
-      <SettingRow label="Font Size">
-        <SegmentedControl
-          value={prefs.fontSize}
-          onChange={(v) => set("fontSize", v as any)}
-          options={[
-            { value: "sm", label: "S" },
-            { value: "base", label: "M" },
-            { value: "lg", label: "L" },
-          ]}
-        />
-      </SettingRow>
-    </div>
-  );
-}
 
 function TerminalSection() {
   const { prefs, set } = usePreferences();
@@ -394,58 +257,6 @@ function TerminalSection() {
   );
 }
 
-function DesktopSection() {
-  const { prefs, set } = usePreferences();
-  return (
-    <div className="space-y-1">
-      <SettingRow
-        label="Desktop Icons"
-        description="Show icons on the desktop surface"
-      >
-        <Toggle
-          value={prefs.showDesktopIcons}
-          onChange={(v) => set("showDesktopIcons", v)}
-        />
-      </SettingRow>
-      <SettingRow label="Clock Format">
-        <SegmentedControl
-          value={prefs.clockFormat}
-          onChange={(v) => set("clockFormat", v as any)}
-          options={[
-            { value: "12h", label: "12h" },
-            { value: "24h", label: "24h" },
-          ]}
-        />
-      </SettingRow>
-    </div>
-  );
-}
-
-function AccessibilitySection() {
-  const { prefs, set } = usePreferences();
-  return (
-    <div className="space-y-1">
-      <SettingRow
-        label="Reduce Motion"
-        description="Minimises animations throughout the OS"
-      >
-        <Toggle
-          value={prefs.reduceMotion}
-          onChange={(v) => set("reduceMotion", v)}
-        />
-      </SettingRow>
-      <SettingRow
-        label="High Contrast"
-        description="Increases contrast for text and borders"
-      >
-        <Toggle
-          value={prefs.highContrast}
-          onChange={(v) => set("highContrast", v)}
-        />
-      </SettingRow>
-    </div>
-  );
-}
 
 function AboutSection({ onReset }: { onReset: () => void }) {
   const stack = [
@@ -466,7 +277,7 @@ function AboutSection({ onReset }: { onReset: () => void }) {
             className="w-12 h-12 rounded-full border-2 border-gray-600 flex-shrink-0"
           />
           <div className="min-w-0">
-            <p className="text-white font-bold">Codex OS</p>
+            <p className="text-white font-bold">OrbitOS</p>
             <p className="text-gray-400 text-xs">Version 1.0.0</p>
             <p className="text-gray-500 text-xs mt-0.5">
               Built by{" "}
@@ -527,161 +338,26 @@ function AboutSection({ onReset }: { onReset: () => void }) {
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export default function Preferences() {
-  const [activeSection, setActiveSection] = useState<Section | null>(null);
   const { reset } = usePreferences();
 
-  const renderSection = (s: Section) => {
-    switch (s) {
+  const renderSection = (id: string) => {
+    switch (id as Section) {
       case "wallpaper":
         return <WallpaperSection />;
-      case "appearance":
-        return <AppearanceSection />;
-      case "typography":
-        return <TypographySection />;
       case "terminal":
         return <TerminalSection />;
-      case "desktop":
-        return <DesktopSection />;
-      case "accessibility":
-        return <AccessibilitySection />;
       case "about":
         return <AboutSection onReset={reset} />;
+      default:
+        return null;
     }
   };
 
   return (
-    <div className="h-full bg-gray-900 text-white flex overflow-hidden">
-      {/* ── DESKTOP: sidebar + content side by side ── */}
-      <div className="hidden md:flex h-full w-full overflow-hidden">
-        {/* Sidebar */}
-        <div className="w-52 flex-shrink-0 bg-gray-800/40 border-r border-gray-700/60 flex flex-col py-3">
-          <p className="px-4 text-[10px] font-semibold text-gray-600 uppercase tracking-wider mb-2">
-            System Preferences
-          </p>
-          {SECTIONS.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              onClick={() => setActiveSection(id)}
-              className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors mx-2 rounded-lg ${
-                activeSection === id
-                  ? "bg-[hsl(var(--accent-hsl))]/15 text-[hsl(var(--accent-hsl))]"
-                  : "text-gray-400 hover:text-white hover:bg-gray-700/50"
-              }`}
-            >
-              <Icon className="w-4 h-4 flex-shrink-0" />
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto min-w-0 min-h-0 flex justify-center">
-          <div className="w-full max-w-4xl">
-            <AnimatePresence mode="wait">
-              {activeSection ? (
-                <motion.div
-                  key={activeSection}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.15 }}
-                  className="p-6 w-full"
-                >
-                  {renderSection(activeSection)}
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="empty"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="h-full flex items-center justify-center p-8"
-                >
-                  <div className="text-center">
-                    <div className="w-16 h-16 rounded-2xl bg-gray-800 flex items-center justify-center mx-auto mb-4">
-                      <Palette className="w-8 h-8 text-gray-600" />
-                    </div>
-                    <p className="text-gray-500 text-sm">
-                      Select a category to customise
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </div>
-
-      {/* ── MOBILE: list → detail navigation ── */}
-      <div className="flex md:hidden h-full w-full flex-col overflow-hidden">
-        <AnimatePresence mode="wait">
-          {!activeSection ? (
-            /* Section list */
-            <motion.div
-              key="list"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.18 }}
-              className="flex-1 overflow-y-auto"
-            >
-              <div className="px-4 pt-4 pb-2 border-b border-gray-800">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
-                  System Preferences
-                </p>
-              </div>
-              <div className="py-2">
-                {SECTIONS.map(({ id, label, icon: Icon, description }) => (
-                  <button
-                    key={id}
-                    onClick={() => setActiveSection(id)}
-                    className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-800/60 transition-colors border-b border-gray-800/50 last:border-0"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-gray-800 flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-4.5 h-4.5 text-[hsl(var(--accent-hsl))]" />
-                    </div>
-                    <div className="flex-1 text-left min-w-0">
-                      <p className="text-sm font-medium text-white">{label}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">
-                        {description}
-                      </p>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-gray-600 flex-shrink-0" />
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          ) : (
-            /* Section detail */
-            <motion.div
-              key={activeSection}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.18 }}
-              className="flex-1 flex flex-col overflow-hidden"
-            >
-              {/* Mobile back header */}
-              <div className="flex-shrink-0 border-b border-gray-800 px-4 py-3 flex items-center gap-3">
-                <button
-                  onClick={() => setActiveSection(null)}
-                  className="flex items-center gap-1.5 text-[hsl(var(--accent-hsl))] text-sm font-medium"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Preferences
-                </button>
-                <span className="text-white text-sm font-semibold ml-auto">
-                  {SECTIONS.find((s) => s.id === activeSection)?.label}
-                </span>
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 overflow-y-auto p-4">
-                {renderSection(activeSection)}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
+    <SidebarLayout
+      title="System Preferences"
+      nav={SECTIONS}
+      renderSection={renderSection}
+    />
   );
 }

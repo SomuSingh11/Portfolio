@@ -16,7 +16,6 @@ export const SOCIAL_LINKS = {
   linkedin: "https://www.linkedin.com/in/somusingh11/",
   x: "https://x.com/SomuSingh_",
   calendly: "https://calendly.com/your-username",
-  hashnode: "https://somusblog.hashnode.dev",
 } as const;
 
 // ─── External APIs ────────────────────────────────────────────────────────────
@@ -26,11 +25,6 @@ export const API_CONFIG = {
     baseUrl: "https://api.github.com",
     reposPerPage: 8,
     allReposPerPage: 100,
-  },
-  hashnode: {
-    host: "somusblog.hashnode.dev",
-    apiUrl: "https://gql.hashnode.com",
-    postsPerPage: 10,
   },
   web3forms: {
     accessKey: process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ?? "",
@@ -100,11 +94,6 @@ export const APP_META: Record<
     icon: "resume.svg",
     description: "Download resume",
   },
-  hashnode: {
-    title: "Hashnode",
-    icon: "Hashnode_icon.svg",
-    description: "Blog posts",
-  },
   achievements: {
     title: "Achievements",
     icon: "achievements.svg",
@@ -114,6 +103,11 @@ export const APP_META: Record<
     title: "Preferences",
     icon: "preferences.svg",
     description: "Customize your experience",
+  },
+  assistant: {
+    title: "AI Chat",
+    icon: "assistant.svg",
+    description: "Chat with an AI about Somu",
   },
 };
 
@@ -129,7 +123,8 @@ export const DESKTOP_ICON_LAYOUT: Array<{
   { id: "contact", position: { x: 50, y: 450 } },
   { id: "github", position: { x: 170, y: 52 } },
   { id: "resume", position: { x: 165, y: 150 } },
-  { id: "hashnode", position: { x: 158, y: 247 } },
+  { id: "preferences", position: { x: 165, y: 250 } },
+  { id: "assistant", position: { x: 165, y: 350 } },
 ];
 
 // ─── Animation Presets ────────────────────────────────────────────────────────

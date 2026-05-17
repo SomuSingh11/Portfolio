@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 
 const BOOT_LINES = [
-  "Booting Codex kernel v1.0...",
+  "Booting OrbitOS kernel v1.0...",
   "Mounting root filesystem...",
   "Loading device drivers...",
   "Configuring network interfaces...",
@@ -14,9 +14,9 @@ const BOOT_LINES = [
   "All services started successfully.",
 ];
 
-const LOGIN_LINE = "codex login: guest";
-const CHAR_DELAY = 35; // ms per character
-const LINE_PAUSE = 120; // ms between lines
+const LOGIN_LINE = "orbitos login: guest";
+const CHAR_DELAY = 10; // ms per character
+const LINE_PAUSE = 30; // ms between lines
 
 interface SetupScreenProps {
   onComplete: () => void;

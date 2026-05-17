@@ -1,287 +1,160 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { motion } from "framer-motion";
-import { Toaster, toast } from "react-hot-toast";
-import {
-  Mail,
-  Send,
-  Github,
-  Linkedin,
-  X as XIcon,
-  Phone,
-  Download,
-} from "lucide-react";
-import { PERSONAL_INFO, SOCIAL_LINKS, API_CONFIG } from "@/config/constants";
+import { Download, MessageCircle } from "lucide-react";
+import { PERSONAL_INFO, SOCIAL_LINKS } from "@/config/constants";
 
-interface FormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
+const LINKS = [
+  {
+    icon: "/logos/gmail.png",
+    label: "shoot me an email",
+    sub: PERSONAL_INFO.email,
+    href: `mailto:${PERSONAL_INFO.email}`,
+    colorClass: "text-blue-400",
+    bgClass: "bg-blue-900/10",
+    borderClass: "border-blue-800/20",
+  },
+  {
+    icon: "/logos/linkedin.png",
+    label: "connect on linkedin",
+    sub: "where I'm most responsive",
+    href: SOCIAL_LINKS.linkedin,
+    colorClass: "text-sky-400",
+    bgClass: "bg-sky-900/10",
+    borderClass: "border-sky-800/20",
+  },
+  {
+    icon: "/logos/github.png",
+    label: "stalk my code",
+    sub: "github.com/SomuSingh11",
+    href: SOCIAL_LINKS.github,
+    colorClass: "text-gray-300",
+    bgClass: "bg-gray-800/40",
+    borderClass: "border-gray-700/40",
+  },
+  {
+    icon: "/logos/x.png",
+    label: "find me on x",
+    sub: "@SomuSingh_",
+    href: SOCIAL_LINKS.x,
+    colorClass: "text-slate-400",
+    bgClass: "bg-slate-900/10",
+    borderClass: "border-slate-700/30",
+  },
+];
 
-const INITIAL_FORM: FormData = {
-  name: "",
-  email: "",
-  subject: "",
-  message: "",
+const item = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.35 } },
+};
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06 } },
 };
 
 export default function Contact() {
-  const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleDownloadResume = useCallback(() => {
+  const handleDownload = useCallback(() => {
     const link = document.createElement("a");
     link.href = PERSONAL_INFO.resumePath;
     link.download = "SomuSingh_Resume.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success("Resume downloaded!");
   }, []);
 
-  const quickActions = [
-    { icon: Download, label: "Download Resume", action: handleDownloadResume },
-    {
-      icon: Phone,
-      label: "Schedule Call",
-      action: () => window.open(SOCIAL_LINKS.calendly, "_blank"),
-    },
-    {
-      icon: Mail,
-      label: "Email Directly",
-      action: () => window.open(`mailto:${PERSONAL_INFO.email}`),
-    },
-  ];
-
-  const socialLinks = [
-    {
-      icon: Github,
-      href: SOCIAL_LINKS.github,
-      label: "GitHub",
-      color: "text-gray-400",
-    },
-    {
-      icon: Linkedin,
-      href: SOCIAL_LINKS.linkedin,
-      label: "LinkedIn",
-      color: "text-blue-400",
-    },
-    {
-      icon: XIcon,
-      href: SOCIAL_LINKS.x,
-      label: "X / Twitter",
-      color: "text-sky-400",
-    },
-  ];
-
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!API_CONFIG.web3forms.accessKey) {
-        toast.error("Contact form not configured.");
-        return;
-      }
-
-      setIsSubmitting(true);
-      try {
-        const res = await fetch(API_CONFIG.web3forms.submitUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            ...formData,
-            access_key: API_CONFIG.web3forms.accessKey,
-          }),
-        }).then((r) => r.json());
-
-        if (res.success) {
-          toast.success("Message sent! I'll get back to you soon.");
-          setFormData(INITIAL_FORM);
-        } else {
-          throw new Error(res.message ?? "Submission failed");
-        }
-      } catch (err) {
-        toast.error(
-          err instanceof Error ? err.message : "Something went wrong.",
-        );
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [formData],
-  );
-
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    },
-    [],
-  );
-
   return (
-    <div className="h-full bg-gray-900 text-white overflow-y-auto">
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          className: "bg-gray-800 border border-gray-700 text-white",
-        }}
-      />
-
-      <div className="bg-gray-800 border-b border-gray-700 p-4">
-        <div className="flex items-center space-x-3">
-          <Mail className="w-6 h-6 text-blue-400" />
-          <h1 className="text-xl font-bold">Get In Touch</h1>
-        </div>
-      </div>
-
-      <div className="p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left: Quick actions + socials + details */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="space-y-4"
-          >
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
-              <h3 className="text-base font-semibold mb-3">Quick Actions</h3>
-              <div className="space-y-2">
-                {quickActions.map((action) => (
-                  <button
-                    key={action.label}
-                    onClick={action.action}
-                    className="w-full flex items-center space-x-3 p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-left text-sm"
-                  >
-                    <action.icon className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                    <span>{action.label}</span>
-                  </button>
-                ))}
-              </div>
+    <div className="h-full bg-gray-900 text-white flex flex-col items-center overflow-y-auto">
+      <div className="w-full max-w-2xl flex flex-col">
+        {/* ── Header ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="flex-shrink-0 border-b border-gray-800 p-4"
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-sky-600 flex-shrink-0">
+              <MessageCircle className="w-5 h-5 text-white" />
             </div>
-
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
-              <h3 className="text-base font-semibold mb-3">Connect Online</h3>
-              <div className="space-y-2">
-                {socialLinks.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center space-x-3 p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors group text-sm"
-                  >
-                    <link.icon
-                      className={`w-4 h-4 ${link.color} flex-shrink-0`}
-                    />
-                    <span className="flex-1">{link.label}</span>
-                    <span className="text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                      ↗
-                    </span>
-                  </a>
-                ))}
-              </div>
+            <div>
+              <h1 className="text-base font-bold text-white">
+                let&apos;s talk
+              </h1>
+              <p className="text-gray-400 text-xs leading-relaxed">
+                whether it&apos;s about a project, a collab, or just a random
+                chit-chat — I&apos;m always down. find me wherever you&apos;re
+                comfortable.
+              </p>
             </div>
+          </div>
+        </motion.div>
 
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
-              <h3 className="text-base font-semibold mb-3">Details</h3>
-              <div className="space-y-2 text-sm text-gray-300">
-                <div className="flex items-center space-x-2">
-                  <Mail className="w-4 h-4 text-blue-400" />
-                  <span>{PERSONAL_INFO.email}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span>📍</span>
-                  <span>{PERSONAL_INFO.location}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span>🕐</span>
-                  <span>{PERSONAL_INFO.timezone}</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right: Message form */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="bg-gray-800 border border-gray-700 rounded-lg p-5"
-          >
-            <h2 className="text-base font-semibold mb-4">Send a Message</h2>
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Your Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors text-sm"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Your Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors text-sm"
-                />
-              </div>
-              <input
-                type="text"
-                name="subject"
-                placeholder="Subject"
-                value={formData.subject}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors text-sm"
-              />
-              <textarea
-                name="message"
-                placeholder="Your Message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                rows={5}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors resize-none text-sm"
-              />
-              <motion.button
-                type="submit"
-                disabled={isSubmitting}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.99 }}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 text-sm"
+        {/* ── Links ── */}
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="p-4 space-y-3"
+        >
+          {LINKS.map(
+            ({ icon, label, sub, href, colorClass, bgClass, borderClass }) => (
+              <motion.a
+                key={label}
+                variants={item}
+                href={href}
+                target={href.startsWith("mailto") ? undefined : "_blank"}
+                rel="noopener noreferrer"
+                className={`flex items-center gap-3.5 p-4 rounded-xl border ${bgClass} ${borderClass} hover:border-gray-600/70 transition-colors group`}
               >
-                {isSubmitting ? (
-                  <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                    >
-                      <Send className="w-4 h-4" />
-                    </motion.div>
-                    <span>Sending...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-4 h-4" />
-                    <span>Send Message</span>
-                  </>
-                )}
-              </motion.button>
-            </form>
-          </motion.div>
-        </div>
+                {/* Brand logo */}
+                <div className="w-9 h-9 rounded-xl bg-white/80 overflow-hidden flex-shrink-0 flex items-center justify-center">
+                  <img
+                    src={icon}
+                    alt={label}
+                    className="w-6 h-6 object-contain"
+                  />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-white truncate">
+                    {label}
+                  </p>
+                  <p className="text-[10px] text-gray-500 font-mono mt-0.5 truncate">
+                    {sub}
+                  </p>
+                </div>
+
+                <span
+                  className={`text-sm opacity-0 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all ${colorClass}`}
+                >
+                  ↗
+                </span>
+              </motion.a>
+            ),
+          )}
+
+          {/* ── Resume ── */}
+          <motion.button
+            variants={item}
+            onClick={handleDownload}
+            className="w-full flex items-center gap-3.5 p-4 rounded-xl border bg-gray-800/40 border-gray-700/40 hover:border-gray-600/70 transition-colors group text-left"
+          >
+            <div className="p-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 flex-shrink-0">
+              <Download className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-white">grab my resume</p>
+              <p className="text-[10px] text-gray-500 font-mono mt-0.5">
+                SomuSingh_Resume.pdf
+              </p>
+            </div>
+            <span className="text-sm text-gray-400 opacity-0 group-hover:opacity-60 group-hover:translate-y-0.5 transition-all">
+              ↓
+            </span>
+          </motion.button>
+        </motion.div>
       </div>
     </div>
   );

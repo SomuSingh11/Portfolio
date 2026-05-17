@@ -128,7 +128,7 @@ export default function NotificationPanel({
                     />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-white text-xs font-semibold">Codex OS</p>
+                    <p className="text-white text-xs font-semibold">OrbitOS</p>
                     <p className="text-white/70 text-xs mt-0.5">
                       Welcome to {PERSONAL_INFO.name}&apos;s portfolio
                     </p>

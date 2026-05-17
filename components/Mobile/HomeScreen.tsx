@@ -142,7 +142,7 @@ export default function HomeScreen({ onOpenApp }: HomeScreenProps) {
       </div>
 
       {/* Notification panel */}
-      <NotificationPanel open={notifOpen} onClose={() => setNotifOpen(false)} />
+      {/* <NotificationPanel open={notifOpen} onClose={() => setNotifOpen(false)} /> */}
     </div>
   );
 }

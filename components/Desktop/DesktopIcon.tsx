@@ -10,12 +10,14 @@ interface DesktopIconProps {
   iconId: AppId;
   position: { x: number; y: number };
   onDoubleClick: () => void;
+  index?: number;
 }
 
 export default function DesktopIcon({
   iconId,
   position,
   onDoubleClick,
+  index = 0,
 }: DesktopIconProps) {
   const [isSelected, setIsSelected] = useState(false);
   const meta = APP_META[iconId];
@@ -45,6 +47,13 @@ export default function DesktopIcon({
       onClick={handleClick}
       onDoubleClick={onDoubleClick}
       onKeyDown={handleKeyDown}
+      initial={{ opacity: 0, y: 16, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{
+        duration: 0.35,
+        delay: 0.15 + index * 0.06,
+        ease: "easeOut",
+      }}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       role="button"
@@ -66,3 +75,4 @@ export default function DesktopIcon({
     </motion.div>
   );
 }
+
