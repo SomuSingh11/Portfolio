@@ -20,8 +20,8 @@ import { GoogleGenAI } from "@google/genai";
 import { checkRateLimit, LIMITS } from "@/lib/rateLimit";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
-const MAX_MESSAGE_LENGTH = 4_000;   // characters
-const MAX_HISTORY_TURNS  = 20;      // message pairs kept in context
+const MAX_MESSAGE_LENGTH = 4_000; // characters
+const MAX_HISTORY_TURNS = 20; // message pairs kept in context
 
 // ─── System Prompt ────────────────────────────────────────────────────────────
 // Injected server-side only — the client never sees this.
@@ -104,9 +104,9 @@ You know Somu really well — his projects, his thinking, his stack, and what dr
 ## Skills
 
 - **Languages**: Java, JavaScript, TypeScript, C++, Python, SQL
-- **Frameworks**: React.js, Next.js, Node.js, Express.js, LangChain, Tailwind CSS, shadcn/ui, DaisyUI, Leaflet.js
+- **Frameworks**: React.js, Next.js, Node.js, Express.js, Tailwind CSS, shadcn/ui, DaisyUI, Leaflet.js
 - **Tools**: Git, MongoDB, PostgreSQL, Prisma, Postman, Clerk, Convex
-- **AI/ML**: Google Gemini API, RAG pipelines, LangChain
+- **AI/ML**: Google Gemini API, RAG pipelines
 - **Embedded**: ESP32, WebSockets, C++ systems programming
 - **OS**: Windows, Linux
 
@@ -176,10 +176,16 @@ export async function POST(req: NextRequest) {
   const { message, history } = body;
 
   if (!message || typeof message !== "string") {
-    return NextResponse.json({ error: "message is required." }, { status: 400 });
+    return NextResponse.json(
+      { error: "message is required." },
+      { status: 400 },
+    );
   }
   if (message.trim().length === 0) {
-    return NextResponse.json({ error: "message cannot be empty." }, { status: 400 });
+    return NextResponse.json(
+      { error: "message cannot be empty." },
+      { status: 400 },
+    );
   }
   if (message.length > MAX_MESSAGE_LENGTH) {
     return NextResponse.json(
@@ -188,7 +194,10 @@ export async function POST(req: NextRequest) {
     );
   }
   if (!Array.isArray(history)) {
-    return NextResponse.json({ error: "history must be an array." }, { status: 400 });
+    return NextResponse.json(
+      { error: "history must be an array." },
+      { status: 400 },
+    );
   }
 
   // 4. Trim history to the last N turns to control context size
