@@ -39,6 +39,12 @@ import {
   Smartphone,
   Cpu,
   Mic,
+  Tv,
+  Linkedin,
+  Music,
+  MapPin,
+  TerminalIcon,
+  BookOpenText,
 } from "lucide-react";
 import type {
   Project,
@@ -84,7 +90,7 @@ const Section = memo(function Section({
 const Divider = () => <div className="border-t border-gray-800" />;
 
 // ─── Icon Mapping ─────────────────────────────────────────────────────────────
-const LUCIDE_ICONS: Record<string, React.ElementType> = {
+export const LUCIDE_ICONS: Record<string, React.ElementType> = {
   eye: Eye,
   apps: LayoutGrid,
   lightbulb: Lightbulb,
@@ -108,7 +114,17 @@ const LUCIDE_ICONS: Record<string, React.ElementType> = {
   hash: Hash,
   smartphone: Smartphone,
   cpu: Cpu,
-  mic: Mic
+  mic: Mic,
+  github: Github,
+  linkedin: Linkedin,
+  tv: Tv,
+  music: Music,
+  book: BookOpen,
+  terminal: TerminalIcon,
+  trophy: Trophy,
+  "map-pin": MapPin,
+  external: ExternalLink,
+  hashnode: BookOpenText,
 };
 
 // ─── Status badge ─────────────────────────────────────────────────────────────

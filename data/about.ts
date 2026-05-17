@@ -1,11 +1,13 @@
 // @/data/about.ts
-
 export const BIO = {
   name: "Somu Singh",
-  tagline: "Hi, I'm Somu. Just a fellow constantly impressed by how a few ideas, some logic, and a lot of curiosity can build incredible things.",
+  tagline:
+    "Hi, I'm Somu. Just a fellow constantly impressed by how a few ideas, some logic, and a lot of curiosity can build incredible things.",
   location: "India",
-  status: "Open to opportunities",
+  status: "Always down for interesting conversations.",
   avatar: "https://github.com/SomuSingh11.png",
+  philosophy: "Stay curious. Build things. See the world. That's the plan.",
+
   socials: [
     { label: "GitHub", url: "https://github.com/SomuSingh11", icon: "github" },
     {
@@ -13,12 +15,54 @@ export const BIO = {
       url: "https://www.linkedin.com/in/somusingh11/",
       icon: "linkedin",
     },
-    { label: "Email", url: "mailto:somusingh0110@gmail.com", icon: "mail" },
+    { label: "Email", url: "mailto:somusingh1104@gmail.com", icon: "mail" },
+    {
+      label: "Hashnode",
+      url: "https://somusingh.hashnode.dev/",
+      icon: "hashnode",
+    },
   ],
-  badges: [
-    { label: "HackByte 3.0 Finalist", color: "yellow" },
-    { label: "CSE Student", color: "cyan" },
-  ],
+
+  about: {
+    paragraphs: [
+      `Hey, I'm Somu. I get <b>obsessed</b> about stuff — problems, ideas, how things work, aesthetics. I build things. Code, systems, random projects. <b>If I like an idea, I'll build it</b> just to see if I can. That's basically how I learn.`,
+      `I care about <b>quality over quantity</b>. I'll spend hours getting something just right, but I also know when to ship it and move on.`,
+    ],
+    interests: [
+      { icon: "tv", label: "Anime", sub: "FMA:B, Haikyuu, Death Note" },
+      {
+        icon: "music",
+        label: "Rap & Hip-hop",
+        sub: "KR$NA, Seedhe Maut, J. Cole",
+      },
+      { icon: "cpu", label: "PC Setup", sub: "Mechanical kb, forever WIP" },
+      { icon: "book", label: "Reading", sub: "Just getting started" },
+      {
+        icon: "moon",
+        label: "Night owl-ish",
+        sub: "Also a morning person somehow",
+      },
+      {
+        icon: "terminal",
+        label: "Building things",
+        sub: "always something in progress",
+      },
+    ],
+    quirks: [
+      "console.log everything, no shame",
+      "tabs: code + docs + GPT + Claude + 12 SO pages",
+      "can't sleep with a bug unresolved",
+      "will rewrite it if it can be more modular",
+      "abandoned more projects than I can count",
+      "midnight snack is non-negotiable",
+    ],
+    now: {
+      watching: "whatever anime I randomly picked this week",
+      listening: "KR$NA, Seedhe Maut, Big Scratch, J. Cole",
+      reading: "just started — one book, let's see",
+      eating: "Maggi. Always Maggi.",
+    },
+  },
 };
 
 export const EDUCATION = [
@@ -56,7 +100,14 @@ export const STACK = [
   },
   {
     category: "Backend",
-    items: ["Node.js", "Express.js", "MongoDB", "PostgreSQL", "Prisma", "Websockets"],
+    items: [
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "PostgreSQL",
+      "Prisma",
+      "Websockets",
+    ],
   },
   {
     category: "AI / ML",
@@ -200,9 +251,23 @@ export const INTERESTS = {
   ],
 };
 
-export const NOW = {
-  building: "ashura-core-s3-idf — ESP32-S3 firmware",
-  watching: "Black Clover",
-  listening: "Seedhe Maut, Big-Scratch, J.Cole",
-  reading: "One Thing",
-};
+export const certifications = [
+  {
+    label: "Cisco Networking Basics",
+    issuer: "Cisco Networking Academy",
+    image: "/certificates/cisco.png",
+    url: "https://www.credly.com/badges/0e59880f-0776-4a7d-b3e4-fedb415862dc/linked_in_profile",
+  },
+  {
+    label: "Postman API Fundamentals Student Expert",
+    issuer: "Postman",
+    image: "/certificates/postman.png",
+    url: "https://badges.parchment.com/public/assertions/sZLW6V5oT5yAgMJfU5RDSw",
+  },
+  {
+    label: "Introduction to MCP",
+    issuer: "Anthropic Education",
+    image: "/certificates/mcp.png",
+    url: "https://verify.skilljar.com/c/g4sy5bjdo43c",
+  },
+];

@@ -210,8 +210,8 @@ const projects: Project[] = [
     demo: "https://github.com/SomuSingh11/Ashura-core-s3-idf",
     repo: "https://github.com/SomuSingh11/Ashura-core-s3-idf",
     media: imgs([
-      "/projectPhotos/Ashura/1.jpg",
-      "/projectPhotos/Ashura/2.jpg",
+      "/projectPhotos/Ashura/1.jpeg",
+      "/projectPhotos/Ashura/2.jpeg",
     ]),
     architectureDescription:
       "Ashura follows a modular, component-based OS architecture powered by FreeRTOS task pinning. Core 1 runs the primary event loop, orchestrating the `display` (U8g2), `ui` (stack-based scene navigation), `network` (WebSocket client), and `storage` (NVS) components. An `EventBus` provides decoupled pub/sub communication across the system, while a `MessageRouter` within the `services` component chains handlers for incoming remote commands. Core 0 is deliberately reserved for the `audio` and `voice` components (currently in development) to poll an I2S microphone for intent recognition. All inter-core communication is handled safely via bounded FreeRTOS Queues.",

@@ -4,15 +4,10 @@
 import { memo } from "react";
 import {
   MapPin,
-  Zap,
-  Github,
-  Linkedin,
-  Mail,
   ExternalLink,
   GraduationCap,
   Layers,
   Heart,
-  Radio,
   User,
   Code2,
   Globe,
@@ -23,15 +18,15 @@ import {
   Gamepad2,
   Tv2,
   Music2,
-  BookOpen,
 } from "lucide-react";
-import { BIO, EDUCATION, STACK, INTERESTS, NOW } from "@/data/about";
+import { BIO, EDUCATION, STACK, INTERESTS, certifications } from "@/data/about";
 import SidebarLayout from "@/components/Utilities/SidebarLayout";
+import { LUCIDE_ICONS } from "../Projects/ProjectDetail";
 
 // ─── Nav config ──────────────────────────────────────────────────────────────
 
 const NAV = [
-  { id: "bio", label: "Bio", description: "Who I am", icon: User },
+  { id: "bio", label: "Hi, there", description: "Who I am", icon: User },
   {
     id: "education",
     label: "Education",
@@ -50,7 +45,12 @@ const NAV = [
     description: "Games, anime & music",
     icon: Heart,
   },
-  { id: "now", label: "Now", description: "What I'm up to", icon: Radio },
+  {
+    id: "certificates",
+    label: "Certifications",
+    description: "Professional achievements",
+    icon: GraduationCap,
+  },
 ];
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
@@ -62,12 +62,6 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
   Tools: Wrench,
 };
 
-const SOCIAL_ICONS: Record<string, React.ElementType> = {
-  github: Github,
-  linkedin: Linkedin,
-  mail: Mail,
-};
-
 function Divider() {
   return <div className="border-b border-gray-800/80" />;
 }
@@ -75,12 +69,14 @@ function Divider() {
 // ─── Bio Section ──────────────────────────────────────────────────────────────
 
 const BioSection = memo(function BioSection() {
+  const { about } = BIO;
+
   return (
-    <div className="space-y-4">
-      {/* Profile card */}
+    <div className="space-y-3 text-sm">
+      {/* ── Profile card ── */}
       <div className="bg-gray-800/60 border border-gray-700 rounded-xl p-4 space-y-4">
-        <div className="flex items-center gap-4">
-          {/* Avatar */}
+        {/* Avatar + name */}
+        <div className="flex items-center gap-3">
           <div className="relative flex-shrink-0">
             <img
               src={BIO.avatar}
@@ -91,7 +87,6 @@ const BioSection = memo(function BioSection() {
                   `https://ui-avatars.com/api/?name=${encodeURIComponent(BIO.name)}&background=1f2937&color=ffffff&size=56&bold=true`;
               }}
             />
-            {/* Online dot */}
             <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-gray-900" />
           </div>
 
@@ -99,7 +94,7 @@ const BioSection = memo(function BioSection() {
             <p className="text-white font-bold text-base leading-tight">
               {BIO.name}
             </p>
-            <p className="text-[hsl(var(--accent-hsl))] text-xs mt-0.5 leading-snug">
+            <p className="text-[hsl(var(--accent-hsl))] text-xs mt-0.5 leading-snug line-clamp-2">
               {BIO.tagline}
             </p>
             <div className="flex items-center gap-1.5 mt-1.5 text-gray-500 text-xs">
@@ -109,32 +104,10 @@ const BioSection = memo(function BioSection() {
           </div>
         </div>
 
-        {/* Badges */}
-        <div className="flex flex-wrap gap-2">
-          {BIO.badges.map((b) => (
-            <span
-              key={b.label}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium"
-              style={{
-                background:
-                  b.color === "yellow"
-                    ? "rgba(234,179,8,0.12)"
-                    : "hsl(var(--accent-hsl) / 0.12)",
-                color:
-                  b.color === "yellow" ? "#fbbf24" : "hsl(var(--accent-hsl))",
-                border: `1px solid ${b.color === "yellow" ? "rgba(234,179,8,0.25)" : "hsl(var(--accent-hsl) / 0.25)"}`,
-              }}
-            >
-              <Zap className="w-3 h-3" />
-              {b.label}
-            </span>
-          ))}
-        </div>
-
         {/* Socials */}
-        <div className="flex flex-wrap gap-2 pt-1">
+        <div className="flex flex-wrap gap-2">
           {BIO.socials.map((s) => {
-            const Icon = SOCIAL_ICONS[s.icon] ?? ExternalLink;
+            const Icon = LUCIDE_ICONS[s.icon] ?? ExternalLink;
             return (
               <a
                 key={s.label}
@@ -151,12 +124,90 @@ const BioSection = memo(function BioSection() {
         </div>
       </div>
 
-      {/* Open to work */}
+      {/* ── About paragraphs ── */}
+      <div className="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 space-y-2.5">
+        {about.paragraphs.map((p, i) => (
+          <p
+            key={i}
+            className="text-gray-400 leading-relaxed [&_b]:text-gray-200 [&_b]:font-medium"
+            dangerouslySetInnerHTML={{ __html: p }}
+          />
+        ))}
+      </div>
+
+      {/* ── Interests ── */}
+      <div className="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4">
+        <p className="text-[10px] font-mono font-medium text-gray-600 uppercase tracking-widest mb-3">
+          into these
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          {about.interests.map(({ icon, label, sub }) => {
+            const Icon = LUCIDE_ICONS[icon] ?? ExternalLink;
+            return (
+              <div
+                key={label}
+                className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-gray-800/60 border border-gray-700/60"
+              >
+                <Icon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-gray-200 leading-tight">
+                    {label}
+                  </p>
+                  <p className="text-[11px] text-gray-500 font-mono mt-0.5 truncate">
+                    {sub}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Quirks ── */}
+      <div className="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4">
+        <p className="text-[10px] font-mono font-medium text-gray-600 uppercase tracking-widest mb-3">
+          also true
+        </p>
+        <ul className="space-y-1.5">
+          {about.quirks.map((q) => (
+            <li key={q} className="flex items-start gap-2 text-gray-400">
+              <span className="text-gray-600 mt-0.5 flex-shrink-0">—</span>
+              <span className="leading-snug">{q}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* ── Now ── */}
+      <div className="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4">
+        <p className="text-[10px] font-mono font-medium text-gray-600 uppercase tracking-widest mb-3">
+          right now
+        </p>
+        <div className="space-y-2">
+          {(Object.entries(about.now) as [string, string][]).map(
+            ([key, val]) => (
+              <div key={key} className="flex items-start gap-2">
+                <span className="text-gray-600 font-mono text-[11px] w-20 flex-shrink-0 pt-0.5">
+                  {key}
+                </span>
+                <span className="text-gray-400 leading-snug">{val}</span>
+              </div>
+            ),
+          )}
+        </div>
+      </div>
+
+      {/* ── Philosophy ── */}
+      <div className="px-4 py-3 rounded-xl border border-dashed border-gray-700">
+        <p className="text-gray-500 italic text-center leading-relaxed">
+          &quot;{BIO.philosophy}&quot;
+        </p>
+      </div>
+
+      {/* ── Status ── */}
       <div className="flex items-center gap-3 px-4 py-3 bg-green-900/15 border border-green-800/30 rounded-xl">
         <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
-        <p className="text-green-400 text-sm">
-          {BIO.status} — feel free to reach out
-        </p>
+        <p className="text-green-400">{BIO.status}</p>
       </div>
     </div>
   );
@@ -363,69 +414,83 @@ const InterestsSection = memo(function InterestsSection() {
   );
 });
 
-// ─── Now Section ──────────────────────────────────────────────────────────────
+// ─── Certification Section ──────────────────────────────────────────────────────────────
 
-const NowSection = memo(function NowSection() {
-  const items = [
-    {
-      icon: Cpu,
-      label: "Building",
-      value: NOW.building,
+const CertificationSection = memo(function CertificationSection() {
+  const CERT_STYLES: Record<
+    string,
+    { colorClass: string; bgClass: string; borderClass: string }
+  > = {
+    Cisco: {
+      colorClass: "text-blue-400",
+      bgClass: "bg-blue-900/10",
+      borderClass: "border-blue-800/25",
+    },
+    Postman: {
+      colorClass: "text-orange-400",
+      bgClass: "bg-orange-900/10",
+      borderClass: "border-orange-800/25",
+    },
+    Anthropic: {
       colorClass: "text-[hsl(var(--accent-hsl))]",
       bgClass: "bg-[hsl(var(--accent-hsl))]/5",
       borderClass: "border-[hsl(var(--accent-hsl))]/20",
     },
-    {
-      icon: Tv2,
-      label: "Watching",
-      value: NOW.watching,
-      colorClass: "text-red-400",
-      bgClass: "bg-red-900/10",
-      borderClass: "border-red-800/25",
+    default: {
+      colorClass: "text-gray-400",
+      bgClass: "bg-gray-800/40",
+      borderClass: "border-gray-700/50",
     },
-    {
-      icon: Music2,
-      label: "Listening",
-      value: NOW.listening,
-      colorClass: "text-green-400",
-      bgClass: "bg-green-900/10",
-      borderClass: "border-green-800/25",
-    },
-    {
-      icon: BookOpen,
-      label: "Reading",
-      value: NOW.reading,
-      colorClass: "text-violet-400",
-      bgClass: "bg-violet-900/10",
-      borderClass: "border-violet-800/25",
-    },
-  ];
-
+  };
   return (
     <div className="space-y-4">
       <p className="text-xs text-gray-600 -mt-2 font-mono">
-        what i&apos;m up to right now
+        certifications & badges
       </p>
 
       <div className="space-y-2.5">
-        {items.map(
-          ({ icon: Icon, label, value, colorClass, bgClass, borderClass }) => (
-            <div
+        {certifications.map(({ label, issuer, image, url }) => {
+          const style = CERT_STYLES[issuer] ?? CERT_STYLES.default;
+          return (
+            <a
               key={label}
-              className={`flex items-start gap-3.5 p-4 rounded-xl border ${bgClass} ${borderClass}`}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center gap-3 p-3 rounded-xl border ${style.borderClass} ${style.bgClass} overflow-hidden group transition-all hover:opacity-90`}
             >
-              <Icon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${colorClass}`} />
-              <div>
+              {/* ── Certificate image (left) ── */}
+              <div className="w-24 h-16 rounded-lg overflow-hidden flex-shrink-0 border border-gray-700/40">
+                <img
+                  src={image}
+                  alt={label}
+                  className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = "none";
+                  }}
+                />
+              </div>
+
+              {/* ── Text (right) ── */}
+              <div className="flex-1 min-w-0">
                 <p
-                  className={`text-[10px] font-semibold uppercase tracking-widest mb-1 opacity-80 ${colorClass}`}
+                  className={`text-[10px] font-semibold uppercase tracking-widest mb-1 opacity-80 ${style.colorClass}`}
                 >
+                  {issuer}
+                </p>
+                <p className="text-white text-xs font-medium leading-snug">
                   {label}
                 </p>
-                <p className="text-white text-sm leading-snug">{value}</p>
               </div>
-            </div>
-          ),
-        )}
+
+              {/* ── Arrow ── */}
+              <ExternalLink
+                className={`w-3.5 h-3.5 flex-shrink-0 opacity-40 group-hover:opacity-100 transition-opacity ${style.colorClass}`}
+              />
+            </a>
+          );
+        })}
       </div>
     </div>
   );
@@ -443,8 +508,8 @@ function renderSection(id: string) {
       return <StackSection />;
     case "interests":
       return <InterestsSection />;
-    case "now":
-      return <NowSection />;
+    case "certificates":
+      return <CertificationSection />;
     default:
       return null;
   }
