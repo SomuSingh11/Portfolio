@@ -26,6 +26,10 @@ export const API_CONFIG = {
     reposPerPage: 8,
     allReposPerPage: 100,
   },
+  leetcode: {
+    username: "somusingh0110",
+    baseUrl: "https://leetcode.com/graphql",
+  },
   web3forms: {
     accessKey: process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ?? "",
     submitUrl: "https://api.web3forms.com/submit",

@@ -38,6 +38,7 @@ import { usePreferences } from "@/store/preferences-store";
 import { DESKTOP_ICON_LAYOUT, ANIMATION_PRESETS } from "@/config/constants";
 import type { AppId } from "@/types/desktop";
 import GuidanceModal from "@/components/Utilities/GuidanceModal";
+import RecentActivityWidget from "@/components/Utilities/RecentActivityWidget";
 
 
 
@@ -166,6 +167,9 @@ export default function Desktop() {
         onWindowClose={closeWindow}
         onWindowMinimize={minimizeWindow}
       />
+
+      {/* Live System Activity Pinned Widget */}
+      <RecentActivityWidget layout="desktop" />
 
       <GuidanceModal open={showGuidance} onOpenChange={setShowGuidance} />
     </motion.div>

@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import AppIcon from "@/components/Mobile/AppIcon";
 import NotificationPanel from "@/components/Mobile/NotificationPanel";
+import RecentActivityWidget from "@/components/Utilities/RecentActivityWidget";
 import { MOBILE_APPS, DOCK_APPS } from "@/config/mobileConfig";
 import type { AppId } from "@/types/desktop";
 import { usePreferences } from "@/store/preferences-store";
@@ -78,7 +79,12 @@ export default function HomeScreen({ onOpenApp }: HomeScreenProps) {
           onDragEnd={handleVerticalSwipe}
         />
 
-        <div className="flex-1 flex flex-col justify-center pt-4">
+        {/* Live Coding Activity Widget */}
+        <div className="pt-14 flex-shrink-0 relative z-30">
+          <RecentActivityWidget layout="mobile" />
+        </div>
+
+        <div className="flex-1 flex flex-col justify-center pt-2">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={page}
