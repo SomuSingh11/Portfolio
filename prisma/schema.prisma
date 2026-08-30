@@ -54,6 +54,8 @@ model Project {
   contributions           String[]
   resultsDescription      String?
   learnings               String?
+  futurePlans             String?
+  relatedProjects         String[] @default([])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

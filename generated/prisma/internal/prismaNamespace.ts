@@ -859,6 +859,8 @@ export const ProjectScalarFieldEnum = {
   contributions: 'contributions',
   resultsDescription: 'resultsDescription',
   learnings: 'learnings',
+  futurePlans: 'futurePlans',
+  relatedProjects: 'relatedProjects',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -1,18 +1,21 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Folder, FolderOpen, ArrowLeft, ExternalLink } from "lucide-react";
-import projects, { type Project } from "@/data/projects";
 import ProjectDetail from "@/components/Projects/ProjectDetail";
+import type { ProjectRecord } from "@/lib/project-service";
 
-const STATUS_ICON: Record<Project["status"], string> = {
+let projectCache: ProjectRecord[] | null = null;
+let projectPromise: Promise<ProjectRecord[]> | null = null;
+
+const STATUS_ICON: Record<ProjectRecord["status"], string> = {
   Completed: "✓",
   "In Progress": "⋯",
   "Hackathon Finalist": "🏆",
 };
 
-const STATUS_COLOR: Record<Project["status"], string> = {
+const STATUS_COLOR: Record<ProjectRecord["status"], string> = {
   Completed: "text-green-400",
   "In Progress": "text-yellow-400",
   "Hackathon Finalist": "text-blue-400",
@@ -24,7 +27,7 @@ function ProjectListItem({
   onClick,
   index,
 }: {
-  project: Project;
+  project: ProjectRecord;
   selected: boolean;
   onClick: () => void;
   index: number;
@@ -73,7 +76,7 @@ function MobileProjectCard({
   onClick,
   index,
 }: {
-  project: Project;
+  project: ProjectRecord;
   onClick: () => void;
   index: number;
 }) {
@@ -131,138 +134,209 @@ function MobileProjectCard({
 }
 
 export default function Projects() {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projects, setProjects] = useState<ProjectRecord[]>([]);
+  const [selectedProject, setSelectedProject] = useState<ProjectRecord | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "detail">("list");
+  const [isLoading, setIsLoading] = useState(true);
 
-  const selectProject = useCallback((project: Project) => {
+  useEffect(() => {
+    let active = true;
+
+    async function loadProjects() {
+      try {
+        if (projectCache) {
+          if (active) {
+            setProjects(projectCache);
+            setIsLoading(false);
+            if (projectCache[0]) setSelectedProject(projectCache[0]);
+          }
+          return;
+        }
+
+        if (!projectPromise) {
+          projectPromise = fetch("/api/projects")
+            .then(async (response) => {
+              if (!response.ok) {
+                return [] as ProjectRecord[];
+              }
+              return (await response.json()) as ProjectRecord[];
+            })
+            .catch(() => [] as ProjectRecord[])
+            .then((data) => {
+              projectCache = data;
+              projectPromise = null;
+              return data;
+            });
+        }
+
+        const data = await projectPromise;
+        if (active) {
+          setProjects(data);
+          setIsLoading(false);
+          if (data[0]) setSelectedProject(data[0]);
+        }
+      } catch {
+        if (active) {
+          setProjects([]);
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadProjects();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const selectProject = useCallback((project: ProjectRecord) => {
     setSelectedProject(project);
     setMobileView("detail");
   }, []);
 
   return (
     <div className="bg-gray-900 text-white h-full overflow-hidden flex flex-col">
-      {/* MOBILE */}
-      <div className="flex flex-col h-full md:hidden">
-        <AnimatePresence mode="wait">
-          {mobileView === "list" ? (
-            <motion.div
-              key="list"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-              className="flex-1 overflow-y-auto"
-            >
-              <div className="px-4 pt-4 pb-3 border-b border-gray-800 flex items-center gap-2">
-                <FolderOpen className="w-5 h-5 text-blue-400" />
-                <h1 className="text-base font-semibold">Projects</h1>
-                <span className="ml-auto text-xs text-gray-500">
-                  {projects.length} projects
-                </span>
+      {isLoading ? (
+        <div className="flex h-full items-center justify-center bg-gray-950/80">
+          <div className="text-center">
+            <div className="mb-4 flex justify-center">
+              <div className="h-9 w-9 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
+            </div>
+            <p className="text-sm font-medium text-blue-300">Accessing database</p>
+            <p className="mt-1 text-xs text-gray-400">Caching project data for a smoother experience</p>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* MOBILE */}
+          <div className="flex flex-col h-full md:hidden">
+            <AnimatePresence mode="wait">
+              {mobileView === "list" ? (
+                <motion.div
+                  key="list"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex-1 overflow-y-auto"
+                >
+                  <div className="px-4 pt-4 pb-3 border-b border-gray-800 flex items-center gap-2">
+                    <FolderOpen className="w-5 h-5 text-blue-400" />
+                    <h1 className="text-base font-semibold">Projects</h1>
+                    <span className="ml-auto text-xs text-gray-500">
+                      {projects.length} projects
+                    </span>
+                  </div>
+                  <div className="p-4 space-y-4">
+                    {projects.map((p, i) => (
+                      <MobileProjectCard
+                        key={p.id}
+                        project={p}
+                        onClick={() => selectProject(p)}
+                        index={i}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="detail"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex-1 flex flex-col overflow-hidden"
+                >
+                  <div className="flex-shrink-0 border-b border-gray-800 px-4 py-3 flex items-center gap-3">
+                    <button
+                      onClick={() => setMobileView("list")}
+                      className="flex items-center gap-1.5 text-blue-400 text-sm font-medium"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      Projects
+                    </button>
+                    <span className="text-white text-sm font-semibold ml-auto truncate">
+                      {selectedProject?.name}
+                    </span>
+                    {selectedProject?.demo && (
+                      <a
+                        href={selectedProject.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-shrink-0 text-blue-400"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
+                  <div className="flex-1 overflow-y-auto">
+                    {selectedProject && (
+                      <ProjectDetail project={selectedProject} relatedProjects={projects} />
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* DESKTOP */}
+          <div className="hidden md:flex h-full overflow-hidden">
+            <div className="w-64 flex-shrink-0 bg-gray-800/50 border-r border-gray-700/60 flex flex-col">
+              <div className="p-4 border-b border-gray-700/60 flex-shrink-0">
+                <h2 className="text-sm font-semibold flex items-center gap-2 text-gray-300">
+                  <FolderOpen className="w-4 h-4 text-blue-400" />
+                  Projects
+                  <span className="ml-auto text-xs text-gray-600">
+                    {projects.length}
+                  </span>
+                </h2>
               </div>
-              <div className="p-4 space-y-4">
+              <div className="flex-1 overflow-y-auto p-2 space-y-1">
                 {projects.map((p, i) => (
-                  <MobileProjectCard
+                  <ProjectListItem
                     key={p.id}
                     project={p}
-                    onClick={() => selectProject(p)}
+                    selected={selectedProject?.id === p.id}
+                    onClick={() => setSelectedProject(p)}
                     index={i}
                   />
                 ))}
               </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="detail"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2 }}
-              className="flex-1 flex flex-col overflow-hidden"
-            >
-              <div className="flex-shrink-0 border-b border-gray-800 px-4 py-3 flex items-center gap-3">
-                <button
-                  onClick={() => setMobileView("list")}
-                  className="flex items-center gap-1.5 text-blue-400 text-sm font-medium"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Projects
-                </button>
-                <span className="text-white text-sm font-semibold ml-auto truncate">
-                  {selectedProject?.name}
-                </span>
-                {selectedProject?.demo && (
-                  <a
-                    href={selectedProject.demo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-shrink-0 text-blue-400"
+            </div>
+            <div className="flex-1 overflow-hidden min-w-0">
+              <AnimatePresence mode="wait">
+                {selectedProject ? (
+                  <motion.div
+                    key={selectedProject.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="h-full overflow-y-auto"
                   >
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
+                    <ProjectDetail
+                      project={selectedProject}
+                      relatedProjects={projects}
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="empty"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="h-full flex items-center justify-center"
+                  >
+                    <div className="text-center text-gray-600">
+                      <FolderOpen className="w-12 h-12 mx-auto mb-3 opacity-40" />
+                      <p className="text-sm">Select a project to explore</p>
+                    </div>
+                  </motion.div>
                 )}
-              </div>
-              <div className="flex-1 overflow-y-auto">
-                {selectedProject && <ProjectDetail project={selectedProject} />}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* DESKTOP */}
-      <div className="hidden md:flex h-full overflow-hidden">
-        <div className="w-64 flex-shrink-0 bg-gray-800/50 border-r border-gray-700/60 flex flex-col">
-          <div className="p-4 border-b border-gray-700/60 flex-shrink-0">
-            <h2 className="text-sm font-semibold flex items-center gap-2 text-gray-300">
-              <FolderOpen className="w-4 h-4 text-blue-400" />
-              Projects
-              <span className="ml-auto text-xs text-gray-600">
-                {projects.length}
-              </span>
-            </h2>
+              </AnimatePresence>
+            </div>
           </div>
-          <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {projects.map((p, i) => (
-              <ProjectListItem
-                key={p.id}
-                project={p}
-                selected={selectedProject?.id === p.id}
-                onClick={() => setSelectedProject(p)}
-                index={i}
-              />
-            ))}
-          </div>
-        </div>
-        <div className="flex-1 overflow-hidden min-w-0">
-          <AnimatePresence mode="wait">
-            {selectedProject ? (
-              <motion.div
-                key={selectedProject.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                className="h-full overflow-y-auto"
-              >
-                <ProjectDetail project={selectedProject} />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="empty"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="h-full flex items-center justify-center"
-              >
-                <div className="text-center text-gray-600">
-                  <FolderOpen className="w-12 h-12 mx-auto mb-3 opacity-40" />
-                  <p className="text-sm">Select a project to explore</p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }

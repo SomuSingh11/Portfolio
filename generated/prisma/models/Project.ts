@@ -56,6 +56,7 @@ export type ProjectMinAggregateOutputType = {
   myRole: string | null
   resultsDescription: string | null
   learnings: string | null
+  futurePlans: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -82,6 +83,7 @@ export type ProjectMaxAggregateOutputType = {
   myRole: string | null
   resultsDescription: string | null
   learnings: string | null
+  futurePlans: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -115,6 +117,8 @@ export type ProjectCountAggregateOutputType = {
   contributions: number
   resultsDescription: number
   learnings: number
+  futurePlans: number
+  relatedProjects: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -151,6 +155,7 @@ export type ProjectMinAggregateInputType = {
   myRole?: true
   resultsDescription?: true
   learnings?: true
+  futurePlans?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -177,6 +182,7 @@ export type ProjectMaxAggregateInputType = {
   myRole?: true
   resultsDescription?: true
   learnings?: true
+  futurePlans?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -210,6 +216,8 @@ export type ProjectCountAggregateInputType = {
   contributions?: true
   resultsDescription?: true
   learnings?: true
+  futurePlans?: true
+  relatedProjects?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -330,6 +338,8 @@ export type ProjectGroupByOutputType = {
   contributions: string[]
   resultsDescription: string | null
   learnings: string | null
+  futurePlans: string | null
+  relatedProjects: string[]
   createdAt: Date
   updatedAt: Date
   _count: ProjectCountAggregateOutputType | null
@@ -386,6 +396,8 @@ export type ProjectWhereInput = {
   contributions?: Prisma.StringNullableListFilter<"Project">
   resultsDescription?: Prisma.StringNullableFilter<"Project"> | string | null
   learnings?: Prisma.StringNullableFilter<"Project"> | string | null
+  futurePlans?: Prisma.StringNullableFilter<"Project"> | string | null
+  relatedProjects?: Prisma.StringNullableListFilter<"Project">
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
 }
@@ -419,6 +431,8 @@ export type ProjectOrderByWithRelationInput = {
   contributions?: Prisma.SortOrder
   resultsDescription?: Prisma.SortOrderInput | Prisma.SortOrder
   learnings?: Prisma.SortOrderInput | Prisma.SortOrder
+  futurePlans?: Prisma.SortOrderInput | Prisma.SortOrder
+  relatedProjects?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -455,6 +469,8 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   contributions?: Prisma.StringNullableListFilter<"Project">
   resultsDescription?: Prisma.StringNullableFilter<"Project"> | string | null
   learnings?: Prisma.StringNullableFilter<"Project"> | string | null
+  futurePlans?: Prisma.StringNullableFilter<"Project"> | string | null
+  relatedProjects?: Prisma.StringNullableListFilter<"Project">
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
 }, "id" | "slug">
@@ -488,6 +504,8 @@ export type ProjectOrderByWithAggregationInput = {
   contributions?: Prisma.SortOrder
   resultsDescription?: Prisma.SortOrderInput | Prisma.SortOrder
   learnings?: Prisma.SortOrderInput | Prisma.SortOrder
+  futurePlans?: Prisma.SortOrderInput | Prisma.SortOrder
+  relatedProjects?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProjectCountOrderByAggregateInput
@@ -529,6 +547,8 @@ export type ProjectScalarWhereWithAggregatesInput = {
   contributions?: Prisma.StringNullableListFilter<"Project">
   resultsDescription?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   learnings?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  futurePlans?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  relatedProjects?: Prisma.StringNullableListFilter<"Project">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
 }
@@ -562,6 +582,8 @@ export type ProjectCreateInput = {
   contributions?: Prisma.ProjectCreatecontributionsInput | string[]
   resultsDescription?: string | null
   learnings?: string | null
+  futurePlans?: string | null
+  relatedProjects?: Prisma.ProjectCreaterelatedProjectsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -595,6 +617,8 @@ export type ProjectUncheckedCreateInput = {
   contributions?: Prisma.ProjectCreatecontributionsInput | string[]
   resultsDescription?: string | null
   learnings?: string | null
+  futurePlans?: string | null
+  relatedProjects?: Prisma.ProjectCreaterelatedProjectsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -628,6 +652,8 @@ export type ProjectUpdateInput = {
   contributions?: Prisma.ProjectUpdatecontributionsInput | string[]
   resultsDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   learnings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  futurePlans?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedProjects?: Prisma.ProjectUpdaterelatedProjectsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -661,6 +687,8 @@ export type ProjectUncheckedUpdateInput = {
   contributions?: Prisma.ProjectUpdatecontributionsInput | string[]
   resultsDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   learnings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  futurePlans?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedProjects?: Prisma.ProjectUpdaterelatedProjectsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -694,6 +722,8 @@ export type ProjectCreateManyInput = {
   contributions?: Prisma.ProjectCreatecontributionsInput | string[]
   resultsDescription?: string | null
   learnings?: string | null
+  futurePlans?: string | null
+  relatedProjects?: Prisma.ProjectCreaterelatedProjectsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -727,6 +757,8 @@ export type ProjectUpdateManyMutationInput = {
   contributions?: Prisma.ProjectUpdatecontributionsInput | string[]
   resultsDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   learnings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  futurePlans?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedProjects?: Prisma.ProjectUpdaterelatedProjectsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -760,6 +792,8 @@ export type ProjectUncheckedUpdateManyInput = {
   contributions?: Prisma.ProjectUpdatecontributionsInput | string[]
   resultsDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   learnings?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  futurePlans?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedProjects?: Prisma.ProjectUpdaterelatedProjectsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -801,6 +835,8 @@ export type ProjectCountOrderByAggregateInput = {
   contributions?: Prisma.SortOrder
   resultsDescription?: Prisma.SortOrder
   learnings?: Prisma.SortOrder
+  futurePlans?: Prisma.SortOrder
+  relatedProjects?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -831,6 +867,7 @@ export type ProjectMaxOrderByAggregateInput = {
   myRole?: Prisma.SortOrder
   resultsDescription?: Prisma.SortOrder
   learnings?: Prisma.SortOrder
+  futurePlans?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -857,6 +894,7 @@ export type ProjectMinOrderByAggregateInput = {
   myRole?: Prisma.SortOrder
   resultsDescription?: Prisma.SortOrder
   learnings?: Prisma.SortOrder
+  futurePlans?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -870,6 +908,10 @@ export type ProjectCreatetechInput = {
 }
 
 export type ProjectCreatecontributionsInput = {
+  set: string[]
+}
+
+export type ProjectCreaterelatedProjectsInput = {
   set: string[]
 }
 
@@ -903,6 +945,11 @@ export type IntFieldUpdateOperationsInput = {
 }
 
 export type ProjectUpdatecontributionsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ProjectUpdaterelatedProjectsInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -942,6 +989,8 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   contributions?: boolean
   resultsDescription?: boolean
   learnings?: boolean
+  futurePlans?: boolean
+  relatedProjects?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["project"]>
@@ -975,6 +1024,8 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   contributions?: boolean
   resultsDescription?: boolean
   learnings?: boolean
+  futurePlans?: boolean
+  relatedProjects?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["project"]>
@@ -1008,6 +1059,8 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   contributions?: boolean
   resultsDescription?: boolean
   learnings?: boolean
+  futurePlans?: boolean
+  relatedProjects?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["project"]>
@@ -1041,11 +1094,13 @@ export type ProjectSelectScalar = {
   contributions?: boolean
   resultsDescription?: boolean
   learnings?: boolean
+  futurePlans?: boolean
+  relatedProjects?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "category" | "status" | "date" | "description" | "tagline" | "tech" | "demo" | "repo" | "published" | "sortOrder" | "media" | "techGroups" | "featuresDeep" | "challenges" | "results" | "duration" | "teamSize" | "problem" | "solution" | "architectureDiagram" | "architectureDescription" | "myRole" | "contributions" | "resultsDescription" | "learnings" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "category" | "status" | "date" | "description" | "tagline" | "tech" | "demo" | "repo" | "published" | "sortOrder" | "media" | "techGroups" | "featuresDeep" | "challenges" | "results" | "duration" | "teamSize" | "problem" | "solution" | "architectureDiagram" | "architectureDescription" | "myRole" | "contributions" | "resultsDescription" | "learnings" | "futurePlans" | "relatedProjects" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
 
 export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Project"
@@ -1079,6 +1134,8 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     contributions: string[]
     resultsDescription: string | null
     learnings: string | null
+    futurePlans: string | null
+    relatedProjects: string[]
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["project"]>
@@ -1532,6 +1589,8 @@ export interface ProjectFieldRefs {
   readonly contributions: Prisma.FieldRef<"Project", 'String[]'>
   readonly resultsDescription: Prisma.FieldRef<"Project", 'String'>
   readonly learnings: Prisma.FieldRef<"Project", 'String'>
+  readonly futurePlans: Prisma.FieldRef<"Project", 'String'>
+  readonly relatedProjects: Prisma.FieldRef<"Project", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Project", 'DateTime'>
 }
