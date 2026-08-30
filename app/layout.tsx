@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "@/styles/mobile.css";
 import { DeviceProvider } from "@/provider/device-provider";
-import { AuthProvider } from "@/provider/auth-provider";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
@@ -52,11 +51,10 @@ export default function RootLayout({
         <meta name="theme-color" content="#000000" />
       </head>
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          <DeviceProvider>{children}</DeviceProvider>
-        </AuthProvider>
+        <DeviceProvider>{children}</DeviceProvider>
       </body>
     </html>
   );
