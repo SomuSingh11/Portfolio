@@ -192,22 +192,25 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect }: UseLifeGrap
       svg.classed("is-hovering", true);
       nodeSel.classed("show-description", (node) => node.id === clusterId || (node.kind === "day" && node.parent === clusterId));
     };
-
-    nodeSel.on("mouseenter", (_event, node) => {
-      const clusterId = node.kind === "cluster" ? node.id : node.parent;
+    const focusCluster = (clusterId: string) => {
       const neighbors = neighborsOf(clusterId);
       nodeSel.classed("dim", (item) => !neighbors.has(item.id));
       showClusterDescriptions(clusterId);
       linkSel.classed("lit", (link) => nodeId(link.source as GraphNode | string) === clusterId || nodeId(link.target as GraphNode | string) === clusterId);
       linkSel.filter((link) => link.kind === "day").classed("active", (link) => nodeId(link.source as GraphNode | string) === clusterId);
+    };
+
+    nodeSel.on("mouseenter", (_event, node) => {
+      const clusterId = node.kind === "cluster" ? node.id : node.parent;
+      focusCluster(clusterId);
     });
     nodeSel.on("mouseleave", () => {
-      nodeSel.classed("dim", false);
-      linkSel.classed("lit", false);
-      linkSel.classed("active", false);
       if (clickedClusterId) {
-        showClusterDescriptions(clickedClusterId);
+        focusCluster(clickedClusterId);
       } else {
+        nodeSel.classed("dim", false);
+        linkSel.classed("lit", false);
+        linkSel.classed("active", false);
         svg.classed("is-hovering", false);
         nodeSel.classed("show-description", false);
       }
@@ -216,7 +219,7 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect }: UseLifeGrap
       event.stopPropagation();
       const clusterId = node.kind === "cluster" ? node.id : node.parent;
       clickedClusterId = clusterId;
-      showClusterDescriptions(clusterId);
+      focusCluster(clusterId);
       if (node.kind === "cluster") {
         nodeSel.classed("selected", (item) => item.id === node.id);
         onClusterSelectRef.current(node);
@@ -264,6 +267,10 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect }: UseLifeGrap
 
   function clearSelection() {
     nodeSelRef.current?.classed("selected", false);
+    nodeSelRef.current?.classed("dim", false);
+    nodeSelRef.current?.classed("show-description", false);
+    linkSelRef.current?.classed("lit", false).classed("active", false);
+    if (svgRef.current) select(svgRef.current).classed("is-hovering", false);
   }
 
   return { svgRef, containerRef, mutedClusters, toggleClusterMute, zoomBy, clearSelection };

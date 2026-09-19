@@ -398,6 +398,14 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Project: 'Project',
+  LifeContentType: 'LifeContentType',
+  LifeCluster: 'LifeCluster',
+  LifeEntry: 'LifeEntry',
+  LifeEntryCluster: 'LifeEntryCluster',
+  LifeClusterRelation: 'LifeClusterRelation',
+  MediaAsset: 'MediaAsset',
+  LifeEntryMedia: 'LifeEntryMedia',
+  LifeGraphSettings: 'LifeGraphSettings',
   User: 'User',
   Account: 'Account',
   Session: 'Session',
@@ -417,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "project" | "user" | "account" | "session" | "verificationToken"
+    modelProps: "project" | "lifeContentType" | "lifeCluster" | "lifeEntry" | "lifeEntryCluster" | "lifeClusterRelation" | "mediaAsset" | "lifeEntryMedia" | "lifeGraphSettings" | "user" | "account" | "session" | "verificationToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -492,6 +500,598 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProjectCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProjectCountAggregateOutputType> | number
+        }
+      }
+    }
+    LifeContentType: {
+      payload: Prisma.$LifeContentTypePayload<ExtArgs>
+      fields: Prisma.LifeContentTypeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LifeContentTypeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeContentTypePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LifeContentTypeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeContentTypePayload>
+        }
+        findFirst: {
+          args: Prisma.LifeContentTypeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeContentTypePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LifeContentTypeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeContentTypePayload>
+        }
+        findMany: {
+          args: Prisma.LifeContentTypeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeContentTypePayload>[]
+        }
+        create: {
+          args: Prisma.LifeContentTypeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeContentTypePayload>
+        }
+        createMany: {
+          args: Prisma.LifeContentTypeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LifeContentTypeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeContentTypePayload>[]
+        }
+        delete: {
+          args: Prisma.LifeContentTypeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeContentTypePayload>
+        }
+        update: {
+          args: Prisma.LifeContentTypeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeContentTypePayload>
+        }
+        deleteMany: {
+          args: Prisma.LifeContentTypeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LifeContentTypeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LifeContentTypeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeContentTypePayload>[]
+        }
+        upsert: {
+          args: Prisma.LifeContentTypeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeContentTypePayload>
+        }
+        aggregate: {
+          args: Prisma.LifeContentTypeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLifeContentType>
+        }
+        groupBy: {
+          args: Prisma.LifeContentTypeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeContentTypeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LifeContentTypeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeContentTypeCountAggregateOutputType> | number
+        }
+      }
+    }
+    LifeCluster: {
+      payload: Prisma.$LifeClusterPayload<ExtArgs>
+      fields: Prisma.LifeClusterFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LifeClusterFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LifeClusterFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterPayload>
+        }
+        findFirst: {
+          args: Prisma.LifeClusterFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LifeClusterFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterPayload>
+        }
+        findMany: {
+          args: Prisma.LifeClusterFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterPayload>[]
+        }
+        create: {
+          args: Prisma.LifeClusterCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterPayload>
+        }
+        createMany: {
+          args: Prisma.LifeClusterCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LifeClusterCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterPayload>[]
+        }
+        delete: {
+          args: Prisma.LifeClusterDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterPayload>
+        }
+        update: {
+          args: Prisma.LifeClusterUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterPayload>
+        }
+        deleteMany: {
+          args: Prisma.LifeClusterDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LifeClusterUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LifeClusterUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterPayload>[]
+        }
+        upsert: {
+          args: Prisma.LifeClusterUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterPayload>
+        }
+        aggregate: {
+          args: Prisma.LifeClusterAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLifeCluster>
+        }
+        groupBy: {
+          args: Prisma.LifeClusterGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeClusterGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LifeClusterCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeClusterCountAggregateOutputType> | number
+        }
+      }
+    }
+    LifeEntry: {
+      payload: Prisma.$LifeEntryPayload<ExtArgs>
+      fields: Prisma.LifeEntryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LifeEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LifeEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryPayload>
+        }
+        findFirst: {
+          args: Prisma.LifeEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LifeEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryPayload>
+        }
+        findMany: {
+          args: Prisma.LifeEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryPayload>[]
+        }
+        create: {
+          args: Prisma.LifeEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryPayload>
+        }
+        createMany: {
+          args: Prisma.LifeEntryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LifeEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryPayload>[]
+        }
+        delete: {
+          args: Prisma.LifeEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryPayload>
+        }
+        update: {
+          args: Prisma.LifeEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryPayload>
+        }
+        deleteMany: {
+          args: Prisma.LifeEntryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LifeEntryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LifeEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryPayload>[]
+        }
+        upsert: {
+          args: Prisma.LifeEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryPayload>
+        }
+        aggregate: {
+          args: Prisma.LifeEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLifeEntry>
+        }
+        groupBy: {
+          args: Prisma.LifeEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeEntryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LifeEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeEntryCountAggregateOutputType> | number
+        }
+      }
+    }
+    LifeEntryCluster: {
+      payload: Prisma.$LifeEntryClusterPayload<ExtArgs>
+      fields: Prisma.LifeEntryClusterFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LifeEntryClusterFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryClusterPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LifeEntryClusterFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryClusterPayload>
+        }
+        findFirst: {
+          args: Prisma.LifeEntryClusterFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryClusterPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LifeEntryClusterFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryClusterPayload>
+        }
+        findMany: {
+          args: Prisma.LifeEntryClusterFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryClusterPayload>[]
+        }
+        create: {
+          args: Prisma.LifeEntryClusterCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryClusterPayload>
+        }
+        createMany: {
+          args: Prisma.LifeEntryClusterCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LifeEntryClusterCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryClusterPayload>[]
+        }
+        delete: {
+          args: Prisma.LifeEntryClusterDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryClusterPayload>
+        }
+        update: {
+          args: Prisma.LifeEntryClusterUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryClusterPayload>
+        }
+        deleteMany: {
+          args: Prisma.LifeEntryClusterDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LifeEntryClusterUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LifeEntryClusterUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryClusterPayload>[]
+        }
+        upsert: {
+          args: Prisma.LifeEntryClusterUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryClusterPayload>
+        }
+        aggregate: {
+          args: Prisma.LifeEntryClusterAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLifeEntryCluster>
+        }
+        groupBy: {
+          args: Prisma.LifeEntryClusterGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeEntryClusterGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LifeEntryClusterCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeEntryClusterCountAggregateOutputType> | number
+        }
+      }
+    }
+    LifeClusterRelation: {
+      payload: Prisma.$LifeClusterRelationPayload<ExtArgs>
+      fields: Prisma.LifeClusterRelationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LifeClusterRelationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterRelationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LifeClusterRelationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterRelationPayload>
+        }
+        findFirst: {
+          args: Prisma.LifeClusterRelationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterRelationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LifeClusterRelationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterRelationPayload>
+        }
+        findMany: {
+          args: Prisma.LifeClusterRelationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterRelationPayload>[]
+        }
+        create: {
+          args: Prisma.LifeClusterRelationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterRelationPayload>
+        }
+        createMany: {
+          args: Prisma.LifeClusterRelationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LifeClusterRelationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterRelationPayload>[]
+        }
+        delete: {
+          args: Prisma.LifeClusterRelationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterRelationPayload>
+        }
+        update: {
+          args: Prisma.LifeClusterRelationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterRelationPayload>
+        }
+        deleteMany: {
+          args: Prisma.LifeClusterRelationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LifeClusterRelationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LifeClusterRelationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterRelationPayload>[]
+        }
+        upsert: {
+          args: Prisma.LifeClusterRelationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeClusterRelationPayload>
+        }
+        aggregate: {
+          args: Prisma.LifeClusterRelationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLifeClusterRelation>
+        }
+        groupBy: {
+          args: Prisma.LifeClusterRelationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeClusterRelationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LifeClusterRelationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeClusterRelationCountAggregateOutputType> | number
+        }
+      }
+    }
+    MediaAsset: {
+      payload: Prisma.$MediaAssetPayload<ExtArgs>
+      fields: Prisma.MediaAssetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MediaAssetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MediaAssetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>
+        }
+        findFirst: {
+          args: Prisma.MediaAssetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MediaAssetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>
+        }
+        findMany: {
+          args: Prisma.MediaAssetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>[]
+        }
+        create: {
+          args: Prisma.MediaAssetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>
+        }
+        createMany: {
+          args: Prisma.MediaAssetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MediaAssetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>[]
+        }
+        delete: {
+          args: Prisma.MediaAssetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>
+        }
+        update: {
+          args: Prisma.MediaAssetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>
+        }
+        deleteMany: {
+          args: Prisma.MediaAssetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MediaAssetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MediaAssetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>[]
+        }
+        upsert: {
+          args: Prisma.MediaAssetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>
+        }
+        aggregate: {
+          args: Prisma.MediaAssetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMediaAsset>
+        }
+        groupBy: {
+          args: Prisma.MediaAssetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MediaAssetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MediaAssetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MediaAssetCountAggregateOutputType> | number
+        }
+      }
+    }
+    LifeEntryMedia: {
+      payload: Prisma.$LifeEntryMediaPayload<ExtArgs>
+      fields: Prisma.LifeEntryMediaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LifeEntryMediaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryMediaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LifeEntryMediaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryMediaPayload>
+        }
+        findFirst: {
+          args: Prisma.LifeEntryMediaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryMediaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LifeEntryMediaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryMediaPayload>
+        }
+        findMany: {
+          args: Prisma.LifeEntryMediaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryMediaPayload>[]
+        }
+        create: {
+          args: Prisma.LifeEntryMediaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryMediaPayload>
+        }
+        createMany: {
+          args: Prisma.LifeEntryMediaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LifeEntryMediaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryMediaPayload>[]
+        }
+        delete: {
+          args: Prisma.LifeEntryMediaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryMediaPayload>
+        }
+        update: {
+          args: Prisma.LifeEntryMediaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryMediaPayload>
+        }
+        deleteMany: {
+          args: Prisma.LifeEntryMediaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LifeEntryMediaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LifeEntryMediaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryMediaPayload>[]
+        }
+        upsert: {
+          args: Prisma.LifeEntryMediaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeEntryMediaPayload>
+        }
+        aggregate: {
+          args: Prisma.LifeEntryMediaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLifeEntryMedia>
+        }
+        groupBy: {
+          args: Prisma.LifeEntryMediaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeEntryMediaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LifeEntryMediaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeEntryMediaCountAggregateOutputType> | number
+        }
+      }
+    }
+    LifeGraphSettings: {
+      payload: Prisma.$LifeGraphSettingsPayload<ExtArgs>
+      fields: Prisma.LifeGraphSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LifeGraphSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeGraphSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LifeGraphSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeGraphSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.LifeGraphSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeGraphSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LifeGraphSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeGraphSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.LifeGraphSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeGraphSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.LifeGraphSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeGraphSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.LifeGraphSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LifeGraphSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeGraphSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.LifeGraphSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeGraphSettingsPayload>
+        }
+        update: {
+          args: Prisma.LifeGraphSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeGraphSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.LifeGraphSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LifeGraphSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LifeGraphSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeGraphSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.LifeGraphSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeGraphSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.LifeGraphSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLifeGraphSettings>
+        }
+        groupBy: {
+          args: Prisma.LifeGraphSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeGraphSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LifeGraphSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeGraphSettingsCountAggregateOutputType> | number
         }
       }
     }
@@ -868,6 +1468,134 @@ export const ProjectScalarFieldEnum = {
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
+export const LifeContentTypeScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  label: 'label',
+  description: 'description',
+  icon: 'icon',
+  color: 'color',
+  fieldSchema: 'fieldSchema',
+  isSystem: 'isSystem',
+  isActive: 'isActive',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeContentTypeScalarFieldEnum = (typeof LifeContentTypeScalarFieldEnum)[keyof typeof LifeContentTypeScalarFieldEnum]
+
+
+export const LifeClusterScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  color: 'color',
+  sortOrder: 'sortOrder',
+  published: 'published',
+  imageMediaId: 'imageMediaId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeClusterScalarFieldEnum = (typeof LifeClusterScalarFieldEnum)[keyof typeof LifeClusterScalarFieldEnum]
+
+
+export const LifeEntryScalarFieldEnum = {
+  id: 'id',
+  externalKey: 'externalKey',
+  slug: 'slug',
+  typeId: 'typeId',
+  title: 'title',
+  content: 'content',
+  excerpt: 'excerpt',
+  occurredAt: 'occurredAt',
+  location: 'location',
+  sourceUrl: 'sourceUrl',
+  status: 'status',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeEntryScalarFieldEnum = (typeof LifeEntryScalarFieldEnum)[keyof typeof LifeEntryScalarFieldEnum]
+
+
+export const LifeEntryClusterScalarFieldEnum = {
+  entryId: 'entryId',
+  clusterId: 'clusterId',
+  isPrimary: 'isPrimary',
+  sortOrder: 'sortOrder'
+} as const
+
+export type LifeEntryClusterScalarFieldEnum = (typeof LifeEntryClusterScalarFieldEnum)[keyof typeof LifeEntryClusterScalarFieldEnum]
+
+
+export const LifeClusterRelationScalarFieldEnum = {
+  id: 'id',
+  fromId: 'fromId',
+  toId: 'toId',
+  label: 'label',
+  weight: 'weight',
+  strength: 'strength',
+  color: 'color',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeClusterRelationScalarFieldEnum = (typeof LifeClusterRelationScalarFieldEnum)[keyof typeof LifeClusterRelationScalarFieldEnum]
+
+
+export const MediaAssetScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  publicId: 'publicId',
+  resourceType: 'resourceType',
+  format: 'format',
+  secureUrl: 'secureUrl',
+  originalUrl: 'originalUrl',
+  filename: 'filename',
+  altText: 'altText',
+  width: 'width',
+  height: 'height',
+  bytes: 'bytes',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MediaAssetScalarFieldEnum = (typeof MediaAssetScalarFieldEnum)[keyof typeof MediaAssetScalarFieldEnum]
+
+
+export const LifeEntryMediaScalarFieldEnum = {
+  entryId: 'entryId',
+  mediaId: 'mediaId',
+  role: 'role',
+  sortOrder: 'sortOrder'
+} as const
+
+export type LifeEntryMediaScalarFieldEnum = (typeof LifeEntryMediaScalarFieldEnum)[keyof typeof LifeEntryMediaScalarFieldEnum]
+
+
+export const LifeGraphSettingsScalarFieldEnum = {
+  id: 'id',
+  defaultZoom: 'defaultZoom',
+  clusterSpacing: 'clusterSpacing',
+  entrySpacing: 'entrySpacing',
+  backgroundColor: 'backgroundColor',
+  edgeColor: 'edgeColor',
+  nodeStyle: 'nodeStyle',
+  edgeStyle: 'edgeStyle',
+  customSvgMediaId: 'customSvgMediaId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeGraphSettingsScalarFieldEnum = (typeof LifeGraphSettingsScalarFieldEnum)[keyof typeof LifeGraphSettingsScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -1048,6 +1776,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'LifeEntryStatus'
+ */
+export type EnumLifeEntryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LifeEntryStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'LifeEntryStatus[]'
+ */
+export type ListEnumLifeEntryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LifeEntryStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1058,6 +1800,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaType'
+ */
+export type EnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaType[]'
+ */
+export type ListEnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType[]'>
     
 
 /**
@@ -1212,6 +1968,14 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   project?: Prisma.ProjectOmit
+  lifeContentType?: Prisma.LifeContentTypeOmit
+  lifeCluster?: Prisma.LifeClusterOmit
+  lifeEntry?: Prisma.LifeEntryOmit
+  lifeEntryCluster?: Prisma.LifeEntryClusterOmit
+  lifeClusterRelation?: Prisma.LifeClusterRelationOmit
+  mediaAsset?: Prisma.MediaAssetOmit
+  lifeEntryMedia?: Prisma.LifeEntryMediaOmit
+  lifeGraphSettings?: Prisma.LifeGraphSettingsOmit
   user?: Prisma.UserOmit
   account?: Prisma.AccountOmit
   session?: Prisma.SessionOmit

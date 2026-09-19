@@ -52,6 +52,14 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Project: 'Project',
+  LifeContentType: 'LifeContentType',
+  LifeCluster: 'LifeCluster',
+  LifeEntry: 'LifeEntry',
+  LifeEntryCluster: 'LifeEntryCluster',
+  LifeClusterRelation: 'LifeClusterRelation',
+  MediaAsset: 'MediaAsset',
+  LifeEntryMedia: 'LifeEntryMedia',
+  LifeGraphSettings: 'LifeGraphSettings',
   User: 'User',
   Account: 'Account',
   Session: 'Session',
@@ -110,6 +118,134 @@ export const ProjectScalarFieldEnum = {
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const LifeContentTypeScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  label: 'label',
+  description: 'description',
+  icon: 'icon',
+  color: 'color',
+  fieldSchema: 'fieldSchema',
+  isSystem: 'isSystem',
+  isActive: 'isActive',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeContentTypeScalarFieldEnum = (typeof LifeContentTypeScalarFieldEnum)[keyof typeof LifeContentTypeScalarFieldEnum]
+
+
+export const LifeClusterScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  color: 'color',
+  sortOrder: 'sortOrder',
+  published: 'published',
+  imageMediaId: 'imageMediaId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeClusterScalarFieldEnum = (typeof LifeClusterScalarFieldEnum)[keyof typeof LifeClusterScalarFieldEnum]
+
+
+export const LifeEntryScalarFieldEnum = {
+  id: 'id',
+  externalKey: 'externalKey',
+  slug: 'slug',
+  typeId: 'typeId',
+  title: 'title',
+  content: 'content',
+  excerpt: 'excerpt',
+  occurredAt: 'occurredAt',
+  location: 'location',
+  sourceUrl: 'sourceUrl',
+  status: 'status',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeEntryScalarFieldEnum = (typeof LifeEntryScalarFieldEnum)[keyof typeof LifeEntryScalarFieldEnum]
+
+
+export const LifeEntryClusterScalarFieldEnum = {
+  entryId: 'entryId',
+  clusterId: 'clusterId',
+  isPrimary: 'isPrimary',
+  sortOrder: 'sortOrder'
+} as const
+
+export type LifeEntryClusterScalarFieldEnum = (typeof LifeEntryClusterScalarFieldEnum)[keyof typeof LifeEntryClusterScalarFieldEnum]
+
+
+export const LifeClusterRelationScalarFieldEnum = {
+  id: 'id',
+  fromId: 'fromId',
+  toId: 'toId',
+  label: 'label',
+  weight: 'weight',
+  strength: 'strength',
+  color: 'color',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeClusterRelationScalarFieldEnum = (typeof LifeClusterRelationScalarFieldEnum)[keyof typeof LifeClusterRelationScalarFieldEnum]
+
+
+export const MediaAssetScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  publicId: 'publicId',
+  resourceType: 'resourceType',
+  format: 'format',
+  secureUrl: 'secureUrl',
+  originalUrl: 'originalUrl',
+  filename: 'filename',
+  altText: 'altText',
+  width: 'width',
+  height: 'height',
+  bytes: 'bytes',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MediaAssetScalarFieldEnum = (typeof MediaAssetScalarFieldEnum)[keyof typeof MediaAssetScalarFieldEnum]
+
+
+export const LifeEntryMediaScalarFieldEnum = {
+  entryId: 'entryId',
+  mediaId: 'mediaId',
+  role: 'role',
+  sortOrder: 'sortOrder'
+} as const
+
+export type LifeEntryMediaScalarFieldEnum = (typeof LifeEntryMediaScalarFieldEnum)[keyof typeof LifeEntryMediaScalarFieldEnum]
+
+
+export const LifeGraphSettingsScalarFieldEnum = {
+  id: 'id',
+  defaultZoom: 'defaultZoom',
+  clusterSpacing: 'clusterSpacing',
+  entrySpacing: 'entrySpacing',
+  backgroundColor: 'backgroundColor',
+  edgeColor: 'edgeColor',
+  nodeStyle: 'nodeStyle',
+  edgeStyle: 'edgeStyle',
+  customSvgMediaId: 'customSvgMediaId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeGraphSettingsScalarFieldEnum = (typeof LifeGraphSettingsScalarFieldEnum)[keyof typeof LifeGraphSettingsScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

@@ -16,3 +16,23 @@ export const ProjectStatus = {
 } as const
 
 export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
+
+
+export const LifeEntryStatus = {
+  Draft: 'Draft',
+  Published: 'Published',
+  Archived: 'Archived'
+} as const
+
+export type LifeEntryStatus = (typeof LifeEntryStatus)[keyof typeof LifeEntryStatus]
+
+
+export const MediaType = {
+  Image: 'Image',
+  Svg: 'Svg',
+  Audio: 'Audio',
+  Video: 'Video',
+  Document: 'Document'
+} as const
+
+export type MediaType = (typeof MediaType)[keyof typeof MediaType]

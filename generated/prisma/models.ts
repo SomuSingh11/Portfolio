@@ -9,6 +9,14 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Project'
+export type * from './models/LifeContentType'
+export type * from './models/LifeCluster'
+export type * from './models/LifeEntry'
+export type * from './models/LifeEntryCluster'
+export type * from './models/LifeClusterRelation'
+export type * from './models/MediaAsset'
+export type * from './models/LifeEntryMedia'
+export type * from './models/LifeGraphSettings'
 export type * from './models/User'
 export type * from './models/Account'
 export type * from './models/Session'

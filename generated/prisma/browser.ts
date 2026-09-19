@@ -23,6 +23,46 @@ export * from './enums';
  */
 export type Project = Prisma.ProjectModel
 /**
+ * Model LifeContentType
+ * 
+ */
+export type LifeContentType = Prisma.LifeContentTypeModel
+/**
+ * Model LifeCluster
+ * 
+ */
+export type LifeCluster = Prisma.LifeClusterModel
+/**
+ * Model LifeEntry
+ * 
+ */
+export type LifeEntry = Prisma.LifeEntryModel
+/**
+ * Model LifeEntryCluster
+ * 
+ */
+export type LifeEntryCluster = Prisma.LifeEntryClusterModel
+/**
+ * Model LifeClusterRelation
+ * 
+ */
+export type LifeClusterRelation = Prisma.LifeClusterRelationModel
+/**
+ * Model MediaAsset
+ * 
+ */
+export type MediaAsset = Prisma.MediaAssetModel
+/**
+ * Model LifeEntryMedia
+ * 
+ */
+export type LifeEntryMedia = Prisma.LifeEntryMediaModel
+/**
+ * Model LifeGraphSettings
+ * 
+ */
+export type LifeGraphSettings = Prisma.LifeGraphSettingsModel
+/**
  * Model User
  * 
  */
