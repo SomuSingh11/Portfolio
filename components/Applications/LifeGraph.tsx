@@ -1,14 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "@/styles/lifegraph.css";
 import { clusterSeeds, entriesByCluster } from "@/data/lifegraph-data";
 import { useLifeGraph } from "@/hooks/data/useLifeGraph";
 import type { PanelData } from "@/types/life-graph";
 
-export default function LifeGraph() {
+interface LifeGraphProps {
+  preview?: boolean;
+  onPreviewOpen?: () => void;
+}
+
+export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphProps) {
   const [panelData, setPanelData] = useState<PanelData>(null);
-  const [mobileView, setMobileView] = useState<"graph" | "clusters">("graph");
   const [totalEntries] = useState(() => clusterSeeds.reduce((sum, c) => sum + c.count, 0));
 
   const { svgRef, containerRef, mutedClusters, toggleClusterMute, zoomBy, clearSelection } = useLifeGraph({
@@ -16,10 +20,6 @@ export default function LifeGraph() {
     onHighlightSelect: (highlight, parentColor, parentLabel) =>
       setPanelData({ kind: "highlight", highlight, parentColor, parentLabel }),
   });
-
-  useEffect(() => {
-    if (window.innerWidth <= 720) setMobileView("clusters");
-  }, []);
 
   function closePanel() {
     setPanelData(null);
@@ -33,7 +33,11 @@ export default function LifeGraph() {
       : undefined;
 
   return (
-    <main className="lifegraph-app" ref={containerRef}>
+    <main
+      className={`lifegraph-app${preview ? " lifegraph-preview" : ""}`}
+      ref={containerRef}
+      onClickCapture={preview ? onPreviewOpen : undefined}
+    >
       <div className="header">
         <div className="title">
           lifegraph <em>· map</em>
@@ -45,16 +49,7 @@ export default function LifeGraph() {
         </div>
       </div>
 
-      <div className="view-toggle">
-        <button className={mobileView === "graph" ? "active" : ""} onClick={() => setMobileView("graph")}>
-          Graph
-        </button>
-        <button className={mobileView === "clusters" ? "active" : ""} onClick={() => setMobileView("clusters")}>
-          Clusters
-        </button>
-      </div>
-
-      <svg ref={svgRef} style={{ display: mobileView === "graph" ? "block" : "none" }} />
+      <svg ref={svgRef} />
 
       <div className="legend">
         {clusterSeeds.map((c) => (
@@ -73,27 +68,6 @@ export default function LifeGraph() {
         <button onClick={() => zoomBy(1.3)}>+</button>
         <button onClick={() => zoomBy(0.75)}>−</button>
       </div>
-
-      {mobileView === "clusters" && (
-        <div className="chip-view">
-          {clusterSeeds.map((c) => (
-            <div
-              key={c.id}
-              className="chip"
-              onClick={() => setPanelData({ kind: "cluster", cluster: c })}
-            >
-              <div className="chip-left">
-                <span className="chip-dot" style={{ background: c.color }} />
-                <span className="chip-name">{c.label}</span>
-              </div>
-              <span className="chip-count">{c.count} entries</span>
-            </div>
-          ))}
-        </div>
-      )}
-      {mobileView === "clusters" && (
-        <div className="expand-hint">tap a topic to filter · pinch-zoom the full map isn't built for small screens yet</div>
-      )}
 
       <div className={`panel${panelData ? " open" : ""}`}>
         <div className="panel-head">

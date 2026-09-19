@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import AppIcon from "@/components/Mobile/AppIcon";
 import NotificationPanel from "@/components/Mobile/NotificationPanel";
+import LifeGraphWidget from "@/components/Mobile/LifeGraphWidget";
 import RecentActivityWidget from "@/components/Utilities/RecentActivityWidget";
 import { MOBILE_APPS, DOCK_APPS } from "@/config/mobileConfig";
 import type { AppId } from "@/types/desktop";
@@ -11,7 +12,7 @@ import { usePreferences } from "@/store/preferences-store";
 
 const APPS_PER_PAGE = 8;
 const homeApps = MOBILE_APPS.filter((a) => !DOCK_APPS.includes(a.id));
-const dockApps = MOBILE_APPS.filter((a) => DOCK_APPS.includes(a.id));
+const dockApps = DOCK_APPS.flatMap((id) => MOBILE_APPS.filter((app) => app.id === id));
 
 function chunkApps<T>(arr: T[], size: number): T[][] {
   const chunks: T[][] = [];
@@ -82,9 +83,10 @@ export default function HomeScreen({ onOpenApp }: HomeScreenProps) {
         {/* Live Coding Activity Widget */}
         <div className="pt-14 flex-shrink-0 relative z-30">
           <RecentActivityWidget layout="mobile" />
+          <LifeGraphWidget onOpenApp={onOpenApp} />
         </div>
 
-        <div className="flex-1 flex flex-col justify-center pt-2">
+        <div className="flex-1 flex flex-col justify-center pt-4">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={page}

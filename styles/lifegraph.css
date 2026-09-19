@@ -98,6 +98,24 @@
   cursor: grabbing;
 }
 
+.lifegraph-preview {
+  border-radius: inherit;
+  background: rgba(14, 20, 32, 0.82);
+}
+.lifegraph-preview .header,
+.lifegraph-preview .view-toggle,
+.lifegraph-preview .legend,
+.lifegraph-preview .zoom-controls,
+.lifegraph-preview .chip-view,
+.lifegraph-preview .expand-hint,
+.lifegraph-preview .panel {
+  display: none;
+}
+.lifegraph-preview svg {
+  position: absolute;
+  inset: 0;
+}
+
 .lifegraph-app .edge {
   stroke: var(--hairline);
   stroke-width: 1;

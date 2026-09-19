@@ -8,7 +8,7 @@ import {
   forceSimulation,
   type Simulation,
 } from "d3-force";
-import { zoom, type ZoomBehavior } from "d3-zoom";
+import { zoom, zoomIdentity, type ZoomBehavior } from "d3-zoom";
 import { drag } from "d3-drag";
 import { scaleSqrt } from "d3-scale";
 import "d3-transition";
@@ -48,6 +48,15 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect }: UseLifeGrap
       .scaleExtent([0.5, 3])
       .on("zoom", (ev) => g.attr("transform", ev.transform.toString()));
     svg.call(zoomBehavior);
+    if (window.innerWidth <= 720) {
+      const scale = 0.68;
+      svg.call(
+        zoomBehavior.transform,
+        zoomIdentity
+          .translate((width * (1 - scale)) / 2, (height * (1 - scale)) / 2)
+          .scale(scale),
+      );
+    }
     zoomBehaviorRef.current = zoomBehavior;
 
     const rScale = scaleSqrt()
