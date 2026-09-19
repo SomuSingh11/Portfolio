@@ -113,6 +113,11 @@ export const APP_META: Record<
     icon: "assistant.svg",
     description: "Chat with an AI about Somu",
   },
+  lifegraph: {
+    title: "LifeGraph",
+    icon: "lifegraph.svg",
+    description: "Visualize Somu's journey",
+  }
 };
 
 // ─── Desktop Icon Positions ───────────────────────────────────────────────────
@@ -129,6 +134,7 @@ export const DESKTOP_ICON_LAYOUT: Array<{
   { id: "resume", position: { x: 165, y: 150 } },
   { id: "preferences", position: { x: 165, y: 250 } },
   { id: "assistant", position: { x: 165, y: 350 } },
+  { id:"lifegraph", position: { x: 165, y: 450 }}
 ];
 
 // ─── Animation Presets ────────────────────────────────────────────────────────
