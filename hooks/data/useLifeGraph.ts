@@ -12,15 +12,15 @@ import { zoom, zoomIdentity, type ZoomBehavior } from "d3-zoom";
 import { drag } from "d3-drag";
 import { scaleSqrt } from "d3-scale";
 import "d3-transition";
-import { clusterEdgeSeeds, clusterSeeds, highlightSeeds } from "@/data/lifegraph-data";
-import { nodeId, type ClusterNode, type DayNode, type GraphLink, type GraphNode, type HighlightSeed } from "@/types/life-graph";
+import { nodeId, type ClusterNode, type DayNode, type GraphLink, type GraphNode, type HighlightSeed, type LifeGraphApiResponse } from "@/types/life-graph";
 
 interface UseLifeGraphOptions {
   onClusterSelect: (cluster: ClusterNode) => void;
   onHighlightSelect: (highlight: HighlightSeed, parentColor: string, parentLabel: string) => void;
+  data?: LifeGraphApiResponse | null;
 }
 
-export function useLifeGraph({ onClusterSelect, onHighlightSelect }: UseLifeGraphOptions) {
+export function useLifeGraph({ onClusterSelect, onHighlightSelect, data }: UseLifeGraphOptions) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const onClusterSelectRef = useRef(onClusterSelect);
@@ -32,6 +32,8 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect }: UseLifeGrap
 
   onClusterSelectRef.current = onClusterSelect;
   onHighlightSelectRef.current = onHighlightSelect;
+
+  const graphData = data ?? null;
 
   useEffect(() => {
     const svgEl = svgRef.current;
@@ -59,17 +61,35 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect }: UseLifeGrap
     }
     zoomBehaviorRef.current = zoomBehavior;
 
+    const apiClusters = graphData?.clusters ?? [];
+    const apiEntries = graphData?.entries ?? [];
+    const apiRelations = graphData?.relations ?? [];
+    const graphClusters = apiClusters.map((cluster) => ({
+      id: cluster.id,
+      label: cluster.name,
+      color: cluster.color,
+      count: apiEntries.filter((entry) => entry.clusterIds.includes(cluster.id)).length,
+      photo: cluster.image?.url ?? "",
+    }));
+    const graphHighlights = apiEntries.map((entry) => ({
+      id: entry.id,
+      label: entry.title,
+      parent: entry.clusterIds[0] ?? "",
+      date: entry.occurredAt ? entry.occurredAt.slice(0, 10) : "",
+    })).filter((entry) => entry.parent);
+    const graphRelations = apiRelations.map((relation) => [relation.source, relation.target, relation.weight] as [string, string, number]);
+
     const rScale = scaleSqrt()
-      .domain([0, Math.max(...clusterSeeds.map((cluster) => cluster.count))])
+      .domain([0, Math.max(...graphClusters.map((cluster) => cluster.count), 1)])
       .range([8, 46]);
-    const clusterColor = (id: string) => clusterSeeds.find((cluster) => cluster.id === id)?.color ?? "#2A3448";
+    const clusterColor = (id: string) => graphClusters.find((cluster) => cluster.id === id)?.color ?? "#2A3448";
     const nodes: GraphNode[] = [
-      ...clusterSeeds.map((cluster) => ({ ...cluster, kind: "cluster" as const, r: rScale(cluster.count) })),
-      ...highlightSeeds.map((highlight) => ({ ...highlight, kind: "day" as const, r: 5 })),
+      ...graphClusters.map((cluster) => ({ ...cluster, kind: "cluster" as const, r: rScale(cluster.count) })),
+      ...graphHighlights.map((highlight) => ({ ...highlight, kind: "day" as const, r: 5 })),
     ];
     const links: GraphLink[] = [
-      ...clusterEdgeSeeds.map(([source, target, weight]) => ({ source, target, weight, kind: "cluster" as const })),
-      ...highlightSeeds.map((highlight) => ({ source: highlight.parent, target: highlight.id, weight: 1, kind: "day" as const })),
+      ...graphRelations.map(([source, target, weight]) => ({ source, target, weight, kind: "cluster" as const })),
+      ...graphHighlights.map((highlight) => ({ source: highlight.parent, target: highlight.id, weight: 1, kind: "day" as const })),
     ];
 
     const linkSel = g
@@ -224,7 +244,7 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect }: UseLifeGrap
         nodeSel.classed("selected", (item) => item.id === node.id);
         onClusterSelectRef.current(node);
       } else {
-        const parent = clusterSeeds.find((cluster) => cluster.id === node.parent);
+        const parent = graphClusters.find((cluster) => cluster.id === node.parent);
         if (parent) onHighlightSelectRef.current(node, parent.color, parent.label);
       }
     });
@@ -245,7 +265,7 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect }: UseLifeGrap
       nodeSelRef.current = null;
       linkSelRef.current = null;
     };
-  }, []);
+  }, [graphData]);
 
   function toggleClusterMute(id: string) {
     setMutedClusters((previous) => {

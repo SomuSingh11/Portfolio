@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import "@/styles/lifegraph.css";
-import { clusterSeeds, entriesByCluster } from "@/data/lifegraph-data";
+import { useLifeGraphData } from "@/hooks/data/useLifeGraphData";
 import { useLifeGraph } from "@/hooks/data/useLifeGraph";
 import type { PanelData } from "@/types/life-graph";
 
@@ -13,12 +13,18 @@ interface LifeGraphProps {
 
 export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphProps) {
   const [panelData, setPanelData] = useState<PanelData>(null);
-  const [totalEntries] = useState(() => clusterSeeds.reduce((sum, c) => sum + c.count, 0));
+  const { data: graphData, loading } = useLifeGraphData();
+  const totalEntries = graphData?.entries.length ?? 0;
 
   const { svgRef, containerRef, mutedClusters, toggleClusterMute, zoomBy, clearSelection } = useLifeGraph({
-    onClusterSelect: (cluster) => setPanelData({ kind: "cluster", cluster }),
-    onHighlightSelect: (highlight, parentColor, parentLabel) =>
-      setPanelData({ kind: "highlight", highlight, parentColor, parentLabel }),
+    data: graphData,
+    onClusterSelect: preview
+      ? () => undefined
+      : (cluster) => setPanelData({ kind: "cluster", cluster }),
+    onHighlightSelect: preview
+      ? () => undefined
+      : (highlight, parentColor, parentLabel) =>
+          setPanelData({ kind: "highlight", highlight, parentColor, parentLabel }),
   });
 
   function closePanel() {
@@ -26,10 +32,12 @@ export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphP
     clearSelection();
   }
 
-  const entriesForPanel = panelData?.kind === "cluster" ? entriesByCluster[panelData.cluster.id] ?? [] : [];
+  const entriesForPanel = panelData?.kind === "cluster"
+    ? graphData?.entries.filter((entry) => entry.clusterIds.includes(panelData.cluster.id)) ?? []
+    : [];
   const matchedHighlightEntry =
     panelData?.kind === "highlight"
-      ? (entriesByCluster[panelData.highlight.parent] ?? []).find((e) => e.title === panelData.highlight.label)
+      ? graphData?.entries.find((entry) => entry.id === panelData.highlight.id)
       : undefined;
 
   return (
@@ -51,15 +59,22 @@ export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphP
 
       <svg ref={svgRef} />
 
+      {loading && (
+        <div className="lifegraph-loading" role="status" aria-live="polite">
+          <span className="lifegraph-loading-spinner" />
+          <span>Loading LifeGraph...</span>
+        </div>
+      )}
+
       <div className="legend">
-        {clusterSeeds.map((c) => (
+        {(graphData?.clusters ?? []).map((cluster) => (
           <div
-            key={c.id}
-            className={`legend-item${mutedClusters.has(c.id) ? " muted" : ""}`}
-            onClick={() => toggleClusterMute(c.id)}
+            key={cluster.id}
+            className={`legend-item${mutedClusters.has(cluster.id) ? " muted" : ""}`}
+            onClick={() => toggleClusterMute(cluster.id)}
           >
-            <span className="legend-dot" style={{ background: c.color }} />
-            {c.label}
+            <span className="legend-dot" style={{ background: cluster.color }} />
+            {cluster.name}
           </div>
         ))}
       </div>
@@ -98,20 +113,20 @@ export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphP
 
         <div className="panel-body">
           {panelData?.kind === "cluster" &&
-            entriesForPanel.map((e) => (
-              <div className="entry" key={e.title}>
-                <div className="entry-date">{e.date}</div>
-                <div className="entry-title">{e.title}</div>
-                <div className="entry-snip">{e.snip}</div>
-                <div className="entry-type">{e.type.replace("_", " ")}</div>
+            entriesForPanel.map((entry) => (
+              <div className="entry" key={entry.title}>
+                <div className="entry-date">{entry.occurredAt?.slice(0, 10) ?? ""}</div>
+                <div className="entry-title">{entry.title}</div>
+                <div className="entry-snip">{entry.content}</div>
+                <div className="entry-type">{entry.type.label}</div>
               </div>
             ))}
           {panelData?.kind === "highlight" && (
             <div className="entry" style={{ cursor: "default" }}>
-              <div className="entry-date">{panelData.highlight.date}</div>
+              <div className="entry-date">{matchedHighlightEntry?.occurredAt?.slice(0, 10) ?? panelData.highlight.date}</div>
               <div className="entry-title">{panelData.highlight.label}</div>
-              <div className="entry-snip">{matchedHighlightEntry?.snip ?? ""}</div>
-              <div className="entry-type">{(matchedHighlightEntry?.type ?? "experience").replace("_", " ")}</div>
+              <div className="entry-snip">{matchedHighlightEntry?.content ?? ""}</div>
+              <div className="entry-type">{matchedHighlightEntry?.type.label ?? ""}</div>
             </div>
           )}
         </div>
