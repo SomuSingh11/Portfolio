@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import "@/styles/lifegraph.css";
-import { useLifeGraphData } from "@/hooks/data/useLifeGraphData";
-import { useLifeGraph } from "@/hooks/data/useLifeGraph";
-import type { PanelData } from "@/types/life-graph";
+import { useLifeGraphData } from "../../hooks/data/useLifeGraphData";
+import { useLifeGraph } from "../../hooks/data/useLifeGraph";
+import type { PanelData, UseLifeGraphDataResult } from "../../types/life-graph";
 
 interface LifeGraphProps {
   preview?: boolean;
@@ -13,7 +13,7 @@ interface LifeGraphProps {
 
 export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphProps) {
   const [panelData, setPanelData] = useState<PanelData>(null);
-  const { data: graphData, loading } = useLifeGraphData();
+  const { data: graphData, loading }: UseLifeGraphDataResult = useLifeGraphData();
   const totalEntries = graphData?.entries.length ?? 0;
 
   const { svgRef, containerRef, mutedClusters, toggleClusterMute, zoomBy, clearSelection } = useLifeGraph({
@@ -21,10 +21,10 @@ export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphP
     onClusterSelect: preview
       ? () => undefined
       : (cluster) => setPanelData({ kind: "cluster", cluster }),
-    onHighlightSelect: preview
+    onEntrySelect: preview
       ? () => undefined
       : (highlight, parentColor, parentLabel) =>
-          setPanelData({ kind: "highlight", highlight, parentColor, parentLabel }),
+          setPanelData({ kind: "entry", entry: highlight, parentColor, parentLabel }),
   });
 
   function closePanel() {
@@ -36,8 +36,8 @@ export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphP
     ? graphData?.entries.filter((entry) => entry.clusterIds.includes(panelData.cluster.id)) ?? []
     : [];
   const matchedHighlightEntry =
-    panelData?.kind === "highlight"
-      ? graphData?.entries.find((entry) => entry.id === panelData.highlight.id)
+    panelData?.kind === "entry"
+      ? graphData?.entries.find((entry) => entry.id === panelData.entry.id)
       : undefined;
 
   return (
@@ -99,12 +99,12 @@ export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphP
               <div className="panel-sub">Every entry tagged with this topic, newest first.</div>
             </>
           )}
-          {panelData?.kind === "highlight" && (
+          {panelData?.kind === "entry" && (
             <>
-              <div className="panel-eyebrow">{panelData.highlight.date} · highlighted entry</div>
+              <div className="panel-eyebrow">{panelData.entry.date} · entry</div>
               <div className="panel-title">
                 <span className="dot" style={{ background: panelData.parentColor }} />
-                {panelData.highlight.label}
+                {panelData.entry.label}
               </div>
               <div className="panel-sub">Filed under {panelData.parentLabel}</div>
             </>
@@ -121,10 +121,10 @@ export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphP
                 <div className="entry-type">{entry.type.label}</div>
               </div>
             ))}
-          {panelData?.kind === "highlight" && (
+          {panelData?.kind === "entry" && (
             <div className="entry" style={{ cursor: "default" }}>
-              <div className="entry-date">{matchedHighlightEntry?.occurredAt?.slice(0, 10) ?? panelData.highlight.date}</div>
-              <div className="entry-title">{panelData.highlight.label}</div>
+              <div className="entry-date">{matchedHighlightEntry?.occurredAt?.slice(0, 10) ?? panelData.entry.date}</div>
+              <div className="entry-title">{panelData.entry.label}</div>
               <div className="entry-snip">{matchedHighlightEntry?.content ?? ""}</div>
               <div className="entry-type">{matchedHighlightEntry?.type.label ?? ""}</div>
             </div>

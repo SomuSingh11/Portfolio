@@ -12,26 +12,26 @@ import { zoom, zoomIdentity, type ZoomBehavior } from "d3-zoom";
 import { drag } from "d3-drag";
 import { scaleSqrt } from "d3-scale";
 import "d3-transition";
-import { nodeId, type ClusterNode, type DayNode, type GraphLink, type GraphNode, type HighlightSeed, type LifeGraphApiResponse } from "@/types/life-graph";
+import { nodeId, type ClusterNode, type EntryNode, type GraphLink, type GraphNode, type LifeGraphApiResponse } from "@/types/life-graph";
 
 interface UseLifeGraphOptions {
   onClusterSelect: (cluster: ClusterNode) => void;
-  onHighlightSelect: (highlight: HighlightSeed, parentColor: string, parentLabel: string) => void;
+  onEntrySelect: (entry: EntryNode, parentColor: string, parentLabel: string) => void;
   data?: LifeGraphApiResponse | null;
 }
 
-export function useLifeGraph({ onClusterSelect, onHighlightSelect, data }: UseLifeGraphOptions) {
+export function useLifeGraph({ onClusterSelect, onEntrySelect, data }: UseLifeGraphOptions) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const onClusterSelectRef = useRef(onClusterSelect);
-  const onHighlightSelectRef = useRef(onHighlightSelect);
+  const onEntrySelectRef = useRef(onEntrySelect);
   const zoomBehaviorRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
   const nodeSelRef = useRef<Selection<SVGGElement, GraphNode, SVGGElement, unknown> | null>(null);
   const linkSelRef = useRef<Selection<SVGPathElement, GraphLink, SVGGElement, unknown> | null>(null);
   const [mutedClusters, setMutedClusters] = useState<Set<string>>(new Set());
 
   onClusterSelectRef.current = onClusterSelect;
-  onHighlightSelectRef.current = onHighlightSelect;
+  onEntrySelectRef.current = onEntrySelect;
 
   const graphData = data ?? null;
 
@@ -85,11 +85,11 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect, data }: UseLi
     const clusterColor = (id: string) => graphClusters.find((cluster) => cluster.id === id)?.color ?? "#2A3448";
     const nodes: GraphNode[] = [
       ...graphClusters.map((cluster) => ({ ...cluster, kind: "cluster" as const, r: rScale(cluster.count) })),
-      ...graphHighlights.map((highlight) => ({ ...highlight, kind: "day" as const, r: 5 })),
+      ...graphHighlights.map((highlight) => ({ ...highlight, kind: "entry" as const, r: 5 })),
     ];
     const links: GraphLink[] = [
       ...graphRelations.map(([source, target, weight]) => ({ source, target, weight, kind: "cluster" as const })),
-      ...graphHighlights.map((highlight) => ({ source: highlight.parent, target: highlight.id, weight: 1, kind: "day" as const })),
+      ...graphHighlights.map((highlight) => ({ source: highlight.parent, target: highlight.id, weight: 1, kind: "entry" as const })),
     ];
 
     const linkSel = g
@@ -149,9 +149,9 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect, data }: UseLi
       .attr("y", (node) => node.r + 18)
       .text((node) => node.label);
 
-    const dayG = nodeSel.filter((node): node is DayNode => node.kind === "day");
-    dayG.append("circle").attr("fill", (node) => node.kind === "day" ? clusterColor(node.parent) : "none");
-    dayG
+    const entryG = nodeSel.filter((node): node is EntryNode => node.kind === "entry");
+    entryG.append("circle").attr("fill", (node) => node.kind === "entry" ? clusterColor(node.parent) : "none");
+    entryG
       .append("text")
       .attr("class", "label")
       .attr("text-anchor", "start")
@@ -210,14 +210,14 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect, data }: UseLi
     let clickedClusterId: string | null = null;
     const showClusterDescriptions = (clusterId: string) => {
       svg.classed("is-hovering", true);
-      nodeSel.classed("show-description", (node) => node.id === clusterId || (node.kind === "day" && node.parent === clusterId));
+      nodeSel.classed("show-description", (node) => node.id === clusterId || (node.kind === "entry" && node.parent === clusterId));
     };
     const focusCluster = (clusterId: string) => {
       const neighbors = neighborsOf(clusterId);
       nodeSel.classed("dim", (item) => !neighbors.has(item.id));
       showClusterDescriptions(clusterId);
       linkSel.classed("lit", (link) => nodeId(link.source as GraphNode | string) === clusterId || nodeId(link.target as GraphNode | string) === clusterId);
-      linkSel.filter((link) => link.kind === "day").classed("active", (link) => nodeId(link.source as GraphNode | string) === clusterId);
+      linkSel.filter((link) => link.kind === "entry").classed("active", (link) => nodeId(link.source as GraphNode | string) === clusterId);
     };
 
     nodeSel.on("mouseenter", (_event, node) => {
@@ -245,7 +245,7 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect, data }: UseLi
         onClusterSelectRef.current(node);
       } else {
         const parent = graphClusters.find((cluster) => cluster.id === node.parent);
-        if (parent) onHighlightSelectRef.current(node, parent.color, parent.label);
+        if (parent) onEntrySelectRef.current(node, parent.color, parent.label);
       }
     });
 
@@ -274,7 +274,7 @@ export function useLifeGraph({ onClusterSelect, onHighlightSelect, data }: UseLi
       if (willMute) next.add(id);
       else next.delete(id);
       nodeSelRef.current?.filter((node) => node.kind === "cluster" && node.id === id).style("display", willMute ? "none" : "");
-      nodeSelRef.current?.filter((node) => node.kind === "day" && node.parent === id).style("display", willMute ? "none" : "");
+      nodeSelRef.current?.filter((node) => node.kind === "entry" && node.parent === id).style("display", willMute ? "none" : "");
       linkSelRef.current?.filter((link) => nodeId(link.source as GraphNode | string) === id || nodeId(link.target as GraphNode | string) === id).style("display", willMute ? "none" : "");
       return next;
     });

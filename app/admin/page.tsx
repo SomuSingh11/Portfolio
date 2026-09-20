@@ -52,7 +52,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Projects */}
           <Link href="/admin/projects">
             <div className="bg-slate-800 border border-slate-700 hover:border-blue-500 rounded-lg p-8 cursor-pointer transition transform hover:scale-105">
@@ -68,6 +68,15 @@ export default function AdminDashboard() {
               <h3 className="text-xl font-semibold text-white mb-3">⚙️ Settings</h3>
               <p className="text-slate-400 mb-4">Manage your profile and account settings</p>
               <span className="text-blue-400 hover:text-blue-300 font-medium">View Settings →</span>
+            </div>
+          </Link>
+
+          {/* LifeGraph */}
+          <Link href="/admin/lifegraph">
+            <div className="bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-8 cursor-pointer transition transform hover:scale-105">
+              <h3 className="text-xl font-semibold text-white mb-3">LifeGraph</h3>
+              <p className="text-slate-400 mb-4">Manage clusters, entries, and graph relationships</p>
+              <span className="text-emerald-400 hover:text-emerald-300 font-medium">Manage LifeGraph →</span>
             </div>
           </Link>
         </div>
