@@ -11,7 +11,7 @@ const envSchema = z.object({
   DATABASE_URL_UNPOOLED: z.string().url("Must be a valid Postgres URL"),
 
   NEXTAUTH_SECRET: z.string().min(1, "NextAuth secret is required"),
-  NEXTAUTH_URL: z.string().url("NextAuth URL must be valid"),
+  NEXTAUTH_URL: z.string().url("NextAuth URL must be valid").optional(),
 
   GITHUB_ID: z.string().optional(),
   GITHUB_SECRET: z.string().optional(),
