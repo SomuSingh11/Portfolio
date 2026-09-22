@@ -81,7 +81,7 @@ export function useLifeGraph({ onClusterSelect, onEntrySelect, data }: UseLifeGr
 
     const rScale = scaleSqrt()
       .domain([0, Math.max(...graphClusters.map((cluster) => cluster.count), 1)])
-      .range([8, 46]);
+      .range([22, 52]);
     const clusterColor = (id: string) => graphClusters.find((cluster) => cluster.id === id)?.color ?? "#2A3448";
     const nodes: GraphNode[] = [
       ...graphClusters.map((cluster) => ({ ...cluster, kind: "cluster" as const, r: rScale(cluster.count) })),

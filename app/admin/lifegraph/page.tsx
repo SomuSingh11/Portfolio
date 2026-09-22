@@ -33,6 +33,7 @@ interface RawCluster {
   color: string;
   sortOrder: number;
   published: boolean;
+  imageMedia?: { secureUrl: string } | null;
   _count?: { entries: number; relationsFrom: number; relationsTo: number };
 }
 

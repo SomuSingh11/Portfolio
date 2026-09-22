@@ -2,6 +2,30 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
+async function resolveImageMediaId(imageUrl?: string | null): Promise<string | null | undefined> {
+  if (imageUrl === undefined) return undefined;
+  const url = imageUrl?.trim();
+  if (!url) return null;
+
+  const isSvg = url.toLowerCase().endsWith(".svg") || url.toLowerCase().includes("svg");
+  const media = await prisma.mediaAsset.upsert({
+    where: {
+      provider_publicId: { provider: "url", publicId: url },
+    },
+    create: {
+      provider: "url",
+      publicId: url,
+      resourceType: isSvg ? "Svg" : "Image",
+      secureUrl: url,
+    },
+    update: {
+      secureUrl: url,
+    },
+  });
+
+  return media.id;
+}
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -51,6 +75,9 @@ export async function PATCH(
     }
 
     const body = await request.json();
+    const rawImageUrl = body.imageUrl ?? body.imageMediaUrl;
+    const imageMediaId = await resolveImageMediaId(rawImageUrl);
+
     const cluster = await prisma.lifeCluster.update({
       where: { id: existing.id },
       data: {
@@ -62,6 +89,10 @@ export async function PATCH(
         color: body.color === undefined ? existing.color : String(body.color),
         sortOrder: body.sortOrder === undefined ? existing.sortOrder : Number(body.sortOrder),
         published: body.published === undefined ? existing.published : Boolean(body.published),
+        ...(imageMediaId !== undefined && { imageMediaId }),
+      },
+      include: {
+        imageMedia: true,
       },
     });
 

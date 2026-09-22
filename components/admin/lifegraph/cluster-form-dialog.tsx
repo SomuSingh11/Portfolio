@@ -28,6 +28,7 @@ const emptyForm = {
   slug: "",
   description: "",
   color: "#4FA8A0",
+  imageUrl: "",
   sortOrder: 0,
   published: true,
 };
@@ -40,6 +41,7 @@ function clusterToForm(c: ClusterRow): FormState {
     slug: c.slug,
     description: c.description ?? "",
     color: c.color,
+    imageUrl: c.imageMedia?.secureUrl || c.imageUrl || "",
     sortOrder: c.sortOrder,
     published: c.published,
   };
@@ -86,6 +88,7 @@ export function ClusterFormDialog({
         slug: form.slug.trim(),
         description: form.description.trim() || null,
         color: form.color,
+        imageUrl: form.imageUrl.trim() || null,
         sortOrder: Number(form.sortOrder),
         published: form.published,
       };
@@ -118,7 +121,7 @@ export function ClusterFormDialog({
             {isEdit ? `Edit Cluster — ${cluster!.name}` : "New Cluster"}
           </DialogTitle>
           <DialogDescription className="text-slate-400">
-            {isEdit ? "Update the cluster details." : "Create a new LifeGraph cluster."}
+            {isEdit ? "Update the cluster details and icon image." : "Create a new LifeGraph cluster."}
           </DialogDescription>
         </DialogHeader>
 
@@ -152,6 +155,33 @@ export function ClusterFormDialog({
               placeholder="What does this cluster represent?"
               className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 resize-none focus:border-blue-500"
             />
+          </FormField>
+
+          <FormField label="Cluster Icon / Image URL" htmlFor="c-image" hint="Supports PNG, JPG, GIF, or SVG URL">
+            <div className="space-y-2">
+              <Input
+                id="c-image"
+                value={form.imageUrl}
+                onChange={(e) => set("imageUrl", e.target.value)}
+                placeholder="https://example.com/icon.gif, .svg, or .png"
+                className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 font-mono text-xs focus:border-blue-500"
+              />
+              {form.imageUrl.trim() && (
+                <div className="flex items-center gap-3 p-2 rounded-lg bg-slate-800/60 border border-slate-700">
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-900 border border-slate-700 flex items-center justify-center flex-shrink-0">
+                    <img
+                      src={form.imageUrl.trim()}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = "none";
+                      }}
+                    />
+                  </div>
+                  <span className="text-xs text-slate-400 font-mono truncate">{form.imageUrl.trim()}</span>
+                </div>
+              )}
+            </div>
           </FormField>
 
           <div className="grid grid-cols-2 gap-4">
