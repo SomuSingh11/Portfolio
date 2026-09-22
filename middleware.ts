@@ -1,28 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(req: NextRequest) {
-    const { pathname } = req.nextUrl;
+  const { pathname } = req.nextUrl;
 
-    // Allow login page to load without auth check
-    if (pathname === "/admin/login") {
-        return NextResponse.next();
+  // Check all possible NextAuth / Auth.js session cookie name patterns (including chunked cookies)
+  const allCookies = req.cookies.getAll();
+  const hasSessionCookie = allCookies.some((cookie) =>
+    cookie.name.includes("session-token")
+  );
+
+  const isApiAdminPath = pathname.startsWith("/api/admin");
+  const isAdminPagePath = pathname.startsWith("/admin");
+  const isLoginPage = pathname === "/admin/login";
+
+  // If already logged in and visiting /admin/login, redirect to /admin dashboard
+  if (isLoginPage) {
+    if (hasSessionCookie) {
+      return NextResponse.redirect(new URL("/admin", req.url));
     }
-
-    const isAdminPath = pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
-
-    // For protected admin paths, redirect to login if no session
-    if (isAdminPath) {
-        const sessionCookie = req.cookies.get("next-auth.session-token") ?? req.cookies.get("__Secure-next-auth.session-token");
-        
-        if (!sessionCookie) {
-            const logInUrl = new URL("/admin/login", req.url);
-            return NextResponse.redirect(logInUrl);
-        }
-    }
-
     return NextResponse.next();
+  }
+
+  // Handle protected API routes under /api/admin/
+  if (isApiAdminPath) {
+    if (!hasSessionCookie) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    return NextResponse.next();
+  }
+
+  // Handle protected page routes under /admin/
+  if (isAdminPagePath) {
+    if (!hasSessionCookie) {
+      const loginUrl = new URL("/admin/login", req.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+    return NextResponse.next();
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/admin", "/admin/:path*", "/api/admin/:path*"],
 };

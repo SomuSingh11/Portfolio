@@ -118,7 +118,6 @@ export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphP
                 <div className="entry-date">{entry.occurredAt?.slice(0, 10) ?? ""}</div>
                 <div className="entry-title">{entry.title}</div>
                 <div className="entry-snip">{entry.content}</div>
-                <div className="entry-type">{entry.type.label}</div>
               </div>
             ))}
           {panelData?.kind === "entry" && (

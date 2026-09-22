@@ -1,105 +1,137 @@
-'use client';
+"use client";
 
-import { signOut, useSession } from "next-auth/react";
+import { useEffect, useState, useCallback } from "react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
+import { DashboardHeader } from "@/components/admin/dashboard/dashboard-header";
+import { DashboardOverviewStats } from "@/components/admin/dashboard/dashboard-overview-stats";
+import { ModuleCards } from "@/components/admin/dashboard/module-cards";
+import toast from "react-hot-toast";
 
-export default function AdminDashboard() {
-  const { data: session, status } = useSession();
+interface ProjectData {
+  id: string;
+  published: boolean;
+  featured: boolean;
+}
+
+interface EntryData {
+  id: string;
+  status: string;
+}
+
+export default function AdminDashboardPage() {
+  const { status } = useSession();
   const router = useRouter();
 
-  if (status === "loading") {
-    return <div className="p-8">Loading...</div>;
-  }
+  const [loading, setLoading] = useState(true);
+  const [projectStats, setProjectStats] = useState({
+    total: 0,
+    published: 0,
+    draft: 0,
+    featured: 0,
+  });
+
+  const [lifegraphStats, setLifegraphStats] = useState({
+    totalEntries: 0,
+    publishedEntries: 0,
+    draftEntries: 0,
+    totalClusters: 0,
+    totalRelations: 0,
+  });
+
+  const fetchDashboardData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [projectsRes, entriesRes, clustersRes, relationsRes] = await Promise.all([
+        fetch("/api/admin/projects", { cache: "no-store" }),
+        fetch("/api/admin/lifegraph/entries", { cache: "no-store" }),
+        fetch("/api/admin/lifegraph/clusters", { cache: "no-store" }),
+        fetch("/api/admin/lifegraph/relations", { cache: "no-store" }),
+      ]);
+
+      if (projectsRes.ok) {
+        const projects: ProjectData[] = await projectsRes.json();
+        setProjectStats({
+          total: projects.length,
+          published: projects.filter((p) => p.published).length,
+          draft: projects.filter((p) => !p.published).length,
+          featured: projects.filter((p) => p.featured).length,
+        });
+      }
+
+      if (entriesRes.ok && clustersRes.ok && relationsRes.ok) {
+        const entries: EntryData[] = await entriesRes.json();
+        const clusters = await clustersRes.json();
+        const relations = await relationsRes.json();
+
+        setLifegraphStats({
+          totalEntries: entries.length,
+          publishedEntries: entries.filter((e) => e.status === "Published").length,
+          draftEntries: entries.filter((e) => e.status === "Draft").length,
+          totalClusters: Array.isArray(clusters) ? clusters.length : 0,
+          totalRelations: Array.isArray(relations) ? relations.length : 0,
+        });
+      }
+    } catch {
+      toast.error("Could not fetch dashboard metrics");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchDashboardData();
+    }
+  }, [status, fetchDashboardData]);
 
   if (status === "unauthenticated") {
     router.push("/admin/login");
     return null;
   }
 
-  const handleLogout = async () => {
-    await signOut({ redirect: true, callbackUrl: "/" });
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-8">
-      <div className="max-w-4xl mx-auto">
+    <main className="min-h-screen bg-slate-950 text-white">
+      <div className="mx-auto max-w-7xl px-6 py-10 space-y-10">
+        
         {/* Header */}
-        <div className="flex justify-between items-center mb-12">
-          <div>
-            <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
-            <p className="text-slate-400">Manage your portfolio content</p>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition"
-          >
-            Logout
-          </button>
-        </div>
+        <DashboardHeader />
 
-        {/* User Info */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-8">
-          <h2 className="text-lg font-semibold text-white mb-4">Logged in as</h2>
-          <div className="text-slate-300">
-            <p>
-              <span className="font-medium text-slate-400">Email:</span> {session?.user?.email}
-            </p>
-            <p>
-              <span className="font-medium text-slate-400">Name:</span> {session?.user?.name || "N/A"}
-            </p>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Projects */}
-          <Link href="/admin/projects">
-            <div className="bg-slate-800 border border-slate-700 hover:border-blue-500 rounded-lg p-8 cursor-pointer transition transform hover:scale-105">
-              <h3 className="text-xl font-semibold text-white mb-3">📋 Projects</h3>
-              <p className="text-slate-400 mb-4">View, create, edit, and delete your projects</p>
-              <span className="text-blue-400 hover:text-blue-300 font-medium">Manage Projects →</span>
-            </div>
-          </Link>
-
-          {/* Settings */}
-          <Link href="/admin/settings">
-            <div className="bg-slate-800 border border-slate-700 hover:border-blue-500 rounded-lg p-8 cursor-pointer transition transform hover:scale-105">
-              <h3 className="text-xl font-semibold text-white mb-3">⚙️ Settings</h3>
-              <p className="text-slate-400 mb-4">Manage your profile and account settings</p>
-              <span className="text-blue-400 hover:text-blue-300 font-medium">View Settings →</span>
-            </div>
-          </Link>
-
-          {/* LifeGraph */}
-          <Link href="/admin/lifegraph">
-            <div className="bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-8 cursor-pointer transition transform hover:scale-105">
-              <h3 className="text-xl font-semibold text-white mb-3">LifeGraph</h3>
-              <p className="text-slate-400 mb-4">Manage clusters, entries, and graph relationships</p>
-              <span className="text-emerald-400 hover:text-emerald-300 font-medium">Manage LifeGraph →</span>
-            </div>
-          </Link>
-        </div>
-
-        {/* Stats (optional) */}
-        <div className="mt-12 bg-slate-800 border border-slate-700 rounded-lg p-6">
-          <h2 className="text-lg font-semibold text-white mb-6">Quick Stats</h2>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-slate-700 rounded-lg p-4 text-center">
-              <p className="text-slate-400 text-sm mb-1">Total Projects</p>
-              <p className="text-2xl font-bold text-white">0</p>
-            </div>
-            <div className="bg-slate-700 rounded-lg p-4 text-center">
-              <p className="text-slate-400 text-sm mb-1">Published</p>
-              <p className="text-2xl font-bold text-white">0</p>
-            </div>
-            <div className="bg-slate-700 rounded-lg p-4 text-center">
-              <p className="text-slate-400 text-sm mb-1">Drafts</p>
-              <p className="text-2xl font-bold text-white">0</p>
+        {/* Live Metrics Overview */}
+        {loading || status === "loading" ? (
+          <div className="space-y-4">
+            <Skeleton className="h-6 w-40 bg-slate-900" />
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-28 rounded-xl bg-slate-900" />
+              ))}
             </div>
           </div>
-        </div>
+        ) : (
+          <DashboardOverviewStats
+            projectStats={projectStats}
+            lifegraphStats={lifegraphStats}
+          />
+        )}
+
+        {/* Modular Workspace Navigation Cards */}
+        {loading || status === "loading" ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-64 rounded-2xl bg-slate-900" />
+            ))}
+          </div>
+        ) : (
+          <ModuleCards
+            projectCount={projectStats.total}
+            entryCount={lifegraphStats.totalEntries}
+            clusterCount={lifegraphStats.totalClusters}
+            relationCount={lifegraphStats.totalRelations}
+          />
+        )}
+
       </div>
-    </div>
+    </main>
   );
 }
