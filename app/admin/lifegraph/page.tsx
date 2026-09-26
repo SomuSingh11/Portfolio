@@ -9,22 +9,16 @@ import { LifeGraphOverview } from "@/components/admin/lifegraph/lifegraph-overvi
 import { EntriesTable, type EntryRow } from "@/components/admin/lifegraph/entries-table";
 import { ClustersGrid, type ClusterRow } from "@/components/admin/lifegraph/clusters-grid";
 import { RelationsList, type RelationRow } from "@/components/admin/lifegraph/relations-list";
+import { ContentTypesGrid, type ContentTypeRow } from "@/components/admin/lifegraph/content-types-grid";
 import { EntryFormDialog } from "@/components/admin/lifegraph/entry-form-dialog";
 import { ClusterFormDialog } from "@/components/admin/lifegraph/cluster-form-dialog";
 import { RelationFormDialog } from "@/components/admin/lifegraph/relation-form-dialog";
+import { ContentTypeFormDialog } from "@/components/admin/lifegraph/content-type-form-dialog";
 import { ConfirmDeleteDialog } from "@/components/admin/shared/confirm-delete-dialog";
-import { Plus, ArrowLeft, BookOpen, Layers, GitBranch } from "lucide-react";
+import { Plus, ArrowLeft, BookOpen, Layers, GitBranch, Tag } from "lucide-react";
 import toast from "react-hot-toast";
 
-interface ContentType {
-  id: string;
-  slug: string;
-  label: string;
-  icon?: string | null;
-  isActive: boolean;
-}
-
-// Raw API shapes (clusters endpoint returns more detail than overview endpoint)
+// Raw API shapes
 interface RawCluster {
   id: string;
   slug: string;
@@ -97,7 +91,7 @@ export default function AdminLifeGraphPage() {
   const [entries, setEntries] = useState<EntryRow[]>([]);
   const [clusters, setClusters] = useState<ClusterRow[]>([]);
   const [relations, setRelations] = useState<RelationRow[]>([]);
-  const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
+  const [contentTypes, setContentTypes] = useState<ContentTypeRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Entry dialog state
@@ -118,31 +112,37 @@ export default function AdminLifeGraphPage() {
   const [deleteRelation, setDeleteRelation] = useState<RelationRow | null>(null);
   const [deleteRelationOpen, setDeleteRelationOpen] = useState(false);
 
+  // Content Type dialog state
+  const [typeFormOpen, setTypeFormOpen] = useState(false);
+  const [editType, setEditType] = useState<ContentTypeRow | null>(null);
+  const [deleteType, setDeleteType] = useState<ContentTypeRow | null>(null);
+  const [deleteTypeOpen, setDeleteTypeOpen] = useState(false);
+
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [entriesRes, clustersRes, relationsRes, overviewRes] = await Promise.all([
+      const [entriesRes, clustersRes, relationsRes, typesRes] = await Promise.all([
         fetch("/api/admin/lifegraph/entries", { cache: "no-store" }),
         fetch("/api/admin/lifegraph/clusters", { cache: "no-store" }),
         fetch("/api/admin/lifegraph/relations", { cache: "no-store" }),
-        fetch("/api/admin/lifegraph", { cache: "no-store" }),
+        fetch("/api/admin/lifegraph/types", { cache: "no-store" }),
       ]);
 
-      if (!entriesRes.ok || !clustersRes.ok || !relationsRes.ok || !overviewRes.ok) {
+      if (!entriesRes.ok || !clustersRes.ok || !relationsRes.ok || !typesRes.ok) {
         throw new Error("Failed to load LifeGraph data");
       }
 
-      const [rawEntries, rawClusters, rawRelations, overview] = await Promise.all([
+      const [rawEntries, rawClusters, rawRelations, rawTypes] = await Promise.all([
         entriesRes.json() as Promise<RawEntry[]>,
         clustersRes.json() as Promise<RawCluster[]>,
         relationsRes.json() as Promise<RawRelation[]>,
-        overviewRes.json(),
+        typesRes.json() as Promise<ContentTypeRow[]>,
       ]);
 
       setEntries(rawEntries.map(rawToEntryRow));
       setClusters(rawClusters);
       setRelations(rawRelations.map(rawToRelationRow));
-      setContentTypes(overview.contentTypes ?? []);
+      setContentTypes(rawTypes);
     } catch {
       toast.error("Could not load LifeGraph data");
     } finally {
@@ -193,6 +193,21 @@ export default function AdminLifeGraphPage() {
     await fetchAll();
   };
 
+  // ── Content Type handlers ──────────────────────────────────────────────────
+  const openCreateType = () => { setEditType(null); setTypeFormOpen(true); };
+  const openEditType = (type: ContentTypeRow) => { setEditType(type); setTypeFormOpen(true); };
+  const openDeleteType = (type: ContentTypeRow) => { setDeleteType(type); setDeleteTypeOpen(true); };
+  const handleDeleteType = async () => {
+    if (!deleteType) return;
+    const res = await fetch(`/api/admin/lifegraph/types/${deleteType.id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error ?? "Failed to delete content type");
+    }
+    toast.success("Content type deleted");
+    await fetchAll();
+  };
+
   const clusterOptionsForDialog = clusters.map((c) => ({
     id: c.id,
     slug: c.slug,
@@ -215,7 +230,7 @@ export default function AdminLifeGraphPage() {
           </Link>
           <h1 className="text-4xl font-bold tracking-tight text-white">LifeGraph</h1>
           <p className="mt-1.5 text-slate-400">
-            Manage entries, clusters, and relationships in your LifeGraph.
+            Manage entries, clusters, relationships, and content types in your LifeGraph.
           </p>
         </div>
 
@@ -261,6 +276,14 @@ export default function AdminLifeGraphPage() {
               <GitBranch className="w-4 h-4" />
               Relations
               <span className="ml-1 text-xs opacity-70">({relations.length})</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="types"
+              className="data-[state=active]:bg-amber-600 data-[state=active]:text-white text-slate-400 gap-2 px-4 py-2"
+            >
+              <Tag className="w-4 h-4" />
+              Content Types
+              <span className="ml-1 text-xs opacity-70">({contentTypes.length})</span>
             </TabsTrigger>
           </TabsList>
 
@@ -344,6 +367,33 @@ export default function AdminLifeGraphPage() {
               />
             )}
           </TabsContent>
+
+          {/* ── Content Types Tab ─────────────────────────────────── */}
+          <TabsContent value="types" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-slate-200">All Content Types</h2>
+              <Button
+                onClick={openCreateType}
+                className="bg-amber-600 hover:bg-amber-700 text-white gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                New Content Type
+              </Button>
+            </div>
+            {loading ? (
+              <div className="grid grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <Skeleton key={i} className="h-36 rounded-xl bg-slate-800" />
+                ))}
+              </div>
+            ) : (
+              <ContentTypesGrid
+                contentTypes={contentTypes}
+                onEdit={openEditType}
+                onDelete={openDeleteType}
+              />
+            )}
+          </TabsContent>
         </Tabs>
       </div>
 
@@ -392,6 +442,21 @@ export default function AdminLifeGraphPage() {
         description={`This will disconnect ${deleteRelation?.fromName ?? deleteRelation?.source} from ${deleteRelation?.toName ?? deleteRelation?.target}.`}
         onConfirm={handleDeleteRelation}
       />
+
+      <ContentTypeFormDialog
+        open={typeFormOpen}
+        onOpenChange={setTypeFormOpen}
+        contentType={editType}
+        onSuccess={fetchAll}
+      />
+      <ConfirmDeleteDialog
+        open={deleteTypeOpen}
+        onOpenChange={setDeleteTypeOpen}
+        title={`Delete content type "${deleteType?.label}"?`}
+        description="Content types with existing entries cannot be deleted."
+        onConfirm={handleDeleteType}
+      />
     </main>
   );
 }
+

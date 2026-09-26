@@ -2,18 +2,29 @@
 
 import { useState, useEffect } from "react";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { FormField } from "@/components/admin/shared/form-field";
 import { type EntryRow } from "./entries-table";
-import { X } from "lucide-react";
+import { type FieldDefinition } from "./content-types-grid";
+import { X, Sliders } from "lucide-react";
 import toast from "react-hot-toast";
 
 interface ContentType {
@@ -22,6 +33,7 @@ interface ContentType {
   label: string;
   icon?: string | null;
   isActive: boolean;
+  fieldSchema?: { fields?: FieldDefinition[] } | null;
 }
 
 interface ClusterOption {
@@ -52,6 +64,7 @@ const emptyForm = {
   occurredAt: "",
   location: "",
   sourceUrl: "",
+  metadata: {} as Record<string, unknown>,
 };
 
 type FormState = typeof emptyForm;
@@ -73,16 +86,22 @@ function entryToForm(e: EntryRow): FormState {
     occurredAt: e.occurredAt ? new Date(e.occurredAt).toISOString().slice(0, 10) : "",
     location: e.location ?? "",
     sourceUrl: e.sourceUrl ?? "",
+    metadata: (e.metadata as Record<string, unknown>) ?? {},
   };
 }
 
 export function EntryFormDialog({
-  open, onOpenChange, entry, contentTypes, clusters, onSuccess,
+  open,
+  onOpenChange,
+  entry,
+  contentTypes,
+  clusters,
+  onSuccess,
 }: EntryFormDialogProps) {
   const isEdit = Boolean(entry);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof FormState | string, string>>>({});
 
   useEffect(() => {
     if (open) {
@@ -100,6 +119,16 @@ export function EntryFormDialog({
     setErrors((prev) => ({ ...prev, [key]: undefined }));
   };
 
+  const setMetadataValue = (fieldKey: string, value: unknown) => {
+    setForm((prev) => ({
+      ...prev,
+      metadata: {
+        ...prev.metadata,
+        [fieldKey]: value,
+      },
+    }));
+  };
+
   const toggleCluster = (slug: string) => {
     set(
       "clusterSlugs",
@@ -109,11 +138,25 @@ export function EntryFormDialog({
     );
   };
 
+  const selectedContentType = contentTypes.find((ct) => ct.slug === form.typeSlug);
+  const schemaFields = selectedContentType?.fieldSchema?.fields ?? [];
+
   const validate = () => {
-    const errs: Partial<Record<keyof FormState, string>> = {};
+    const errs: Record<string, string> = {};
     if (!form.title.trim()) errs.title = "Title is required";
     if (!form.typeSlug) errs.typeSlug = "Content type is required";
     if (form.clusterSlugs.length === 0) errs.clusterSlugs = "At least one cluster is required";
+
+    // Validate required custom schema fields
+    for (const f of schemaFields) {
+      if (f.required) {
+        const val = form.metadata[f.name];
+        if (val === undefined || val === null || String(val).trim() === "") {
+          errs[`meta_${f.name}`] = `${f.label} is required`;
+        }
+      }
+    }
+
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -134,6 +177,7 @@ export function EntryFormDialog({
         occurredAt: form.occurredAt || null,
         location: form.location.trim() || null,
         sourceUrl: form.sourceUrl.trim() || null,
+        metadata: Object.keys(form.metadata).length > 0 ? form.metadata : null,
       };
 
       const url = isEdit ? `/api/admin/lifegraph/entries/${entry!.id}` : "/api/admin/lifegraph/entries";
@@ -144,10 +188,12 @@ export function EntryFormDialog({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error ?? "Failed to save entry");
       }
+
       toast.success(isEdit ? "Entry updated!" : "Entry created!");
       onSuccess();
       onOpenChange(false);
@@ -211,7 +257,7 @@ export function EntryFormDialog({
                 <SelectContent className="bg-slate-800 border-slate-700 text-white">
                   {contentTypes.filter((ct) => ct.isActive).map((ct) => (
                     <SelectItem key={ct.slug} value={ct.slug}>
-                      {ct.icon && <span className="mr-1">{ct.icon}</span>}
+                      {ct.icon && <span className="mr-1.5">{ct.icon}</span>}
                       {ct.label}
                     </SelectItem>
                   ))}
@@ -234,6 +280,80 @@ export function EntryFormDialog({
               </FormField>
             )}
           </div>
+
+          {/* Dynamic Custom Fields Schema Rendering */}
+          {schemaFields.length > 0 && (
+            <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 space-y-4">
+              <div className="flex items-center gap-2 border-b border-amber-500/20 pb-2.5">
+                <Sliders className="w-4 h-4 text-amber-400" />
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-300">
+                  Custom Data Fields ({selectedContentType?.label})
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {schemaFields.map((f) => {
+                  const val = form.metadata[f.name];
+                  const errorMsg = errors[`meta_${f.name}`];
+
+                  if (f.type === "boolean") {
+                    return (
+                      <div
+                        key={f.name}
+                        className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-800/60 px-3 py-2.5"
+                      >
+                        <div>
+                          <p className="text-xs font-medium text-slate-200">
+                            {f.label}
+                            {f.required && <span className="text-rose-400 ml-1">*</span>}
+                          </p>
+                          <p className="text-[10px] text-slate-500 font-mono">Key: {f.name}</p>
+                        </div>
+                        <Switch
+                          checked={Boolean(val)}
+                          onCheckedChange={(checked) => setMetadataValue(f.name, checked)}
+                        />
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <FormField
+                      key={f.name}
+                      label={f.label}
+                      htmlFor={`meta-${f.name}`}
+                      required={f.required}
+                      error={errorMsg}
+                    >
+                      <Input
+                        id={`meta-${f.name}`}
+                        type={f.type === "number" ? "number" : f.type === "date" ? "date" : f.type === "url" ? "url" : "text"}
+                        value={(val as string | number) ?? ""}
+                        onChange={(e) =>
+                          setMetadataValue(
+                            f.name,
+                            f.type === "number"
+                              ? e.target.value === ""
+                                ? ""
+                                : Number(e.target.value)
+                              : e.target.value,
+                          )
+                        }
+                        placeholder={
+                          f.type === "url"
+                            ? "https://..."
+                            : f.type === "number"
+                            ? "0"
+                            : `Enter ${f.label.toLowerCase()}...`
+                        }
+                        className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus:border-amber-500 text-sm"
+                      />
+                    </FormField>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Cluster multi-select */}
           <FormField label="Clusters" required error={errors.clusterSlugs as string}>

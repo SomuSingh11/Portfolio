@@ -15,6 +15,7 @@ export interface EntryRow {
   sourceUrl?: string | null;
   content?: string | null;
   excerpt?: string | null;
+  metadata?: Record<string, unknown> | null;
   type: { slug: string; label: string; icon?: string | null; color?: string | null };
   clusterIds: string[];
   // Used for edit form
