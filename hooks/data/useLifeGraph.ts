@@ -6,6 +6,8 @@ import {
   forceLink,
   forceManyBody,
   forceSimulation,
+  forceX,
+  forceY,
   type Simulation,
 } from "d3-force";
 import { zoom, zoomIdentity, type ZoomBehavior } from "d3-zoom";
@@ -18,9 +20,19 @@ interface UseLifeGraphOptions {
   onClusterSelect: (cluster: ClusterNode) => void;
   onEntrySelect: (entry: EntryNode, parentColor: string, parentLabel: string) => void;
   data?: LifeGraphApiResponse | null;
+  fallbackClusterFill?: boolean;
+  layout?: "graph" | "timeline";
+  showClusterCountBadge?: boolean;
 }
 
-export function useLifeGraph({ onClusterSelect, onEntrySelect, data }: UseLifeGraphOptions) {
+export function useLifeGraph({
+  onClusterSelect,
+  onEntrySelect,
+  data,
+  fallbackClusterFill = false,
+  layout = "graph",
+  showClusterCountBadge = true,
+}: UseLifeGraphOptions) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const onClusterSelectRef = useRef(onClusterSelect);
@@ -136,16 +148,18 @@ export function useLifeGraph({ onClusterSelect, onEntrySelect, data }: UseLifeGr
       .append("circle")
       .attr("class", "core")
       .attr("r", (node) => node.r)
-      .attr("fill", "none")
+      .attr("fill", (node) => node.kind === "cluster" && fallbackClusterFill && !node.photo ? node.color : "none")
       .attr("stroke", (node) => node.kind === "cluster" ? node.color : "none")
       .attr("stroke-width", 3);
 
-    const badge = clusterG
-      .append("g")
-      .attr("class", "count-badge")
-      .attr("transform", (node) => `translate(${node.r * 0.72},${node.r * 0.72})`);
-    badge.append("circle").attr("r", 11).attr("fill", (node) => node.kind === "cluster" ? node.color : "none").attr("stroke", "var(--ink)").attr("stroke-width", 2);
-    badge.append("text").attr("class", "count").attr("font-size", 11).text((node) => node.kind === "cluster" ? node.count : "");
+    if (showClusterCountBadge) {
+      const badge = clusterG
+        .append("g")
+        .attr("class", "count-badge")
+        .attr("transform", (node) => `translate(${node.r * 0.72},${node.r * 0.72})`);
+      badge.append("circle").attr("r", 11).attr("fill", (node) => node.kind === "cluster" ? node.color : "none").attr("stroke", "var(--ink)").attr("stroke-width", 2);
+      badge.append("text").attr("class", "count").attr("font-size", 11).text((node) => node.kind === "cluster" ? node.count : "");
+    }
     clusterG
       .append("text")
       .attr("class", "label")
@@ -182,6 +196,16 @@ export function useLifeGraph({ onClusterSelect, onEntrySelect, data }: UseLifeGr
         });
         nodeSel.attr("transform", (node) => `translate(${node.x},${node.y})`);
       });
+
+    if (layout === "timeline") {
+      sim
+        .force("x", forceX<GraphNode>((_, index) => {
+          const padding = Math.min(110, width * 0.12);
+          const usableWidth = Math.max(width - padding * 2, 1);
+          return padding + (usableWidth * index) / Math.max(nodes.length - 1, 1);
+        }).strength(0.08))
+        .force("y", forceY<GraphNode>((_, index) => height / 2 + Math.sin(index * 1.2) * Math.min(height * 0.25, 110)).strength(0.08));
+    }
 
     const dragBehavior = drag<SVGGElement, GraphNode>()
       .on("start", (event, node) => {
@@ -269,7 +293,7 @@ export function useLifeGraph({ onClusterSelect, onEntrySelect, data }: UseLifeGr
       nodeSelRef.current = null;
       linkSelRef.current = null;
     };
-  }, [graphData]);
+  }, [fallbackClusterFill, graphData, layout, showClusterCountBadge]);
 
   function toggleClusterMute(id: string) {
     setMutedClusters((previous) => {
