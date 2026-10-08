@@ -70,6 +70,7 @@ export function useLifeGraph({ onClusterSelect, onEntrySelect, data }: UseLifeGr
       color: cluster.color,
       count: apiEntries.filter((entry) => entry.clusterIds.includes(cluster.id)).length,
       photo: cluster.image?.url ?? "",
+      parent: cluster.parentId ?? null,
     }));
     const graphHighlights = apiEntries.map((entry) => ({
       id: entry.id,
@@ -89,6 +90,9 @@ export function useLifeGraph({ onClusterSelect, onEntrySelect, data }: UseLifeGr
     ];
     const links: GraphLink[] = [
       ...graphRelations.map(([source, target, weight]) => ({ source, target, weight, kind: "cluster" as const })),
+      ...graphClusters
+        .filter((cluster) => cluster.parent)
+        .map((cluster) => ({ source: cluster.parent!, target: cluster.id, weight: 1, kind: "cluster" as const })),
       ...graphHighlights.map((highlight) => ({ source: highlight.parent, target: highlight.id, weight: 1, kind: "entry" as const })),
     ];
 

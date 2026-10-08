@@ -35,6 +35,12 @@ async function resolveImageMediaId(
   return media.id;
 }
 
+async function resolveParentId(parentSlug?: string | null) {
+  if (!parentSlug) return null;
+  const parent = await prisma.lifeCluster.findUnique({ where: { slug: parentSlug } });
+  return parent?.id ?? null;
+}
+
 export async function GET() {
   const session = await auth();
   if (!session?.user) {
@@ -45,6 +51,7 @@ export async function GET() {
     orderBy: { sortOrder: "asc" },
     include: {
       imageMedia: true,
+      parent: true,
       _count: { select: { entries: true, relationsFrom: true, relationsTo: true } },
     },
   });
@@ -70,6 +77,10 @@ export async function POST(request: NextRequest) {
       body.imageWidth == null ? null : Number(body.imageWidth),
       body.imageHeight == null ? null : Number(body.imageHeight),
     );
+    const parentId = await resolveParentId(body.parentSlug);
+    if (body.parentSlug && !parentId) {
+      return NextResponse.json({ error: "Parent cluster was not found." }, { status: 400 });
+    }
 
     const cluster = await prisma.lifeCluster.create({
       data: {
@@ -79,6 +90,7 @@ export async function POST(request: NextRequest) {
         color: String(body.color ?? "#4FA8A0"),
         sortOrder: Number(body.sortOrder ?? 0),
         published: body.published !== false,
+        parentId,
         imageMediaId,
       },
       include: {

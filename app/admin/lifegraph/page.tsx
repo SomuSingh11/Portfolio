@@ -29,6 +29,8 @@ interface RawCluster {
   color: string;
   sortOrder: number;
   published: boolean;
+  parentId?: string | null;
+  parent?: { slug: string; name: string } | null;
   imageMedia?: { secureUrl: string; width?: number | null; height?: number | null } | null;
   _count?: { entries: number; relationsFrom: number; relationsTo: number };
 }
@@ -434,6 +436,7 @@ export default function AdminLifeGraphPage() {
         open={clusterFormOpen}
         onOpenChange={setClusterFormOpen}
         cluster={editCluster}
+        clusters={clusterOptionsForDialog}
         onSuccess={fetchAll}
       />
       <ConfirmDeleteDialog

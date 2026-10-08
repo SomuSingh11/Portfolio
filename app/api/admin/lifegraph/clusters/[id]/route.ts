@@ -32,6 +32,22 @@ async function resolveImageMediaId(
   return media.id;
 }
 
+async function resolveParentId(parentSlug?: string | null, currentId?: string) {
+  if (!parentSlug) return null;
+  let parent = await prisma.lifeCluster.findUnique({ where: { slug: parentSlug } });
+  const selectedParentId = parent?.id ?? null;
+  const visited = new Set<string>();
+
+  while (parent) {
+    if (parent.id === currentId || visited.has(parent.id)) return null;
+    visited.add(parent.id);
+    if (!parent.parentId) return selectedParentId;
+    parent = await prisma.lifeCluster.findUnique({ where: { id: parent.parentId } });
+  }
+
+  return null;
+}
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -46,6 +62,7 @@ export async function GET(
     where: { OR: [{ id }, { slug: id }] },
     include: {
       imageMedia: true,
+      parent: true,
       entries: {
         include: { entry: true },
         orderBy: { sortOrder: "asc" },
@@ -87,6 +104,12 @@ export async function PATCH(
       body.imageWidth === undefined ? undefined : body.imageWidth == null ? null : Number(body.imageWidth),
       body.imageHeight === undefined ? undefined : body.imageHeight == null ? null : Number(body.imageHeight),
     );
+    const parentId = body.parentSlug === undefined
+      ? undefined
+      : await resolveParentId(body.parentSlug, existing.id);
+    if (body.parentSlug && !parentId) {
+      return NextResponse.json({ error: "Parent cluster was not found or is invalid." }, { status: 400 });
+    }
 
     const cluster = await prisma.lifeCluster.update({
       where: { id: existing.id },
@@ -99,6 +122,7 @@ export async function PATCH(
         color: body.color === undefined ? existing.color : String(body.color),
         sortOrder: body.sortOrder === undefined ? existing.sortOrder : Number(body.sortOrder),
         published: body.published === undefined ? existing.published : Boolean(body.published),
+        ...(parentId !== undefined && { parentId }),
         ...(imageMediaId !== undefined && { imageMediaId }),
       },
       include: {

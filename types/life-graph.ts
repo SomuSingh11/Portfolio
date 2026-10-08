@@ -14,6 +14,7 @@ export interface LifeGraphCluster {
   description?: string | null;
   color: string;
   sortOrder: number;
+  parentId?: string | null;
   image: {
     url: string;
     altText?: string | null;

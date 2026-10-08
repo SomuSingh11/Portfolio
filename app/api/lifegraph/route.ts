@@ -10,7 +10,7 @@ export async function GET() {
       prisma.lifeCluster.findMany({
         where: { published: true },
         orderBy: { sortOrder: "asc" },
-        include: { imageMedia: true },
+        include: { imageMedia: true, parent: true },
       }),
       prisma.lifeEntry.findMany({
         where: {
@@ -56,6 +56,7 @@ export async function GET() {
         description: cluster.description,
         color: cluster.color,
         sortOrder: cluster.sortOrder,
+        parentId: cluster.parent?.slug ?? null,
         image: cluster.imageMedia
           ? {
               url: cluster.imageMedia.secureUrl,

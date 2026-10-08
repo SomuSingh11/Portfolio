@@ -42,6 +42,7 @@ export type LifeClusterMinAggregateOutputType = {
   color: string | null
   sortOrder: number | null
   published: boolean | null
+  parentId: string | null
   imageMediaId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -55,6 +56,7 @@ export type LifeClusterMaxAggregateOutputType = {
   color: string | null
   sortOrder: number | null
   published: boolean | null
+  parentId: string | null
   imageMediaId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -68,6 +70,7 @@ export type LifeClusterCountAggregateOutputType = {
   color: number
   sortOrder: number
   published: number
+  parentId: number
   imageMediaId: number
   createdAt: number
   updatedAt: number
@@ -91,6 +94,7 @@ export type LifeClusterMinAggregateInputType = {
   color?: true
   sortOrder?: true
   published?: true
+  parentId?: true
   imageMediaId?: true
   createdAt?: true
   updatedAt?: true
@@ -104,6 +108,7 @@ export type LifeClusterMaxAggregateInputType = {
   color?: true
   sortOrder?: true
   published?: true
+  parentId?: true
   imageMediaId?: true
   createdAt?: true
   updatedAt?: true
@@ -117,6 +122,7 @@ export type LifeClusterCountAggregateInputType = {
   color?: true
   sortOrder?: true
   published?: true
+  parentId?: true
   imageMediaId?: true
   createdAt?: true
   updatedAt?: true
@@ -217,6 +223,7 @@ export type LifeClusterGroupByOutputType = {
   color: string
   sortOrder: number
   published: boolean
+  parentId: string | null
   imageMediaId: string | null
   createdAt: Date
   updatedAt: Date
@@ -253,9 +260,12 @@ export type LifeClusterWhereInput = {
   color?: Prisma.StringFilter<"LifeCluster"> | string
   sortOrder?: Prisma.IntFilter<"LifeCluster"> | number
   published?: Prisma.BoolFilter<"LifeCluster"> | boolean
+  parentId?: Prisma.StringNullableFilter<"LifeCluster"> | string | null
   imageMediaId?: Prisma.StringNullableFilter<"LifeCluster"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LifeCluster"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LifeCluster"> | Date | string
+  parent?: Prisma.XOR<Prisma.LifeClusterNullableScalarRelationFilter, Prisma.LifeClusterWhereInput> | null
+  children?: Prisma.LifeClusterListRelationFilter
   imageMedia?: Prisma.XOR<Prisma.MediaAssetNullableScalarRelationFilter, Prisma.MediaAssetWhereInput> | null
   entries?: Prisma.LifeEntryClusterListRelationFilter
   relationsFrom?: Prisma.LifeClusterRelationListRelationFilter
@@ -270,9 +280,12 @@ export type LifeClusterOrderByWithRelationInput = {
   color?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   published?: Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   imageMediaId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  parent?: Prisma.LifeClusterOrderByWithRelationInput
+  children?: Prisma.LifeClusterOrderByRelationAggregateInput
   imageMedia?: Prisma.MediaAssetOrderByWithRelationInput
   entries?: Prisma.LifeEntryClusterOrderByRelationAggregateInput
   relationsFrom?: Prisma.LifeClusterRelationOrderByRelationAggregateInput
@@ -290,9 +303,12 @@ export type LifeClusterWhereUniqueInput = Prisma.AtLeast<{
   color?: Prisma.StringFilter<"LifeCluster"> | string
   sortOrder?: Prisma.IntFilter<"LifeCluster"> | number
   published?: Prisma.BoolFilter<"LifeCluster"> | boolean
+  parentId?: Prisma.StringNullableFilter<"LifeCluster"> | string | null
   imageMediaId?: Prisma.StringNullableFilter<"LifeCluster"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LifeCluster"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LifeCluster"> | Date | string
+  parent?: Prisma.XOR<Prisma.LifeClusterNullableScalarRelationFilter, Prisma.LifeClusterWhereInput> | null
+  children?: Prisma.LifeClusterListRelationFilter
   imageMedia?: Prisma.XOR<Prisma.MediaAssetNullableScalarRelationFilter, Prisma.MediaAssetWhereInput> | null
   entries?: Prisma.LifeEntryClusterListRelationFilter
   relationsFrom?: Prisma.LifeClusterRelationListRelationFilter
@@ -307,6 +323,7 @@ export type LifeClusterOrderByWithAggregationInput = {
   color?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   published?: Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   imageMediaId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -328,6 +345,7 @@ export type LifeClusterScalarWhereWithAggregatesInput = {
   color?: Prisma.StringWithAggregatesFilter<"LifeCluster"> | string
   sortOrder?: Prisma.IntWithAggregatesFilter<"LifeCluster"> | number
   published?: Prisma.BoolWithAggregatesFilter<"LifeCluster"> | boolean
+  parentId?: Prisma.StringNullableWithAggregatesFilter<"LifeCluster"> | string | null
   imageMediaId?: Prisma.StringNullableWithAggregatesFilter<"LifeCluster"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LifeCluster"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"LifeCluster"> | Date | string
@@ -343,6 +361,8 @@ export type LifeClusterCreateInput = {
   published?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  parent?: Prisma.LifeClusterCreateNestedOneWithoutChildrenInput
+  children?: Prisma.LifeClusterCreateNestedManyWithoutParentInput
   imageMedia?: Prisma.MediaAssetCreateNestedOneWithoutClusterImagesInput
   entries?: Prisma.LifeEntryClusterCreateNestedManyWithoutClusterInput
   relationsFrom?: Prisma.LifeClusterRelationCreateNestedManyWithoutFromInput
@@ -357,9 +377,11 @@ export type LifeClusterUncheckedCreateInput = {
   color: string
   sortOrder?: number
   published?: boolean
+  parentId?: string | null
   imageMediaId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  children?: Prisma.LifeClusterUncheckedCreateNestedManyWithoutParentInput
   entries?: Prisma.LifeEntryClusterUncheckedCreateNestedManyWithoutClusterInput
   relationsFrom?: Prisma.LifeClusterRelationUncheckedCreateNestedManyWithoutFromInput
   relationsTo?: Prisma.LifeClusterRelationUncheckedCreateNestedManyWithoutToInput
@@ -375,6 +397,8 @@ export type LifeClusterUpdateInput = {
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.LifeClusterUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.LifeClusterUpdateManyWithoutParentNestedInput
   imageMedia?: Prisma.MediaAssetUpdateOneWithoutClusterImagesNestedInput
   entries?: Prisma.LifeEntryClusterUpdateManyWithoutClusterNestedInput
   relationsFrom?: Prisma.LifeClusterRelationUpdateManyWithoutFromNestedInput
@@ -389,9 +413,11 @@ export type LifeClusterUncheckedUpdateInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LifeClusterUncheckedUpdateManyWithoutParentNestedInput
   entries?: Prisma.LifeEntryClusterUncheckedUpdateManyWithoutClusterNestedInput
   relationsFrom?: Prisma.LifeClusterRelationUncheckedUpdateManyWithoutFromNestedInput
   relationsTo?: Prisma.LifeClusterRelationUncheckedUpdateManyWithoutToNestedInput
@@ -405,6 +431,7 @@ export type LifeClusterCreateManyInput = {
   color: string
   sortOrder?: number
   published?: boolean
+  parentId?: string | null
   imageMediaId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -430,9 +457,25 @@ export type LifeClusterUncheckedUpdateManyInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type LifeClusterNullableScalarRelationFilter = {
+  is?: Prisma.LifeClusterWhereInput | null
+  isNot?: Prisma.LifeClusterWhereInput | null
+}
+
+export type LifeClusterListRelationFilter = {
+  every?: Prisma.LifeClusterWhereInput
+  some?: Prisma.LifeClusterWhereInput
+  none?: Prisma.LifeClusterWhereInput
+}
+
+export type LifeClusterOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type LifeClusterCountOrderByAggregateInput = {
@@ -443,6 +486,7 @@ export type LifeClusterCountOrderByAggregateInput = {
   color?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   published?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   imageMediaId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -460,6 +504,7 @@ export type LifeClusterMaxOrderByAggregateInput = {
   color?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   published?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   imageMediaId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -473,6 +518,7 @@ export type LifeClusterMinOrderByAggregateInput = {
   color?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   published?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   imageMediaId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -487,14 +533,62 @@ export type LifeClusterScalarRelationFilter = {
   isNot?: Prisma.LifeClusterWhereInput
 }
 
-export type LifeClusterListRelationFilter = {
-  every?: Prisma.LifeClusterWhereInput
-  some?: Prisma.LifeClusterWhereInput
-  none?: Prisma.LifeClusterWhereInput
+export type LifeClusterCreateNestedOneWithoutChildrenInput = {
+  create?: Prisma.XOR<Prisma.LifeClusterCreateWithoutChildrenInput, Prisma.LifeClusterUncheckedCreateWithoutChildrenInput>
+  connectOrCreate?: Prisma.LifeClusterCreateOrConnectWithoutChildrenInput
+  connect?: Prisma.LifeClusterWhereUniqueInput
 }
 
-export type LifeClusterOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
+export type LifeClusterCreateNestedManyWithoutParentInput = {
+  create?: Prisma.XOR<Prisma.LifeClusterCreateWithoutParentInput, Prisma.LifeClusterUncheckedCreateWithoutParentInput> | Prisma.LifeClusterCreateWithoutParentInput[] | Prisma.LifeClusterUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.LifeClusterCreateOrConnectWithoutParentInput | Prisma.LifeClusterCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.LifeClusterCreateManyParentInputEnvelope
+  connect?: Prisma.LifeClusterWhereUniqueInput | Prisma.LifeClusterWhereUniqueInput[]
+}
+
+export type LifeClusterUncheckedCreateNestedManyWithoutParentInput = {
+  create?: Prisma.XOR<Prisma.LifeClusterCreateWithoutParentInput, Prisma.LifeClusterUncheckedCreateWithoutParentInput> | Prisma.LifeClusterCreateWithoutParentInput[] | Prisma.LifeClusterUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.LifeClusterCreateOrConnectWithoutParentInput | Prisma.LifeClusterCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.LifeClusterCreateManyParentInputEnvelope
+  connect?: Prisma.LifeClusterWhereUniqueInput | Prisma.LifeClusterWhereUniqueInput[]
+}
+
+export type LifeClusterUpdateOneWithoutChildrenNestedInput = {
+  create?: Prisma.XOR<Prisma.LifeClusterCreateWithoutChildrenInput, Prisma.LifeClusterUncheckedCreateWithoutChildrenInput>
+  connectOrCreate?: Prisma.LifeClusterCreateOrConnectWithoutChildrenInput
+  upsert?: Prisma.LifeClusterUpsertWithoutChildrenInput
+  disconnect?: Prisma.LifeClusterWhereInput | boolean
+  delete?: Prisma.LifeClusterWhereInput | boolean
+  connect?: Prisma.LifeClusterWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LifeClusterUpdateToOneWithWhereWithoutChildrenInput, Prisma.LifeClusterUpdateWithoutChildrenInput>, Prisma.LifeClusterUncheckedUpdateWithoutChildrenInput>
+}
+
+export type LifeClusterUpdateManyWithoutParentNestedInput = {
+  create?: Prisma.XOR<Prisma.LifeClusterCreateWithoutParentInput, Prisma.LifeClusterUncheckedCreateWithoutParentInput> | Prisma.LifeClusterCreateWithoutParentInput[] | Prisma.LifeClusterUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.LifeClusterCreateOrConnectWithoutParentInput | Prisma.LifeClusterCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.LifeClusterUpsertWithWhereUniqueWithoutParentInput | Prisma.LifeClusterUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.LifeClusterCreateManyParentInputEnvelope
+  set?: Prisma.LifeClusterWhereUniqueInput | Prisma.LifeClusterWhereUniqueInput[]
+  disconnect?: Prisma.LifeClusterWhereUniqueInput | Prisma.LifeClusterWhereUniqueInput[]
+  delete?: Prisma.LifeClusterWhereUniqueInput | Prisma.LifeClusterWhereUniqueInput[]
+  connect?: Prisma.LifeClusterWhereUniqueInput | Prisma.LifeClusterWhereUniqueInput[]
+  update?: Prisma.LifeClusterUpdateWithWhereUniqueWithoutParentInput | Prisma.LifeClusterUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.LifeClusterUpdateManyWithWhereWithoutParentInput | Prisma.LifeClusterUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.LifeClusterScalarWhereInput | Prisma.LifeClusterScalarWhereInput[]
+}
+
+export type LifeClusterUncheckedUpdateManyWithoutParentNestedInput = {
+  create?: Prisma.XOR<Prisma.LifeClusterCreateWithoutParentInput, Prisma.LifeClusterUncheckedCreateWithoutParentInput> | Prisma.LifeClusterCreateWithoutParentInput[] | Prisma.LifeClusterUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.LifeClusterCreateOrConnectWithoutParentInput | Prisma.LifeClusterCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.LifeClusterUpsertWithWhereUniqueWithoutParentInput | Prisma.LifeClusterUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.LifeClusterCreateManyParentInputEnvelope
+  set?: Prisma.LifeClusterWhereUniqueInput | Prisma.LifeClusterWhereUniqueInput[]
+  disconnect?: Prisma.LifeClusterWhereUniqueInput | Prisma.LifeClusterWhereUniqueInput[]
+  delete?: Prisma.LifeClusterWhereUniqueInput | Prisma.LifeClusterWhereUniqueInput[]
+  connect?: Prisma.LifeClusterWhereUniqueInput | Prisma.LifeClusterWhereUniqueInput[]
+  update?: Prisma.LifeClusterUpdateWithWhereUniqueWithoutParentInput | Prisma.LifeClusterUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.LifeClusterUpdateManyWithWhereWithoutParentInput | Prisma.LifeClusterUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.LifeClusterScalarWhereInput | Prisma.LifeClusterScalarWhereInput[]
 }
 
 export type LifeClusterCreateNestedOneWithoutEntriesInput = {
@@ -581,6 +675,167 @@ export type LifeClusterUncheckedUpdateManyWithoutImageMediaNestedInput = {
   deleteMany?: Prisma.LifeClusterScalarWhereInput | Prisma.LifeClusterScalarWhereInput[]
 }
 
+export type LifeClusterCreateWithoutChildrenInput = {
+  id?: string
+  slug: string
+  name: string
+  description?: string | null
+  color: string
+  sortOrder?: number
+  published?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.LifeClusterCreateNestedOneWithoutChildrenInput
+  imageMedia?: Prisma.MediaAssetCreateNestedOneWithoutClusterImagesInput
+  entries?: Prisma.LifeEntryClusterCreateNestedManyWithoutClusterInput
+  relationsFrom?: Prisma.LifeClusterRelationCreateNestedManyWithoutFromInput
+  relationsTo?: Prisma.LifeClusterRelationCreateNestedManyWithoutToInput
+}
+
+export type LifeClusterUncheckedCreateWithoutChildrenInput = {
+  id?: string
+  slug: string
+  name: string
+  description?: string | null
+  color: string
+  sortOrder?: number
+  published?: boolean
+  parentId?: string | null
+  imageMediaId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  entries?: Prisma.LifeEntryClusterUncheckedCreateNestedManyWithoutClusterInput
+  relationsFrom?: Prisma.LifeClusterRelationUncheckedCreateNestedManyWithoutFromInput
+  relationsTo?: Prisma.LifeClusterRelationUncheckedCreateNestedManyWithoutToInput
+}
+
+export type LifeClusterCreateOrConnectWithoutChildrenInput = {
+  where: Prisma.LifeClusterWhereUniqueInput
+  create: Prisma.XOR<Prisma.LifeClusterCreateWithoutChildrenInput, Prisma.LifeClusterUncheckedCreateWithoutChildrenInput>
+}
+
+export type LifeClusterCreateWithoutParentInput = {
+  id?: string
+  slug: string
+  name: string
+  description?: string | null
+  color: string
+  sortOrder?: number
+  published?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.LifeClusterCreateNestedManyWithoutParentInput
+  imageMedia?: Prisma.MediaAssetCreateNestedOneWithoutClusterImagesInput
+  entries?: Prisma.LifeEntryClusterCreateNestedManyWithoutClusterInput
+  relationsFrom?: Prisma.LifeClusterRelationCreateNestedManyWithoutFromInput
+  relationsTo?: Prisma.LifeClusterRelationCreateNestedManyWithoutToInput
+}
+
+export type LifeClusterUncheckedCreateWithoutParentInput = {
+  id?: string
+  slug: string
+  name: string
+  description?: string | null
+  color: string
+  sortOrder?: number
+  published?: boolean
+  imageMediaId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.LifeClusterUncheckedCreateNestedManyWithoutParentInput
+  entries?: Prisma.LifeEntryClusterUncheckedCreateNestedManyWithoutClusterInput
+  relationsFrom?: Prisma.LifeClusterRelationUncheckedCreateNestedManyWithoutFromInput
+  relationsTo?: Prisma.LifeClusterRelationUncheckedCreateNestedManyWithoutToInput
+}
+
+export type LifeClusterCreateOrConnectWithoutParentInput = {
+  where: Prisma.LifeClusterWhereUniqueInput
+  create: Prisma.XOR<Prisma.LifeClusterCreateWithoutParentInput, Prisma.LifeClusterUncheckedCreateWithoutParentInput>
+}
+
+export type LifeClusterCreateManyParentInputEnvelope = {
+  data: Prisma.LifeClusterCreateManyParentInput | Prisma.LifeClusterCreateManyParentInput[]
+  skipDuplicates?: boolean
+}
+
+export type LifeClusterUpsertWithoutChildrenInput = {
+  update: Prisma.XOR<Prisma.LifeClusterUpdateWithoutChildrenInput, Prisma.LifeClusterUncheckedUpdateWithoutChildrenInput>
+  create: Prisma.XOR<Prisma.LifeClusterCreateWithoutChildrenInput, Prisma.LifeClusterUncheckedCreateWithoutChildrenInput>
+  where?: Prisma.LifeClusterWhereInput
+}
+
+export type LifeClusterUpdateToOneWithWhereWithoutChildrenInput = {
+  where?: Prisma.LifeClusterWhereInput
+  data: Prisma.XOR<Prisma.LifeClusterUpdateWithoutChildrenInput, Prisma.LifeClusterUncheckedUpdateWithoutChildrenInput>
+}
+
+export type LifeClusterUpdateWithoutChildrenInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.LifeClusterUpdateOneWithoutChildrenNestedInput
+  imageMedia?: Prisma.MediaAssetUpdateOneWithoutClusterImagesNestedInput
+  entries?: Prisma.LifeEntryClusterUpdateManyWithoutClusterNestedInput
+  relationsFrom?: Prisma.LifeClusterRelationUpdateManyWithoutFromNestedInput
+  relationsTo?: Prisma.LifeClusterRelationUpdateManyWithoutToNestedInput
+}
+
+export type LifeClusterUncheckedUpdateWithoutChildrenInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entries?: Prisma.LifeEntryClusterUncheckedUpdateManyWithoutClusterNestedInput
+  relationsFrom?: Prisma.LifeClusterRelationUncheckedUpdateManyWithoutFromNestedInput
+  relationsTo?: Prisma.LifeClusterRelationUncheckedUpdateManyWithoutToNestedInput
+}
+
+export type LifeClusterUpsertWithWhereUniqueWithoutParentInput = {
+  where: Prisma.LifeClusterWhereUniqueInput
+  update: Prisma.XOR<Prisma.LifeClusterUpdateWithoutParentInput, Prisma.LifeClusterUncheckedUpdateWithoutParentInput>
+  create: Prisma.XOR<Prisma.LifeClusterCreateWithoutParentInput, Prisma.LifeClusterUncheckedCreateWithoutParentInput>
+}
+
+export type LifeClusterUpdateWithWhereUniqueWithoutParentInput = {
+  where: Prisma.LifeClusterWhereUniqueInput
+  data: Prisma.XOR<Prisma.LifeClusterUpdateWithoutParentInput, Prisma.LifeClusterUncheckedUpdateWithoutParentInput>
+}
+
+export type LifeClusterUpdateManyWithWhereWithoutParentInput = {
+  where: Prisma.LifeClusterScalarWhereInput
+  data: Prisma.XOR<Prisma.LifeClusterUpdateManyMutationInput, Prisma.LifeClusterUncheckedUpdateManyWithoutParentInput>
+}
+
+export type LifeClusterScalarWhereInput = {
+  AND?: Prisma.LifeClusterScalarWhereInput | Prisma.LifeClusterScalarWhereInput[]
+  OR?: Prisma.LifeClusterScalarWhereInput[]
+  NOT?: Prisma.LifeClusterScalarWhereInput | Prisma.LifeClusterScalarWhereInput[]
+  id?: Prisma.StringFilter<"LifeCluster"> | string
+  slug?: Prisma.StringFilter<"LifeCluster"> | string
+  name?: Prisma.StringFilter<"LifeCluster"> | string
+  description?: Prisma.StringNullableFilter<"LifeCluster"> | string | null
+  color?: Prisma.StringFilter<"LifeCluster"> | string
+  sortOrder?: Prisma.IntFilter<"LifeCluster"> | number
+  published?: Prisma.BoolFilter<"LifeCluster"> | boolean
+  parentId?: Prisma.StringNullableFilter<"LifeCluster"> | string | null
+  imageMediaId?: Prisma.StringNullableFilter<"LifeCluster"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"LifeCluster"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"LifeCluster"> | Date | string
+}
+
 export type LifeClusterCreateWithoutEntriesInput = {
   id?: string
   slug: string
@@ -591,6 +846,8 @@ export type LifeClusterCreateWithoutEntriesInput = {
   published?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  parent?: Prisma.LifeClusterCreateNestedOneWithoutChildrenInput
+  children?: Prisma.LifeClusterCreateNestedManyWithoutParentInput
   imageMedia?: Prisma.MediaAssetCreateNestedOneWithoutClusterImagesInput
   relationsFrom?: Prisma.LifeClusterRelationCreateNestedManyWithoutFromInput
   relationsTo?: Prisma.LifeClusterRelationCreateNestedManyWithoutToInput
@@ -604,9 +861,11 @@ export type LifeClusterUncheckedCreateWithoutEntriesInput = {
   color: string
   sortOrder?: number
   published?: boolean
+  parentId?: string | null
   imageMediaId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  children?: Prisma.LifeClusterUncheckedCreateNestedManyWithoutParentInput
   relationsFrom?: Prisma.LifeClusterRelationUncheckedCreateNestedManyWithoutFromInput
   relationsTo?: Prisma.LifeClusterRelationUncheckedCreateNestedManyWithoutToInput
 }
@@ -637,6 +896,8 @@ export type LifeClusterUpdateWithoutEntriesInput = {
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.LifeClusterUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.LifeClusterUpdateManyWithoutParentNestedInput
   imageMedia?: Prisma.MediaAssetUpdateOneWithoutClusterImagesNestedInput
   relationsFrom?: Prisma.LifeClusterRelationUpdateManyWithoutFromNestedInput
   relationsTo?: Prisma.LifeClusterRelationUpdateManyWithoutToNestedInput
@@ -650,9 +911,11 @@ export type LifeClusterUncheckedUpdateWithoutEntriesInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LifeClusterUncheckedUpdateManyWithoutParentNestedInput
   relationsFrom?: Prisma.LifeClusterRelationUncheckedUpdateManyWithoutFromNestedInput
   relationsTo?: Prisma.LifeClusterRelationUncheckedUpdateManyWithoutToNestedInput
 }
@@ -667,6 +930,8 @@ export type LifeClusterCreateWithoutRelationsFromInput = {
   published?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  parent?: Prisma.LifeClusterCreateNestedOneWithoutChildrenInput
+  children?: Prisma.LifeClusterCreateNestedManyWithoutParentInput
   imageMedia?: Prisma.MediaAssetCreateNestedOneWithoutClusterImagesInput
   entries?: Prisma.LifeEntryClusterCreateNestedManyWithoutClusterInput
   relationsTo?: Prisma.LifeClusterRelationCreateNestedManyWithoutToInput
@@ -680,9 +945,11 @@ export type LifeClusterUncheckedCreateWithoutRelationsFromInput = {
   color: string
   sortOrder?: number
   published?: boolean
+  parentId?: string | null
   imageMediaId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  children?: Prisma.LifeClusterUncheckedCreateNestedManyWithoutParentInput
   entries?: Prisma.LifeEntryClusterUncheckedCreateNestedManyWithoutClusterInput
   relationsTo?: Prisma.LifeClusterRelationUncheckedCreateNestedManyWithoutToInput
 }
@@ -702,6 +969,8 @@ export type LifeClusterCreateWithoutRelationsToInput = {
   published?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  parent?: Prisma.LifeClusterCreateNestedOneWithoutChildrenInput
+  children?: Prisma.LifeClusterCreateNestedManyWithoutParentInput
   imageMedia?: Prisma.MediaAssetCreateNestedOneWithoutClusterImagesInput
   entries?: Prisma.LifeEntryClusterCreateNestedManyWithoutClusterInput
   relationsFrom?: Prisma.LifeClusterRelationCreateNestedManyWithoutFromInput
@@ -715,9 +984,11 @@ export type LifeClusterUncheckedCreateWithoutRelationsToInput = {
   color: string
   sortOrder?: number
   published?: boolean
+  parentId?: string | null
   imageMediaId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  children?: Prisma.LifeClusterUncheckedCreateNestedManyWithoutParentInput
   entries?: Prisma.LifeEntryClusterUncheckedCreateNestedManyWithoutClusterInput
   relationsFrom?: Prisma.LifeClusterRelationUncheckedCreateNestedManyWithoutFromInput
 }
@@ -748,6 +1019,8 @@ export type LifeClusterUpdateWithoutRelationsFromInput = {
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.LifeClusterUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.LifeClusterUpdateManyWithoutParentNestedInput
   imageMedia?: Prisma.MediaAssetUpdateOneWithoutClusterImagesNestedInput
   entries?: Prisma.LifeEntryClusterUpdateManyWithoutClusterNestedInput
   relationsTo?: Prisma.LifeClusterRelationUpdateManyWithoutToNestedInput
@@ -761,9 +1034,11 @@ export type LifeClusterUncheckedUpdateWithoutRelationsFromInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LifeClusterUncheckedUpdateManyWithoutParentNestedInput
   entries?: Prisma.LifeEntryClusterUncheckedUpdateManyWithoutClusterNestedInput
   relationsTo?: Prisma.LifeClusterRelationUncheckedUpdateManyWithoutToNestedInput
 }
@@ -789,6 +1064,8 @@ export type LifeClusterUpdateWithoutRelationsToInput = {
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.LifeClusterUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.LifeClusterUpdateManyWithoutParentNestedInput
   imageMedia?: Prisma.MediaAssetUpdateOneWithoutClusterImagesNestedInput
   entries?: Prisma.LifeEntryClusterUpdateManyWithoutClusterNestedInput
   relationsFrom?: Prisma.LifeClusterRelationUpdateManyWithoutFromNestedInput
@@ -802,9 +1079,11 @@ export type LifeClusterUncheckedUpdateWithoutRelationsToInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LifeClusterUncheckedUpdateManyWithoutParentNestedInput
   entries?: Prisma.LifeEntryClusterUncheckedUpdateManyWithoutClusterNestedInput
   relationsFrom?: Prisma.LifeClusterRelationUncheckedUpdateManyWithoutFromNestedInput
 }
@@ -819,6 +1098,8 @@ export type LifeClusterCreateWithoutImageMediaInput = {
   published?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  parent?: Prisma.LifeClusterCreateNestedOneWithoutChildrenInput
+  children?: Prisma.LifeClusterCreateNestedManyWithoutParentInput
   entries?: Prisma.LifeEntryClusterCreateNestedManyWithoutClusterInput
   relationsFrom?: Prisma.LifeClusterRelationCreateNestedManyWithoutFromInput
   relationsTo?: Prisma.LifeClusterRelationCreateNestedManyWithoutToInput
@@ -832,8 +1113,10 @@ export type LifeClusterUncheckedCreateWithoutImageMediaInput = {
   color: string
   sortOrder?: number
   published?: boolean
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  children?: Prisma.LifeClusterUncheckedCreateNestedManyWithoutParentInput
   entries?: Prisma.LifeEntryClusterUncheckedCreateNestedManyWithoutClusterInput
   relationsFrom?: Prisma.LifeClusterRelationUncheckedCreateNestedManyWithoutFromInput
   relationsTo?: Prisma.LifeClusterRelationUncheckedCreateNestedManyWithoutToInput
@@ -865,20 +1148,64 @@ export type LifeClusterUpdateManyWithWhereWithoutImageMediaInput = {
   data: Prisma.XOR<Prisma.LifeClusterUpdateManyMutationInput, Prisma.LifeClusterUncheckedUpdateManyWithoutImageMediaInput>
 }
 
-export type LifeClusterScalarWhereInput = {
-  AND?: Prisma.LifeClusterScalarWhereInput | Prisma.LifeClusterScalarWhereInput[]
-  OR?: Prisma.LifeClusterScalarWhereInput[]
-  NOT?: Prisma.LifeClusterScalarWhereInput | Prisma.LifeClusterScalarWhereInput[]
-  id?: Prisma.StringFilter<"LifeCluster"> | string
-  slug?: Prisma.StringFilter<"LifeCluster"> | string
-  name?: Prisma.StringFilter<"LifeCluster"> | string
-  description?: Prisma.StringNullableFilter<"LifeCluster"> | string | null
-  color?: Prisma.StringFilter<"LifeCluster"> | string
-  sortOrder?: Prisma.IntFilter<"LifeCluster"> | number
-  published?: Prisma.BoolFilter<"LifeCluster"> | boolean
-  imageMediaId?: Prisma.StringNullableFilter<"LifeCluster"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"LifeCluster"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"LifeCluster"> | Date | string
+export type LifeClusterCreateManyParentInput = {
+  id?: string
+  slug: string
+  name: string
+  description?: string | null
+  color: string
+  sortOrder?: number
+  published?: boolean
+  imageMediaId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type LifeClusterUpdateWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LifeClusterUpdateManyWithoutParentNestedInput
+  imageMedia?: Prisma.MediaAssetUpdateOneWithoutClusterImagesNestedInput
+  entries?: Prisma.LifeEntryClusterUpdateManyWithoutClusterNestedInput
+  relationsFrom?: Prisma.LifeClusterRelationUpdateManyWithoutFromNestedInput
+  relationsTo?: Prisma.LifeClusterRelationUpdateManyWithoutToNestedInput
+}
+
+export type LifeClusterUncheckedUpdateWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LifeClusterUncheckedUpdateManyWithoutParentNestedInput
+  entries?: Prisma.LifeEntryClusterUncheckedUpdateManyWithoutClusterNestedInput
+  relationsFrom?: Prisma.LifeClusterRelationUncheckedUpdateManyWithoutFromNestedInput
+  relationsTo?: Prisma.LifeClusterRelationUncheckedUpdateManyWithoutToNestedInput
+}
+
+export type LifeClusterUncheckedUpdateManyWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type LifeClusterCreateManyImageMediaInput = {
@@ -889,6 +1216,7 @@ export type LifeClusterCreateManyImageMediaInput = {
   color: string
   sortOrder?: number
   published?: boolean
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -903,6 +1231,8 @@ export type LifeClusterUpdateWithoutImageMediaInput = {
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.LifeClusterUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.LifeClusterUpdateManyWithoutParentNestedInput
   entries?: Prisma.LifeEntryClusterUpdateManyWithoutClusterNestedInput
   relationsFrom?: Prisma.LifeClusterRelationUpdateManyWithoutFromNestedInput
   relationsTo?: Prisma.LifeClusterRelationUpdateManyWithoutToNestedInput
@@ -916,8 +1246,10 @@ export type LifeClusterUncheckedUpdateWithoutImageMediaInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.LifeClusterUncheckedUpdateManyWithoutParentNestedInput
   entries?: Prisma.LifeEntryClusterUncheckedUpdateManyWithoutClusterNestedInput
   relationsFrom?: Prisma.LifeClusterRelationUncheckedUpdateManyWithoutFromNestedInput
   relationsTo?: Prisma.LifeClusterRelationUncheckedUpdateManyWithoutToNestedInput
@@ -931,6 +1263,7 @@ export type LifeClusterUncheckedUpdateManyWithoutImageMediaInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -941,12 +1274,14 @@ export type LifeClusterUncheckedUpdateManyWithoutImageMediaInput = {
  */
 
 export type LifeClusterCountOutputType = {
+  children: number
   entries: number
   relationsFrom: number
   relationsTo: number
 }
 
 export type LifeClusterCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  children?: boolean | LifeClusterCountOutputTypeCountChildrenArgs
   entries?: boolean | LifeClusterCountOutputTypeCountEntriesArgs
   relationsFrom?: boolean | LifeClusterCountOutputTypeCountRelationsFromArgs
   relationsTo?: boolean | LifeClusterCountOutputTypeCountRelationsToArgs
@@ -960,6 +1295,13 @@ export type LifeClusterCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.
    * Select specific fields to fetch from the LifeClusterCountOutputType
    */
   select?: Prisma.LifeClusterCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * LifeClusterCountOutputType without action
+ */
+export type LifeClusterCountOutputTypeCountChildrenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LifeClusterWhereInput
 }
 
 /**
@@ -992,9 +1334,12 @@ export type LifeClusterSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   color?: boolean
   sortOrder?: boolean
   published?: boolean
+  parentId?: boolean
   imageMediaId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  parent?: boolean | Prisma.LifeCluster$parentArgs<ExtArgs>
+  children?: boolean | Prisma.LifeCluster$childrenArgs<ExtArgs>
   imageMedia?: boolean | Prisma.LifeCluster$imageMediaArgs<ExtArgs>
   entries?: boolean | Prisma.LifeCluster$entriesArgs<ExtArgs>
   relationsFrom?: boolean | Prisma.LifeCluster$relationsFromArgs<ExtArgs>
@@ -1010,9 +1355,11 @@ export type LifeClusterSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   color?: boolean
   sortOrder?: boolean
   published?: boolean
+  parentId?: boolean
   imageMediaId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  parent?: boolean | Prisma.LifeCluster$parentArgs<ExtArgs>
   imageMedia?: boolean | Prisma.LifeCluster$imageMediaArgs<ExtArgs>
 }, ExtArgs["result"]["lifeCluster"]>
 
@@ -1024,9 +1371,11 @@ export type LifeClusterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   color?: boolean
   sortOrder?: boolean
   published?: boolean
+  parentId?: boolean
   imageMediaId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  parent?: boolean | Prisma.LifeCluster$parentArgs<ExtArgs>
   imageMedia?: boolean | Prisma.LifeCluster$imageMediaArgs<ExtArgs>
 }, ExtArgs["result"]["lifeCluster"]>
 
@@ -1038,13 +1387,16 @@ export type LifeClusterSelectScalar = {
   color?: boolean
   sortOrder?: boolean
   published?: boolean
+  parentId?: boolean
   imageMediaId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type LifeClusterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "description" | "color" | "sortOrder" | "published" | "imageMediaId" | "createdAt" | "updatedAt", ExtArgs["result"]["lifeCluster"]>
+export type LifeClusterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "description" | "color" | "sortOrder" | "published" | "parentId" | "imageMediaId" | "createdAt" | "updatedAt", ExtArgs["result"]["lifeCluster"]>
 export type LifeClusterInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  parent?: boolean | Prisma.LifeCluster$parentArgs<ExtArgs>
+  children?: boolean | Prisma.LifeCluster$childrenArgs<ExtArgs>
   imageMedia?: boolean | Prisma.LifeCluster$imageMediaArgs<ExtArgs>
   entries?: boolean | Prisma.LifeCluster$entriesArgs<ExtArgs>
   relationsFrom?: boolean | Prisma.LifeCluster$relationsFromArgs<ExtArgs>
@@ -1052,15 +1404,19 @@ export type LifeClusterInclude<ExtArgs extends runtime.Types.Extensions.Internal
   _count?: boolean | Prisma.LifeClusterCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LifeClusterIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  parent?: boolean | Prisma.LifeCluster$parentArgs<ExtArgs>
   imageMedia?: boolean | Prisma.LifeCluster$imageMediaArgs<ExtArgs>
 }
 export type LifeClusterIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  parent?: boolean | Prisma.LifeCluster$parentArgs<ExtArgs>
   imageMedia?: boolean | Prisma.LifeCluster$imageMediaArgs<ExtArgs>
 }
 
 export type $LifeClusterPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "LifeCluster"
   objects: {
+    parent: Prisma.$LifeClusterPayload<ExtArgs> | null
+    children: Prisma.$LifeClusterPayload<ExtArgs>[]
     imageMedia: Prisma.$MediaAssetPayload<ExtArgs> | null
     entries: Prisma.$LifeEntryClusterPayload<ExtArgs>[]
     relationsFrom: Prisma.$LifeClusterRelationPayload<ExtArgs>[]
@@ -1074,6 +1430,7 @@ export type $LifeClusterPayload<ExtArgs extends runtime.Types.Extensions.Interna
     color: string
     sortOrder: number
     published: boolean
+    parentId: string | null
     imageMediaId: string | null
     createdAt: Date
     updatedAt: Date
@@ -1471,6 +1828,8 @@ readonly fields: LifeClusterFieldRefs;
  */
 export interface Prisma__LifeClusterClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  parent<T extends Prisma.LifeCluster$parentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LifeCluster$parentArgs<ExtArgs>>): Prisma.Prisma__LifeClusterClient<runtime.Types.Result.GetResult<Prisma.$LifeClusterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  children<T extends Prisma.LifeCluster$childrenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LifeCluster$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LifeClusterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   imageMedia<T extends Prisma.LifeCluster$imageMediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LifeCluster$imageMediaArgs<ExtArgs>>): Prisma.Prisma__MediaAssetClient<runtime.Types.Result.GetResult<Prisma.$MediaAssetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   entries<T extends Prisma.LifeCluster$entriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LifeCluster$entriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LifeEntryClusterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   relationsFrom<T extends Prisma.LifeCluster$relationsFromArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LifeCluster$relationsFromArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LifeClusterRelationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1511,6 +1870,7 @@ export interface LifeClusterFieldRefs {
   readonly color: Prisma.FieldRef<"LifeCluster", 'String'>
   readonly sortOrder: Prisma.FieldRef<"LifeCluster", 'Int'>
   readonly published: Prisma.FieldRef<"LifeCluster", 'Boolean'>
+  readonly parentId: Prisma.FieldRef<"LifeCluster", 'String'>
   readonly imageMediaId: Prisma.FieldRef<"LifeCluster", 'String'>
   readonly createdAt: Prisma.FieldRef<"LifeCluster", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"LifeCluster", 'DateTime'>
@@ -1912,6 +2272,49 @@ export type LifeClusterDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many LifeClusters to delete.
    */
   limit?: number
+}
+
+/**
+ * LifeCluster.parent
+ */
+export type LifeCluster$parentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LifeCluster
+   */
+  select?: Prisma.LifeClusterSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LifeCluster
+   */
+  omit?: Prisma.LifeClusterOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LifeClusterInclude<ExtArgs> | null
+  where?: Prisma.LifeClusterWhereInput
+}
+
+/**
+ * LifeCluster.children
+ */
+export type LifeCluster$childrenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LifeCluster
+   */
+  select?: Prisma.LifeClusterSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LifeCluster
+   */
+  omit?: Prisma.LifeClusterOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LifeClusterInclude<ExtArgs> | null
+  where?: Prisma.LifeClusterWhereInput
+  orderBy?: Prisma.LifeClusterOrderByWithRelationInput | Prisma.LifeClusterOrderByWithRelationInput[]
+  cursor?: Prisma.LifeClusterWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LifeClusterScalarFieldEnum | Prisma.LifeClusterScalarFieldEnum[]
 }
 
 /**
