@@ -14,7 +14,12 @@ export interface LifeGraphCluster {
   description?: string | null;
   color: string;
   sortOrder: number;
-  image: { url: string; altText?: string | null } | null;
+  image: {
+    url: string;
+    altText?: string | null;
+    width?: number | null;
+    height?: number | null;
+  } | null;
 }
 
 export interface LifeGraphEntryType {

@@ -6,7 +6,11 @@ function slugify(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "") || "cluster";
 }
 
-async function resolveImageMediaId(imageUrl?: string | null): Promise<string | null> {
+async function resolveImageMediaId(
+  imageUrl?: string | null,
+  width?: number | null,
+  height?: number | null,
+): Promise<string | null> {
   const url = imageUrl?.trim();
   if (!url) return null;
 
@@ -23,6 +27,8 @@ async function resolveImageMediaId(imageUrl?: string | null): Promise<string | n
     },
     update: {
       secureUrl: url,
+      width: width ?? undefined,
+      height: height ?? undefined,
     },
   });
 
@@ -59,7 +65,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Cluster name is required." }, { status: 400 });
     }
 
-    const imageMediaId = await resolveImageMediaId(body.imageUrl ?? body.imageMediaUrl);
+    const imageMediaId = await resolveImageMediaId(
+      body.imageUrl ?? body.imageMediaUrl,
+      body.imageWidth == null ? null : Number(body.imageWidth),
+      body.imageHeight == null ? null : Number(body.imageHeight),
+    );
 
     const cluster = await prisma.lifeCluster.create({
       data: {

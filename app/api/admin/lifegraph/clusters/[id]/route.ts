@@ -2,7 +2,11 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
-async function resolveImageMediaId(imageUrl?: string | null): Promise<string | null | undefined> {
+async function resolveImageMediaId(
+  imageUrl?: string | null,
+  width?: number | null,
+  height?: number | null,
+): Promise<string | null | undefined> {
   if (imageUrl === undefined) return undefined;
   const url = imageUrl?.trim();
   if (!url) return null;
@@ -20,6 +24,8 @@ async function resolveImageMediaId(imageUrl?: string | null): Promise<string | n
     },
     update: {
       secureUrl: url,
+      width: width ?? undefined,
+      height: height ?? undefined,
     },
   });
 
@@ -76,7 +82,11 @@ export async function PATCH(
 
     const body = await request.json();
     const rawImageUrl = body.imageUrl ?? body.imageMediaUrl;
-    const imageMediaId = await resolveImageMediaId(rawImageUrl);
+    const imageMediaId = await resolveImageMediaId(
+      rawImageUrl,
+      body.imageWidth === undefined ? undefined : body.imageWidth == null ? null : Number(body.imageWidth),
+      body.imageHeight === undefined ? undefined : body.imageHeight == null ? null : Number(body.imageHeight),
+    );
 
     const cluster = await prisma.lifeCluster.update({
       where: { id: existing.id },

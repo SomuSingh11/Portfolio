@@ -29,6 +29,8 @@ const emptyForm = {
   description: "",
   color: "#4FA8A0",
   imageUrl: "",
+  imageWidth: "",
+  imageHeight: "",
   sortOrder: 0,
   published: true,
 };
@@ -42,6 +44,8 @@ function clusterToForm(c: ClusterRow): FormState {
     description: c.description ?? "",
     color: c.color,
     imageUrl: c.imageMedia?.secureUrl || c.imageUrl || "",
+    imageWidth: c.imageMedia?.width?.toString() ?? "",
+    imageHeight: c.imageMedia?.height?.toString() ?? "",
     sortOrder: c.sortOrder,
     published: c.published,
   };
@@ -89,6 +93,8 @@ export function ClusterFormDialog({
         description: form.description.trim() || null,
         color: form.color,
         imageUrl: form.imageUrl.trim() || null,
+        imageWidth: form.imageWidth === "" ? null : Number(form.imageWidth),
+        imageHeight: form.imageHeight === "" ? null : Number(form.imageHeight),
         sortOrder: Number(form.sortOrder),
         published: form.published,
       };
@@ -183,6 +189,31 @@ export function ClusterFormDialog({
               )}
             </div>
           </FormField>
+
+          <div className="grid grid-cols-2 gap-4">
+            <FormField label="Media Width (px)" htmlFor="c-image-width" hint="Optional asset width">
+              <Input
+                id="c-image-width"
+                type="number"
+                min="1"
+                value={form.imageWidth}
+                onChange={(e) => set("imageWidth", e.target.value)}
+                placeholder="Auto"
+                className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus:border-blue-500"
+              />
+            </FormField>
+            <FormField label="Media Height (px)" htmlFor="c-image-height" hint="Optional asset height">
+              <Input
+                id="c-image-height"
+                type="number"
+                min="1"
+                value={form.imageHeight}
+                onChange={(e) => set("imageHeight", e.target.value)}
+                placeholder="Auto"
+                className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus:border-blue-500"
+              />
+            </FormField>
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <FormField label="Color" htmlFor="c-color" hint="Node color on the graph">

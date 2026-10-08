@@ -60,6 +60,8 @@ export async function GET() {
           ? {
               url: cluster.imageMedia.secureUrl,
               altText: cluster.imageMedia.altText,
+              width: cluster.imageMedia.width,
+              height: cluster.imageMedia.height,
             }
           : null,
       })),

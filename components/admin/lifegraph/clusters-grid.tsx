@@ -12,7 +12,7 @@ export interface ClusterRow {
   color: string;
   sortOrder: number;
   published: boolean;
-  imageMedia?: { secureUrl: string } | null;
+  imageMedia?: { secureUrl: string; width?: number | null; height?: number | null } | null;
   imageUrl?: string | null;
   _count?: { entries: number };
 }
