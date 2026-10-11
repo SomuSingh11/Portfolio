@@ -61,16 +61,34 @@
 
 /* ---- View toggle (mobile) ---- */
 .lifegraph-app .view-toggle {
-  display: none;
+  display: flex;
   position: absolute;
   top: 22px;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 430px;
   background: var(--ink-panel);
   border: 1px solid var(--hairline);
   border-radius: 100px;
   padding: 3px;
   z-index: 30;
+}
+.lifegraph-app[data-view="graph"] .view-toggle {
+  right: 24px;
+}
+.lifegraph-app .view-controls {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 48px);
+}
+.lifegraph-app .view-controls .view-toggle {
+  position: relative;
+  top: auto;
+  right: auto;
+  margin: 0;
 }
 .lifegraph-app .view-toggle button {
   font-family: "Inter", sans-serif;
@@ -81,6 +99,13 @@
   background: transparent;
   color: var(--text-dim);
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.lifegraph-app .view-toggle-icon {
+  width: 14px;
+  height: 14px;
 }
 .lifegraph-app .view-toggle button.active {
   background: var(--ink-panel-2);
@@ -96,6 +121,9 @@
 }
 .lifegraph-app svg:active {
   cursor: grabbing;
+}
+.lifegraph-app svg.is-hidden {
+  display: none;
 }
 
 .lifegraph-loading {
@@ -316,26 +344,474 @@
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
 }
 
+/* ---- Daily timeline ---- */
+.lifegraph-app .today-timeline {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+.lifegraph-app .timeline-date-picker {
+  position: absolute;
+  position: relative;
+  top: auto;
+  right: auto;
+  z-index: 25;
+}
+.lifegraph-app .timeline-toolbar {
+  position: absolute;
+  top: 22px;
+  bottom: auto;
+  right: 24px;
+  max-width: calc(100% - 210px);
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  background: rgba(21, 28, 44, 0.9);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+}
+.lifegraph-app .view-controls .timeline-toolbar {
+  position: relative;
+  top: auto;
+  right: auto;
+  max-width: 100%;
+}
+.lifegraph-app .timeline-range-picker {
+  position: relative;
+  top: auto;
+  left: auto;
+  z-index: 25;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 100px;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 12px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.lifegraph-app .timeline-range-picker::-webkit-scrollbar {
+  display: none;
+}
+.lifegraph-app .timeline-range-picker button {
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 100px;
+  background: transparent;
+  color: var(--text-dim);
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+.lifegraph-app .timeline-range-picker button:hover,
+.lifegraph-app .timeline-range-picker button.active {
+  background: var(--ink-panel-2);
+  color: var(--text);
+}
+.lifegraph-app .timeline-date-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 11px 7px 14px;
+  border: 0;
+  border-left: 1px solid var(--hairline);
+  border-radius: 0 100px 100px 0;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+}
+.lifegraph-app .timeline-date-button svg {
+  width: 14px;
+  height: 14px;
+}
+.lifegraph-app .timeline-date-button:hover {
+  border-color: var(--text-faint);
+  color: var(--text);
+}
+.lifegraph-app .timeline-calendar {
+  position: absolute;
+  top: calc(100% + 8px);
+  bottom: auto;
+  right: 0;
+  width: 252px;
+  padding: 14px;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  background: var(--ink-panel);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+}
+.lifegraph-app .timeline-calendar-head,
+.lifegraph-app .timeline-calendar-weekdays,
+.lifegraph-app .timeline-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-items: center;
+}
+.lifegraph-app .timeline-calendar-head {
+  grid-template-columns: 32px 1fr 32px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.lifegraph-app .timeline-calendar-head strong {
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 500;
+}
+.lifegraph-app .timeline-calendar-head button {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.lifegraph-app .timeline-calendar-head button:hover {
+  background: var(--ink-panel-2);
+  color: var(--text);
+}
+.lifegraph-app .timeline-calendar-head svg {
+  width: 15px;
+  height: 15px;
+}
+.lifegraph-app .timeline-calendar-weekdays {
+  margin-bottom: 5px;
+  color: var(--text-faint);
+  font-size: 10px;
+  text-align: center;
+}
+.lifegraph-app .timeline-calendar-grid {
+  row-gap: 4px;
+}
+.lifegraph-app .timeline-calendar-grid button,
+.lifegraph-app .timeline-calendar-blank {
+  width: 28px;
+  height: 32px;
+  margin: auto;
+}
+.lifegraph-app .timeline-calendar-grid button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 11px;
+  cursor: pointer;
+}
+.lifegraph-app .timeline-calendar-grid button:hover,
+.lifegraph-app .timeline-calendar-grid button.selected {
+  background: var(--ink-panel-2);
+  color: var(--text);
+}
+.lifegraph-app .timeline-calendar-grid button.has-entries {
+  color: #8ee3c5;
+  font-weight: 600;
+}
+.lifegraph-app .timeline-calendar-grid button.selected {
+  outline: 1px solid #8ee3c5;
+}
+.lifegraph-app .timeline-calendar-grid button small {
+  position: absolute;
+  right: 3px;
+  bottom: 1px;
+  min-width: 10px;
+  color: #8ee3c5;
+  font-size: 8px;
+  line-height: 1;
+}
+.lifegraph-app .today-heading {
+  display: flex;
+  align-items: end;
+  gap: 24px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.lifegraph-app .today-kicker {
+  margin: 0 0 8px;
+  color: var(--text-faint);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.lifegraph-app .today-heading h1 {
+  margin: 0;
+  font-family: "Newsreader", serif;
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 400;
+}
+.lifegraph-app .timeline-scroll {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+.lifegraph-app .timeline-graph-shell {
+  width: 100%;
+  height: 100%;
+}
+.lifegraph-app .timeline-graph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  overflow: visible;
+}
+.lifegraph-app .timeline-graph-link {
+  stroke: var(--hairline);
+  stroke-width: 1.2;
+  opacity: 0.8;
+}
+.lifegraph-app .timeline-graph-rail {
+  stroke: var(--hairline);
+  stroke-width: 1;
+}
+.lifegraph-app .timeline-graph-ring {
+  stroke-width: 2;
+  transition: stroke-width 0.2s ease;
+}
+.lifegraph-app .timeline-graph-color,
+.lifegraph-app .timeline-graph-photo {
+  transition: opacity 0.2s ease;
+}
+.lifegraph-app .timeline-graph-node:hover .timeline-graph-ring {
+  stroke-width: 3;
+}
+.lifegraph-app .timeline-graph-node:hover .timeline-graph-color,
+.lifegraph-app .timeline-graph-node:hover .timeline-graph-photo {
+  opacity: 0.82;
+}
+.lifegraph-app .timeline-graph-node {
+  cursor: grab;
+  pointer-events: all;
+  touch-action: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.lifegraph-app .timeline-graph-node.dragging {
+  cursor: grabbing;
+}
+.lifegraph-app .timeline-graph-time {
+  fill: var(--text-faint);
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+}
+.lifegraph-app .timeline-graph-label {
+  fill: var(--text-dim);
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  pointer-events: none;
+}
+.lifegraph-app .timeline-track {
+  display: flex;
+  align-items: flex-start;
+  min-width: max-content;
+  padding: 0 24px;
+}
+.lifegraph-app .timeline-entry {
+  position: relative;
+  width: 190px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.lifegraph-app .timeline-entry:focus-visible {
+  outline: 1px solid var(--timeline-color);
+  outline-offset: 6px;
+  border-radius: 10px;
+}
+.lifegraph-app .timeline-time,
+.lifegraph-app .timeline-type {
+  display: inline-block;
+  width: fit-content;
+  padding: 3px 8px;
+  border: 1px solid color-mix(in srgb, var(--timeline-color), transparent 55%);
+  border-radius: 100px;
+  color: var(--text-faint);
+  font-size: 11px;
+}
+.lifegraph-app .timeline-time {
+  margin-bottom: 18px;
+}
+.lifegraph-app .timeline-node {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin-bottom: 18px;
+  border: 4px solid var(--ink);
+  border-radius: 50%;
+  background: var(--timeline-color);
+  box-shadow: 0 0 0 1px var(--timeline-color), 0 0 18px var(--timeline-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.lifegraph-app .timeline-node.has-photo {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.lifegraph-app .timeline-entry:hover .timeline-node,
+.lifegraph-app .timeline-entry:focus-visible .timeline-node {
+  transform: scale(1.35);
+  box-shadow: 0 0 0 1px var(--timeline-color), 0 0 26px var(--timeline-color);
+}
+.lifegraph-app .timeline-connector {
+  position: absolute;
+  top: 48px;
+  left: 27px;
+  width: 163px;
+  height: 1px;
+  background: var(--hairline);
+}
+.lifegraph-app .timeline-title {
+  display: block;
+  min-height: 44px;
+  margin-top: 10px;
+  padding: 12px 12px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  background: rgba(21, 28, 44, 0.7);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.lifegraph-app .timeline-title.standalone {
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+.lifegraph-app .timeline-type {
+  margin-top: 0;
+  color: var(--timeline-color);
+}
+.lifegraph-app .timeline-excerpt {
+  display: -webkit-box;
+  min-height: 42px;
+  padding: 0 12px 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 0;
+  border-radius: 0 0 10px 10px;
+  background: rgba(21, 28, 44, 0.7);
+  color: var(--text-dim);
+  font-size: 12px;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.lifegraph-app .timeline-entry:hover .timeline-title {
+  border-color: color-mix(in srgb, var(--timeline-color), transparent 45%);
+  color: var(--text);
+}
+.lifegraph-app .timeline-entry:hover .timeline-excerpt {
+  border-color: color-mix(in srgb, var(--timeline-color), transparent 45%);
+}
+.lifegraph-app .timeline-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: 360px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  color: var(--text-dim);
+  text-align: center;
+}
+.lifegraph-app .timeline-empty svg {
+  width: 28px;
+  height: 28px;
+  color: var(--text-faint);
+}
+.lifegraph-app .timeline-empty h2 {
+  margin: 0;
+  color: var(--text);
+  font-family: "Newsreader", serif;
+  font-size: 24px;
+  font-weight: 400;
+}
+.lifegraph-app .timeline-empty p {
+  margin: 0;
+  font-size: 13px;
+}
+
 /* ---- Detail panel ---- */
 .lifegraph-app .panel {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  width: 360px;
-  background: rgba(14, 20, 32, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  width: 420px;
+  min-width: 320px;
+  max-width: calc(100vw - 40px);
+  background: rgba(14, 20, 32, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-left: 1px solid rgba(255, 255, 255, 0.08);
   transform: translateX(100%);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 40;
   display: flex;
   flex-direction: column;
-  box-shadow: -12px 0 36px rgba(0, 0, 0, 0.5);
+  box-shadow: -16px 0 40px rgba(0, 0, 0, 0.6);
 }
 .lifegraph-app .panel.open {
   transform: translateX(0);
+}
+.lifegraph-app .panel.is-resizing {
+  transition: none !important;
+  user-select: none;
+}
+
+/* Resize drag handle */
+.lifegraph-app .panel-resize-handle {
+  position: absolute;
+  top: 0;
+  left: -5px;
+  bottom: 0;
+  width: 10px;
+  cursor: ew-resize;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lifegraph-app .panel-resize-grip {
+  width: 3px;
+  height: 36px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  transition: all 0.2s ease;
+}
+.lifegraph-app .panel-resize-handle:hover .panel-resize-grip,
+.lifegraph-app .panel.is-resizing .panel-resize-grip {
+  background: rgba(99, 102, 241, 0.7);
+  width: 4px;
+  height: 52px;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
 }
 
 .lifegraph-app .panel-head {
@@ -364,14 +840,57 @@
   background: rgba(255, 255, 255, 0.12);
   transform: scale(1.05);
 }
-.lifegraph-app .panel-eyebrow {
+
+.lifegraph-app .panel-eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.lifegraph-app .panel-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 100px;
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  margin-bottom: 8px;
+  letter-spacing: 0.2px;
+  border: 1px solid transparent;
 }
+.lifegraph-app .panel-capsule.master {
+  background: rgba(99, 102, 241, 0.14);
+  color: #a5b4fc;
+  border-color: rgba(99, 102, 241, 0.3);
+}
+.lifegraph-app .panel-capsule.parent-link {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-dim);
+  border-color: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.lifegraph-app .panel-capsule.parent-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.lifegraph-app .panel-capsule.standalone {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-faint);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.lifegraph-app .panel-stat-pill {
+  font-size: 11px;
+  color: var(--text-faint);
+  padding: 3px 8px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 .lifegraph-app .panel-title {
   font-family: "Newsreader", serif;
   font-size: 24px;
@@ -382,17 +901,73 @@
   color: var(--text);
 }
 .lifegraph-app .panel-title .dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
-  box-shadow: 0 0 10px currentColor;
+  box-shadow: 0 0 8px currentColor;
 }
 .lifegraph-app .panel-sub {
   font-size: 12.5px;
   color: var(--text-dim);
   margin-top: 6px;
   line-height: 1.4;
+}
+
+/* Accordion styling for collapsible entries */
+.lifegraph-app .panel-section-accordion {
+  padding-top: 12px;
+  margin-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.lifegraph-app .panel-accordion-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  border-radius: 8px;
+  transition: opacity 0.2s ease;
+}
+.lifegraph-app .panel-accordion-toggle:hover {
+  opacity: 0.85;
+}
+.lifegraph-app .panel-accordion-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lifegraph-app .panel-accordion-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.lifegraph-app .panel-accordion-badge {
+  font-size: 11px;
+  color: var(--text-faint);
+  padding: 1px 7px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+.lifegraph-app .panel-accordion-chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--text-faint);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lifegraph-app .panel-accordion-chevron.open {
+  transform: rotate(180deg);
+  color: var(--text-dim);
+}
+.lifegraph-app .panel-accordion-content {
+  margin-top: 4px;
 }
 
 .lifegraph-app .panel-body {
@@ -435,6 +1010,124 @@
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 100px;
+}
+
+/* ---- Connected Child Clusters in Detail Panel ---- */
+.lifegraph-app .panel-section {
+  padding: 16px 20px 8px 20px;
+}
+.lifegraph-app .panel-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lifegraph-app .panel-children-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.lifegraph-app .panel-child-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+  width: 100%;
+}
+.lifegraph-app .panel-child-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateX(3px);
+}
+.lifegraph-app .panel-child-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.lifegraph-app .panel-child-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px currentColor;
+}
+.lifegraph-app .panel-child-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.lifegraph-app .panel-child-name {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lifegraph-app .panel-child-desc {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+.lifegraph-app .panel-child-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.lifegraph-app .panel-child-count {
+  font-size: 11px;
+  color: var(--text-faint);
+  padding: 2px 7px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.lifegraph-app .panel-child-arrow {
+  width: 14px;
+  height: 14px;
+  color: var(--text-faint);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.lifegraph-app .panel-child-card:hover .panel-child-arrow {
+  color: var(--text);
+  transform: translateX(2px);
+}
+.lifegraph-app .panel-parent-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  margin-top: 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 11.5px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.lifegraph-app .panel-parent-badge:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 /* ---- Mobile cluster-chip fallback ---- */
@@ -509,6 +1202,61 @@
   }
   .lifegraph-app .view-toggle {
     display: flex;
+    right: 18px;
+  }
+  .lifegraph-app .timeline-date-picker {
+    top: auto;
+    right: auto;
+  }
+  .lifegraph-app .timeline-range-picker {
+    top: auto;
+    left: auto;
+  }
+  .lifegraph-app .timeline-toolbar {
+    top: 62px;
+    bottom: auto;
+    right: 18px;
+    max-width: calc(100% - 36px);
+  }
+  .lifegraph-app .view-controls {
+    flex-direction: column;
+    align-items: flex-end;
+    top: 18px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-width: none;
+  }
+  .lifegraph-app .view-controls .timeline-toolbar {
+    position: absolute;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    justify-content: center;
+    border-radius: 0;
+    padding: 8px 12px;
+  }
+  .lifegraph-app .timeline-toolbar {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .lifegraph-app .timeline-range-picker {
+    max-width: min(100%, calc(100vw - 36px));
+  }
+  .lifegraph-app .timeline-calendar {
+    top: auto;
+    right: 12px;
+    bottom: calc(100% + 8px);
+    max-width: calc(100vw - 36px);
+  }
+  .lifegraph-app .timeline-graph-label {
+    font-size: 9px;
+  }
+  .lifegraph-app .timeline-graph-time {
+    font-size: 10px;
   }
   .lifegraph-app .zoom-controls {
     display: none;

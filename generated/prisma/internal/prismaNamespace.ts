@@ -1494,6 +1494,7 @@ export const LifeClusterScalarFieldEnum = {
   color: 'color',
   sortOrder: 'sortOrder',
   published: 'published',
+  parentId: 'parentId',
   imageMediaId: 'imageMediaId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -14,7 +14,13 @@ export interface LifeGraphCluster {
   description?: string | null;
   color: string;
   sortOrder: number;
-  image: { url: string; altText?: string | null } | null;
+  parentId?: string | null;
+  image: {
+    url: string;
+    altText?: string | null;
+    width?: number | null;
+    height?: number | null;
+  } | null;
 }
 
 export interface LifeGraphEntryType {
@@ -82,6 +88,8 @@ export interface ClusterNode extends SimulationNodeDatum {
   count: number;
   photo: string;
   r: number;
+  parent?: string | null;
+  isParent?: boolean;
 }
 
 export interface EntryNode extends SimulationNodeDatum {

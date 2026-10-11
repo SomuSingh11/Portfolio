@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -27,7 +29,9 @@ interface RawCluster {
   color: string;
   sortOrder: number;
   published: boolean;
-  imageMedia?: { secureUrl: string } | null;
+  parentId?: string | null;
+  parent?: { slug: string; name: string } | null;
+  imageMedia?: { secureUrl: string; width?: number | null; height?: number | null } | null;
   _count?: { entries: number; relationsFrom: number; relationsTo: number };
 }
 
@@ -88,6 +92,8 @@ function rawToRelationRow(r: RawRelation): RelationRow {
 }
 
 export default function AdminLifeGraphPage() {
+  const { status } = useSession();
+  const router = useRouter();
   const [entries, setEntries] = useState<EntryRow[]>([]);
   const [clusters, setClusters] = useState<ClusterRow[]>([]);
   const [relations, setRelations] = useState<RelationRow[]>([]);
@@ -128,6 +134,11 @@ export default function AdminLifeGraphPage() {
         fetch("/api/admin/lifegraph/types", { cache: "no-store" }),
       ]);
 
+      if ([entriesRes, clustersRes, relationsRes, typesRes].some((response) => response.status === 401)) {
+        router.push("/admin/login");
+        return;
+      }
+
       if (!entriesRes.ok || !clustersRes.ok || !relationsRes.ok || !typesRes.ok) {
         throw new Error("Failed to load LifeGraph data");
       }
@@ -148,11 +159,18 @@ export default function AdminLifeGraphPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
+    if (status === "authenticated") {
+      fetchAll();
+    }
+  }, [status, fetchAll]);
+
+  if (status === "unauthenticated") {
+    router.push("/admin/login");
+    return null;
+  }
 
   // ── Entry handlers ─────────────────────────────────────────────────────────
   const openCreateEntry = () => { setEditEntry(null); setEntryFormOpen(true); };
@@ -418,6 +436,7 @@ export default function AdminLifeGraphPage() {
         open={clusterFormOpen}
         onOpenChange={setClusterFormOpen}
         cluster={editCluster}
+        clusters={clusterOptionsForDialog}
         onSuccess={fetchAll}
       />
       <ConfirmDeleteDialog

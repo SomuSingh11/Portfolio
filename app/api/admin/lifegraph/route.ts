@@ -71,6 +71,8 @@ export async function GET() {
             }),
         ]);
 
+        const clusterById = new Map(clusters.map((cluster) => [cluster.id, cluster]));
+
         return NextResponse.json({
             contentTypes: contentTypes.map((contentType) => ({
                 id: contentType.id,
@@ -91,6 +93,13 @@ export async function GET() {
                 color: cluster.color,
                 sortOrder: cluster.sortOrder,
                 published: cluster.published,
+                parentId: cluster.parentId,
+                parent: cluster.parentId
+                    ? (() => {
+                        const parent = clusterById.get(cluster.parentId);
+                        return parent ? { slug: parent.slug, name: parent.name } : null;
+                    })()
+                    : null,
 
                 image: cluster.imageMedia ? {
                     url: cluster.imageMedia.secureUrl,

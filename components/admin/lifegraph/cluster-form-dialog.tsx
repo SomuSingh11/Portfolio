@@ -16,6 +16,7 @@ interface ClusterFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   cluster?: ClusterRow | null;
+  clusters: Array<{ id: string; slug: string; name: string; color: string }>;
   onSuccess: () => void;
 }
 
@@ -29,6 +30,9 @@ const emptyForm = {
   description: "",
   color: "#4FA8A0",
   imageUrl: "",
+  imageWidth: "",
+  imageHeight: "",
+  parentSlug: "",
   sortOrder: 0,
   published: true,
 };
@@ -42,13 +46,16 @@ function clusterToForm(c: ClusterRow): FormState {
     description: c.description ?? "",
     color: c.color,
     imageUrl: c.imageMedia?.secureUrl || c.imageUrl || "",
+    imageWidth: c.imageMedia?.width?.toString() ?? "",
+    imageHeight: c.imageMedia?.height?.toString() ?? "",
+    parentSlug: c.parent?.slug ?? "",
     sortOrder: c.sortOrder,
     published: c.published,
   };
 }
 
 export function ClusterFormDialog({
-  open, onOpenChange, cluster, onSuccess,
+  open, onOpenChange, cluster, clusters, onSuccess,
 }: ClusterFormDialogProps) {
   const isEdit = Boolean(cluster);
   const [form, setForm] = useState<FormState>(emptyForm);
@@ -75,6 +82,7 @@ export function ClusterFormDialog({
     const errs: Partial<Record<keyof FormState, string>> = {};
     if (!form.name.trim()) errs.name = "Name is required";
     if (!form.slug.trim()) errs.slug = "Slug is required";
+    if (form.parentSlug && form.parentSlug === form.slug) errs.parentSlug = "A cluster cannot be its own parent";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -89,6 +97,9 @@ export function ClusterFormDialog({
         description: form.description.trim() || null,
         color: form.color,
         imageUrl: form.imageUrl.trim() || null,
+        imageWidth: form.imageWidth === "" ? null : Number(form.imageWidth),
+        imageHeight: form.imageHeight === "" ? null : Number(form.imageHeight),
+        parentSlug: form.parentSlug || null,
         sortOrder: Number(form.sortOrder),
         published: form.published,
       };
@@ -157,6 +168,22 @@ export function ClusterFormDialog({
             />
           </FormField>
 
+          <FormField label="Parent Cluster" htmlFor="c-parent" hint="Optional grouping for this cluster" error={errors.parentSlug}>
+            <select
+              id="c-parent"
+              value={form.parentSlug}
+              onChange={(e) => set("parentSlug", e.target.value)}
+              className="w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white focus:border-blue-500"
+            >
+              <option value="">Top-level cluster</option>
+              {clusters
+                .filter((option) => option.slug !== form.slug)
+                .map((option) => (
+                  <option key={option.slug} value={option.slug}>{option.name}</option>
+                ))}
+            </select>
+          </FormField>
+
           <FormField label="Cluster Icon / Image URL" htmlFor="c-image" hint="Supports PNG, JPG, GIF, or SVG URL">
             <div className="space-y-2">
               <Input
@@ -183,6 +210,31 @@ export function ClusterFormDialog({
               )}
             </div>
           </FormField>
+
+          <div className="grid grid-cols-2 gap-4">
+            <FormField label="Media Width (px)" htmlFor="c-image-width" hint="Optional asset width">
+              <Input
+                id="c-image-width"
+                type="number"
+                min="1"
+                value={form.imageWidth}
+                onChange={(e) => set("imageWidth", e.target.value)}
+                placeholder="Auto"
+                className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus:border-blue-500"
+              />
+            </FormField>
+            <FormField label="Media Height (px)" htmlFor="c-image-height" hint="Optional asset height">
+              <Input
+                id="c-image-height"
+                type="number"
+                min="1"
+                value={form.imageHeight}
+                onChange={(e) => set("imageHeight", e.target.value)}
+                placeholder="Auto"
+                className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus:border-blue-500"
+              />
+            </FormField>
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <FormField label="Color" htmlFor="c-color" hint="Node color on the graph">

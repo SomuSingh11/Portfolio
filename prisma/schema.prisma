@@ -103,6 +103,10 @@ model LifeCluster {
   sortOrder   Int     @default(0)
   published   Boolean @default(true)
 
+  parentId String?
+  parent   LifeCluster?  @relation("ClusterHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children LifeCluster[] @relation("ClusterHierarchy")
+
   imageMediaId String?
   imageMedia   MediaAsset? @relation("ClusterImage", fields: [imageMediaId], references: [id], onDelete: SetNull)
 
@@ -115,6 +119,7 @@ model LifeCluster {
   updatedAt DateTime @updatedAt
 
   @@index([published, sortOrder])
+  @@index([parentId, sortOrder])
 }
 
 model LifeEntry {
