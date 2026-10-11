@@ -6,7 +6,7 @@ import { useLifeGraphData } from "../../hooks/data/useLifeGraphData";
 import { useLifeGraph } from "../../hooks/data/useLifeGraph";
 import { TimelineGraph } from "./TimelineGraph";
 import type { PanelData, UseLifeGraphDataResult } from "../../types/life-graph";
-import { CalendarDays, ChevronLeft, ChevronRight, Network, Plus, Minus, X } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Layers, Network, Plus, Minus, X } from "lucide-react";
 
 interface LifeGraphProps {
   preview?: boolean;
@@ -44,11 +44,31 @@ export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphP
       ? () => undefined
       : (highlight, parentColor, parentLabel) =>
           setPanelData({ kind: "entry", entry: highlight, parentColor, parentLabel }),
+    onDeselect: preview ? () => undefined : () => setPanelData(null),
   });
 
   function closePanel() {
     setPanelData(null);
     clearSelection();
+  }
+
+  function handleSelectCluster(clusterId: string) {
+    const cluster = graphData?.clusters.find((c) => c.id === clusterId);
+    if (!cluster) return;
+    const directCount = graphData?.entries.filter((e) => e.clusterIds.includes(cluster.id)).length ?? 0;
+    setPanelData({
+      kind: "cluster",
+      cluster: {
+        id: cluster.id,
+        label: cluster.name,
+        color: cluster.color,
+        count: directCount,
+        photo: cluster.image?.url ?? "",
+        parent: cluster.parentId ?? null,
+        r: 30,
+        kind: "cluster",
+      },
+    });
   }
 
   function zoomCurrentView(factor: number) {
@@ -59,9 +79,26 @@ export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphP
     zoomBy(factor);
   }
 
-  const entriesForPanel = panelData?.kind === "cluster"
-    ? graphData?.entries.filter((entry) => entry.clusterIds.includes(panelData.cluster.id)) ?? []
-    : [];
+  const childClustersForPanel = useMemo(() => {
+    if (panelData?.kind !== "cluster") return [];
+    return graphData?.clusters.filter((cluster) => cluster.parentId === panelData.cluster.id) ?? [];
+  }, [panelData, graphData]);
+
+  const parentClusterForPanel = useMemo(() => {
+    if (panelData?.kind !== "cluster" || !panelData.cluster.parent) return null;
+    return graphData?.clusters.find((c) => c.id === panelData.cluster.parent) ?? null;
+  }, [panelData, graphData]);
+
+  const entriesForPanel = useMemo(() => {
+    if (panelData?.kind !== "cluster" || !graphData) return [];
+    if (childClustersForPanel.length > 0) {
+      const childIds = new Set(childClustersForPanel.map((c) => c.id));
+      return graphData.entries.filter((entry) =>
+        entry.clusterIds.some((id) => id === panelData.cluster.id || childIds.has(id))
+      );
+    }
+    return graphData.entries.filter((entry) => entry.clusterIds.includes(panelData.cluster.id));
+  }, [panelData, graphData, childClustersForPanel]);
   const matchedHighlightEntry =
     panelData?.kind === "entry"
       ? graphData?.entries.find((entry) => entry.id === panelData.entry.id)
@@ -277,12 +314,31 @@ export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphP
           </button>
           {panelData?.kind === "cluster" && (
             <>
-              <div className="panel-eyebrow">{panelData.cluster.count} entries · cluster</div>
+              <div className="panel-eyebrow">
+                {childClustersForPanel.length > 0
+                  ? `${childClustersForPanel.length} connected sub-clusters · Parent Cluster`
+                  : `${panelData.cluster.count} entries · Cluster`}
+              </div>
               <div className="panel-title">
                 <span className="dot" style={{ background: panelData.cluster.color }} />
                 {panelData.cluster.label}
               </div>
-              <div className="panel-sub">Every entry tagged with this topic, newest first.</div>
+              {parentClusterForPanel && (
+                <button
+                  type="button"
+                  className="panel-parent-badge"
+                  onClick={() => handleSelectCluster(parentClusterForPanel.id)}
+                  title={`View parent ${parentClusterForPanel.name}`}
+                >
+                  <span>Part of <strong>{parentClusterForPanel.name}</strong></span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              )}
+              <div className="panel-sub">
+                {childClustersForPanel.length > 0
+                  ? "Master cluster containing connected child clusters."
+                  : "Every entry tagged with this topic, newest first."}
+              </div>
             </>
           )}
           {panelData?.kind === "entry" && (
@@ -298,15 +354,69 @@ export default function LifeGraph({ preview = false, onPreviewOpen }: LifeGraphP
         </div>
 
         <div className="panel-body">
-          {panelData?.kind === "cluster" &&
-            entriesForPanel.map((entry) => (
-              <div className="entry" key={entry.id || entry.title}>
-                <div className="entry-date">{entry.occurredAt?.slice(0, 10) ?? ""}</div>
-                <div className="entry-title">{entry.title}</div>
-                <div className="entry-snip">{entry.content}</div>
-                {entry.type?.label && <div className="entry-type">{entry.type.label}</div>}
+          {panelData?.kind === "cluster" && childClustersForPanel.length > 0 && (
+            <div className="panel-section">
+              <div className="panel-section-title">
+                <Layers className="w-3.5 h-3.5" />
+                <span>Connected Child Clusters ({childClustersForPanel.length})</span>
               </div>
-            ))}
+              <div className="panel-children-grid">
+                {childClustersForPanel.map((child) => {
+                  const childCount =
+                    graphData?.entries.filter((e) => e.clusterIds.includes(child.id)).length ?? 0;
+                  return (
+                    <button
+                      key={child.id}
+                      type="button"
+                      className="panel-child-card"
+                      onClick={() => handleSelectCluster(child.id)}
+                      title={`Open ${child.name}`}
+                    >
+                      <div className="panel-child-info">
+                        <span
+                          className="panel-child-dot"
+                          style={{
+                            backgroundColor: child.color,
+                            color: child.color,
+                          }}
+                        />
+                        <div className="panel-child-text">
+                          <span className="panel-child-name">{child.name}</span>
+                          {child.description && (
+                            <span className="panel-child-desc">{child.description}</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="panel-child-meta">
+                        <span className="panel-child-count">{childCount} entries</span>
+                        <ChevronRight className="panel-child-arrow" />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {panelData?.kind === "cluster" && (
+            <>
+              {childClustersForPanel.length > 0 && entriesForPanel.length > 0 && (
+                <div className="panel-section" style={{ paddingTop: 8, paddingBottom: 4 }}>
+                  <div className="panel-section-title">
+                    <span>Entries across {panelData.cluster.label} ({entriesForPanel.length})</span>
+                  </div>
+                </div>
+              )}
+              {entriesForPanel.map((entry) => (
+                <div className="entry" key={entry.id || entry.title}>
+                  <div className="entry-date">{entry.occurredAt?.slice(0, 10) ?? ""}</div>
+                  <div className="entry-title">{entry.title}</div>
+                  <div className="entry-snip">{entry.content}</div>
+                  {entry.type?.label && <div className="entry-type">{entry.type.label}</div>}
+                </div>
+              ))}
+            </>
+          )}
           {panelData?.kind === "entry" && (
             <div className="entry" style={{ cursor: "default" }}>
               <div className="entry-date">{matchedHighlightEntry?.occurredAt?.slice(0, 10) ?? panelData.entry.date}</div>

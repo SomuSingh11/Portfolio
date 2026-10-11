@@ -88,6 +88,8 @@ export interface ClusterNode extends SimulationNodeDatum {
   count: number;
   photo: string;
   r: number;
+  parent?: string | null;
+  isParent?: boolean;
 }
 
 export interface EntryNode extends SimulationNodeDatum {
