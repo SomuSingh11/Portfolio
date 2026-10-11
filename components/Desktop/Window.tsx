@@ -44,7 +44,7 @@ import GitHub from "@/components/Applications/GitHub";
 import Resume from "@/components/Applications/Resume";
 import Preferences from "@/components/Applications/Preferences";
 import Assistant from "@/components/Applications/Assistant";
-
+import LifeGraph from "@/components/Applications/LifeGraph";
 // Minimum visible pixels of the title bar that must remain in-viewport
 const MIN_VISIBLE_X = 100;
 const TASKBAR_HEIGHT = 56; // h-14 = 3.5rem = 56px
@@ -74,6 +74,8 @@ function WindowContent({ appId }: { appId: WindowData["content"] }) {
       return <Preferences />;
     case "assistant":
       return <Assistant />;
+    case "lifegraph":
+      return <LifeGraph/>
     default:
       return (
         <div className="p-4 text-white text-sm font-mono">

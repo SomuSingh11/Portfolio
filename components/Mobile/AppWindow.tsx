@@ -17,6 +17,7 @@ import Contact from "@/components/Applications/Contact";
 import Preferences from "@/components/Applications/Preferences";
 import Achievements from "../Utilities/Achievements";
 import Assistant from "@/components/Applications/Assistant";
+import LifeGraph from "@/components/Applications/LifeGraph";
 import { Home } from "lucide-react";
 
 function AppContent({ appId }: { appId: AppId }) {
@@ -41,6 +42,8 @@ function AppContent({ appId }: { appId: AppId }) {
       return <Preferences />;
     case "assistant":
       return <Assistant />;
+    case "lifegraph":
+      return <LifeGraph />;
     default:
       return <About />;
   }

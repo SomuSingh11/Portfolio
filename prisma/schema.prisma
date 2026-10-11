@@ -1,0 +1,300 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Portfolio Domain ─────────────────────────────────────────────────────────
+
+enum ProjectStatus {
+  Completed
+  InProgress
+  HackathonFinalist
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  name        String
+  category    String
+  status      ProjectStatus
+  date        String
+  description String
+  tagline     String?
+  tech        String[]
+  demo        String
+  repo        String
+  published   Boolean       @default(false)
+  sortOrder   Int           @default(0)
+
+  // Rich detail fields stored as JSON
+  media        Json?
+  techGroups   Json?
+  featuresDeep Json?
+  challenges   Json?
+  results      Json?
+
+  // Other detail fields
+  duration                String?
+  teamSize                String?
+  problem                 String?
+  solution                String?
+  architectureDiagram     String?
+  architectureDescription String?
+  myRole                  String?
+  contributions           String[]
+  resultsDescription      String?
+  learnings               String?
+  futurePlans             String?
+  relatedProjects         String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── LifeGraph ────────────────────────────────────────────────────────────────
+enum LifeEntryStatus {
+  Draft
+  Published
+  Archived
+}
+
+enum MediaType {
+  Image
+  Svg
+  Audio
+  Video
+  Document
+}
+
+model LifeContentType {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  label       String
+  description String?
+  icon        String?
+  color       String?
+  fieldSchema Json?
+  isSystem    Boolean @default(false)
+  isActive    Boolean @default(true)
+  sortOrder   Int     @default(0)
+
+  entries LifeEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LifeCluster {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  description String?
+  color       String
+  sortOrder   Int     @default(0)
+  published   Boolean @default(true)
+
+  imageMediaId String?
+  imageMedia   MediaAsset? @relation("ClusterImage", fields: [imageMediaId], references: [id], onDelete: SetNull)
+
+  entries LifeEntryCluster[]
+
+  relationsFrom LifeClusterRelation[] @relation("FromCluster")
+  relationsTo   LifeClusterRelation[] @relation("ToCluster")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published, sortOrder])
+}
+
+model LifeEntry {
+  id          String  @id @default(cuid())
+  externalKey String? @unique
+  slug        String  @unique
+
+  typeId String
+  type   LifeContentType @relation(fields: [typeId], references: [id], onDelete: Restrict)
+
+  title      String
+  content    String?         @db.Text
+  excerpt    String?
+  occurredAt DateTime?
+  location   String?
+  sourceUrl  String?
+  status     LifeEntryStatus @default(Draft)
+
+  // Dynamic fields defined by LifeContentType.fieldSchema
+  metadata Json?
+
+  clusters LifeEntryCluster[]
+  media    LifeEntryMedia[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([typeId])
+  @@index([status, occurredAt])
+  @@index([occurredAt])
+}
+
+model LifeEntryCluster {
+  entryId   String
+  clusterId String
+  isPrimary Boolean @default(false)
+  sortOrder Int     @default(0)
+
+  entry   LifeEntry   @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  cluster LifeCluster @relation(fields: [clusterId], references: [id], onDelete: Cascade)
+
+  @@id([entryId, clusterId])
+  @@index([clusterId, sortOrder])
+}
+
+model LifeClusterRelation {
+  id String @id @default(cuid())
+
+  fromId String
+  toId   String
+
+  label    String?
+  weight   Float   @default(1)
+  strength Float   @default(1)
+  color    String?
+
+  from LifeCluster @relation("FromCluster", fields: [fromId], references: [id], onDelete: Cascade)
+  to   LifeCluster @relation("ToCluster", fields: [toId], references: [id], onDelete: Cascade)
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([fromId, toId])
+  @@index([fromId])
+  @@index([toId])
+}
+
+model MediaAsset {
+  id           String    @id @default(cuid())
+  provider     String
+  publicId     String
+  resourceType MediaType
+  format       String?
+  secureUrl    String
+  originalUrl  String?
+  filename     String?
+  altText      String?
+  width        Int?
+  height       Int?
+  bytes        Int?
+  metadata     Json?
+
+  clusterImages LifeCluster[]       @relation("ClusterImage")
+  entries       LifeEntryMedia[]
+  graphSettings LifeGraphSettings[] @relation("GraphCustomSvg")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([provider, publicId])
+}
+
+model LifeEntryMedia {
+  entryId   String
+  mediaId   String
+  role      String?
+  sortOrder Int     @default(0)
+
+  entry LifeEntry  @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  media MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@id([entryId, mediaId])
+  @@index([mediaId])
+}
+
+model LifeGraphSettings {
+  id String @id @default("default")
+
+  defaultZoom    Float @default(1)
+  clusterSpacing Float @default(130)
+  entrySpacing   Float @default(46)
+
+  backgroundColor String?
+  edgeColor       String?
+
+  nodeStyle Json?
+  edgeStyle Json?
+
+  customSvgMediaId String?
+  customSvgMedia   MediaAsset? @relation("GraphCustomSvg", fields: [customSvgMediaId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── NextAuth v5 Tables ───────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  accounts      Account[]
+  sessions      Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

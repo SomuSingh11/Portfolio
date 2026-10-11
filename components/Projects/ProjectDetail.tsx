@@ -47,13 +47,12 @@ import {
   BookOpenText,
 } from "lucide-react";
 import type {
-  Project,
+  ProjectRecord,
   Challenge,
   FeatureCard,
   Result,
   TechGroup,
-} from "@/data/projects";
-import projects from "@/data/projects";
+} from "@/lib/project-service";
 import Link from "next/link";
 import MediaCarousel from "../Utilities/MediaCarousal";
 
@@ -128,7 +127,7 @@ export const LUCIDE_ICONS: Record<string, React.ElementType> = {
 };
 
 // ─── Status badge ─────────────────────────────────────────────────────────────
-const STATUS_STYLES: Record<Project["status"], string> = {
+const STATUS_STYLES: Record<ProjectRecord["status"], string> = {
   Completed: "bg-green-600/20 text-green-400 border-green-600/30",
   "In Progress": "bg-yellow-600/20 text-yellow-400 border-yellow-600/30",
   "Hackathon Finalist": "bg-blue-600/20 text-blue-400 border-blue-600/30",
@@ -276,7 +275,7 @@ function ResultCards({ results }: { results: Result[] }) {
 }
 
 // ─── Related project card ─────────────────────────────────────────────────────
-function RelatedCard({ project }: { project: Project }) {
+function RelatedCard({ project }: { project: ProjectRecord }) {
   return (
     <Link
       href={`/projects/${project.slug}`}
@@ -304,19 +303,64 @@ function RelatedCard({ project }: { project: Project }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 interface ProjectDetailProps {
-  project: Project;
+  project: ProjectRecord;
+  relatedProjects?: ProjectRecord[];
   /** If true, renders with standalone page chrome (navbar etc) */
   standalone?: boolean;
 }
 
+function normalizeRelatedRefs(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item));
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return [];
+
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) {
+        return parsed.map((item) => String(item));
+      }
+    } catch {
+      // ignore invalid JSON and fall through to comma-split parsing
+    }
+
+    return trimmed
+      .replace(/[\[\]"']+/g, "")
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
 export default function ProjectDetail({
   project,
+  relatedProjects = [],
   standalone = false,
 }: ProjectDetailProps) {
-  const related =
-    project.relatedProjects
-      ?.map((id) => projects.find((p) => p.id === id))
-      .filter((p): p is Project => !!p) ?? [];
+  const relatedRefs = normalizeRelatedRefs(project.relatedProjects);
+
+  const related = relatedRefs
+    .map((ref) => {
+      const refValue = Number(ref);
+      return relatedProjects.find((item) => {
+        const matchesSortOrder =
+          Number.isFinite(refValue) && Number(item.sortOrder) === refValue;
+        const matchesId = String(item.id) === String(ref);
+        const matchesSlug = item.slug === String(ref);
+
+        return matchesSortOrder || matchesId || matchesSlug;
+      });
+    })
+    .filter((item): item is ProjectRecord => Boolean(item))
+    .filter(
+      (item, index, list) =>
+        list.findIndex((projectItem) => projectItem.slug === item.slug) === index,
+    );
 
   return (
     <div

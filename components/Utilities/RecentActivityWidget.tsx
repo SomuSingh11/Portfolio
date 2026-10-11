@@ -193,7 +193,7 @@ export default function RecentActivityWidget({ layout }: RecentActivityWidgetPro
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       onClick={(e) => e.stopPropagation()}
-      className="absolute top-[50px] right-6 w-[290px] h-[450px] flex flex-col rounded-[24px] bg-zinc-950/25 border border-white/5 backdrop-blur-[1px] shadow-xl p-3.5 text-white z-[12] select-none pointer-events-auto"
+      className="absolute top-[50px] right-6 w-[290px] h-[450px] flex flex-col rounded-[24px] bg-zinc-950/25 border border-white/5 backdrop-blur-[1px] shadow-xl p-3.5 text-white z-0 select-none pointer-events-auto"
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-white/5 pb-2.5 flex-shrink-0">

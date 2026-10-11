@@ -1,0 +1,516 @@
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap");
+/* Consider swapping this @import for next/font/google (Newsreader, Inter)
+   at the layout level later — it avoids a render-blocking font request,
+   but functionally this is identical to the original mock. */
+
+.lifegraph-app {
+  --ink: #0e1420;
+  --ink-panel: #151c2c;
+  --ink-panel-2: #1b2436;
+  --hairline: #2a3448;
+  --text: #ebe7dd;
+  --text-dim: #8993a8;
+  --text-faint: #5c6479;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: var(--ink);
+  overflow: hidden;
+  font-family: "Inter", -apple-system, sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.lifegraph-app * {
+  box-sizing: border-box;
+}
+
+/* ---- Header ---- */
+.lifegraph-app .header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 26px 30px 0 30px;
+  pointer-events: none;
+  z-index: 20;
+}
+.lifegraph-app .header .title {
+  font-family: "Newsreader", serif;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  color: var(--text);
+}
+.lifegraph-app .header .title em {
+  font-style: italic;
+  color: var(--text-dim);
+  font-weight: 400;
+}
+.lifegraph-app .header .meta {
+  font-size: 12px;
+  color: var(--text-faint);
+  text-align: right;
+  line-height: 1.5;
+}
+
+/* ---- View toggle (mobile) ---- */
+.lifegraph-app .view-toggle {
+  display: none;
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink-panel);
+  border: 1px solid var(--hairline);
+  border-radius: 100px;
+  padding: 3px;
+  z-index: 30;
+}
+.lifegraph-app .view-toggle button {
+  font-family: "Inter", sans-serif;
+  font-size: 12.5px;
+  padding: 7px 16px;
+  border-radius: 100px;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.lifegraph-app .view-toggle button.active {
+  background: var(--ink-panel-2);
+  color: var(--text);
+}
+
+/* ---- Graph canvas ---- */
+.lifegraph-app svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+.lifegraph-app svg:active {
+  cursor: grabbing;
+}
+
+.lifegraph-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--ink);
+  color: var(--text-dim);
+  font-size: 12px;
+  pointer-events: none;
+}
+.lifegraph-loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--hairline);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: lifegraph-spin 0.8s linear infinite;
+}
+@keyframes lifegraph-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.lifegraph-preview {
+  border-radius: inherit;
+  background: rgba(14, 20, 32, 0.82);
+}
+.lifegraph-preview .header,
+.lifegraph-preview .view-toggle,
+.lifegraph-preview .legend,
+.lifegraph-preview .zoom-controls,
+.lifegraph-preview .chip-view,
+.lifegraph-preview .expand-hint,
+.lifegraph-preview .panel {
+  display: none;
+}
+.lifegraph-preview svg {
+  position: absolute;
+  inset: 0;
+}
+
+.lifegraph-app .edge {
+  stroke: var(--hairline);
+  stroke-width: 1;
+  fill: none;
+}
+.lifegraph-app .edge.lit {
+  stroke: var(--text-faint);
+  stroke-width: 1.4;
+}
+
+.lifegraph-app .node circle.core {
+  stroke: var(--ink);
+  stroke-width: 2;
+  transition: opacity 0.25s ease;
+}
+.lifegraph-app .node text.label {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  fill: var(--text-dim);
+  pointer-events: none;
+  transition: fill 0.2s ease, opacity 0.2s ease;
+}
+.lifegraph-app svg.is-hovering .node text.label {
+  opacity: 0;
+}
+.lifegraph-app svg.is-hovering .node.show-description text.label {
+  opacity: 1;
+}
+.lifegraph-app .node text.count {
+  font-family: "Newsreader", serif;
+  font-weight: 500;
+  fill: var(--ink);
+  pointer-events: none;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.lifegraph-app .node {
+  cursor: pointer;
+}
+.lifegraph-app .node .core-photo {
+  transition: opacity 0.25s ease;
+}
+.lifegraph-app .node.dim circle.core {
+  opacity: 0.18;
+}
+.lifegraph-app .node.dim .core-photo {
+  opacity: 0.18;
+}
+.lifegraph-app .node.dim .count-badge {
+  opacity: 0.18;
+}
+.lifegraph-app .node.dim text.label {
+  opacity: 0.25;
+}
+.lifegraph-app .node.selected circle.core {
+  stroke: var(--text);
+  stroke-width: 3.5;
+}
+
+/* ---- Threads: individual entries fanned off a cluster ---- */
+.lifegraph-app .thread {
+  fill: none;
+  stroke-width: 0.75;
+  opacity: 0.28;
+  transition: opacity 0.25s ease, stroke-width 0.25s ease;
+  pointer-events: none;
+}
+.lifegraph-app .node:hover .thread {
+  opacity: 0.6;
+}
+.lifegraph-app .node.selected .thread {
+  opacity: 0.6;
+}
+.lifegraph-app .thread.active {
+  opacity: 0.85;
+  stroke-width: 1.3px;
+}
+
+.lifegraph-app .satellite circle {
+  r: 3.2px;
+  opacity: 0.55;
+  transition: opacity 0.2s ease, r 0.2s ease;
+}
+.lifegraph-app .satellite text {
+  font-family: "Inter", sans-serif;
+  font-size: 10.5px;
+  fill: var(--text-dim);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.lifegraph-app .satellite {
+  cursor: pointer;
+}
+.lifegraph-app .satellite:hover circle {
+  opacity: 1;
+  r: 4.4px;
+}
+.lifegraph-app .satellite:hover text {
+  opacity: 1;
+}
+.lifegraph-app .node.dim .thread {
+  opacity: 0.05;
+}
+.lifegraph-app .node.dim .satellite circle {
+  opacity: 0.12;
+}
+
+/* ---- Legend ---- */
+.lifegraph-app .legend {
+  position: absolute;
+  left: 30px;
+  bottom: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 20;
+}
+.lifegraph-app .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+.lifegraph-app .legend-item.muted {
+  opacity: 0.35;
+}
+.lifegraph-app .legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ---- Zoom controls ---- */
+.lifegraph-app .zoom-controls {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 20;
+}
+.lifegraph-app .zoom-controls button {
+  width: 38px;
+  height: 38px;
+  background: rgba(21, 28, 44, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: var(--text-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lifegraph-app .zoom-controls button:hover {
+  background: rgba(27, 36, 54, 0.9);
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+}
+
+/* ---- Detail panel ---- */
+.lifegraph-app .panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 360px;
+  background: rgba(14, 20, 32, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -12px 0 36px rgba(0, 0, 0, 0.5);
+}
+.lifegraph-app .panel.open {
+  transform: translateX(0);
+}
+
+.lifegraph-app .panel-head {
+  padding: 24px 24px 18px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+.lifegraph-app .panel-head .close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.lifegraph-app .panel-head .close:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.12);
+  transform: scale(1.05);
+}
+.lifegraph-app .panel-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+.lifegraph-app .panel-title {
+  font-family: "Newsreader", serif;
+  font-size: 24px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+}
+.lifegraph-app .panel-title .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px currentColor;
+}
+.lifegraph-app .panel-sub {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.lifegraph-app .panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.lifegraph-app .entry {
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.lifegraph-app .entry:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.lifegraph-app .entry-date {
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-bottom: 4px;
+}
+.lifegraph-app .entry-title {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.lifegraph-app .entry-snip {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.lifegraph-app .entry-type {
+  display: inline-block;
+  font-size: 10.5px;
+  color: var(--text-dim);
+  margin-top: 10px;
+  padding: 3px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+}
+
+/* ---- Mobile cluster-chip fallback ---- */
+.lifegraph-app .chip-view {
+  display: block;
+  position: absolute;
+  inset: 0;
+  top: 78px;
+  bottom: 0;
+  padding: 8px 20px 20px 20px;
+  overflow-y: auto;
+  z-index: 15;
+}
+.lifegraph-app .chip-view .chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  background: var(--ink-panel);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  cursor: pointer;
+}
+.lifegraph-app .chip-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.lifegraph-app .chip-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.lifegraph-app .chip-name {
+  font-family: "Newsreader", serif;
+  font-size: 16.5px;
+}
+.lifegraph-app .chip-count {
+  font-size: 12.5px;
+  color: var(--text-faint);
+}
+
+.lifegraph-app .expand-hint {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--text-faint);
+  z-index: 15;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 720px) {
+  .lifegraph-app .panel {
+    width: 100%;
+  }
+  .lifegraph-app .legend {
+    display: none;
+  }
+  .lifegraph-app .header {
+    padding: 20px 20px 0 20px;
+  }
+  .lifegraph-app .header .title {
+    font-size: 18px;
+  }
+  .lifegraph-app .header .meta {
+    display: none;
+  }
+  .lifegraph-app .view-toggle {
+    display: flex;
+  }
+  .lifegraph-app .zoom-controls {
+    display: none;
+  }
+}

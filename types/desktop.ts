@@ -21,7 +21,8 @@ export type AppId =
   | "resume"
   | "achievements"
   | "preferences"
-  | "assistant";
+  | "assistant"
+  | "lifegraph";
 
 // Single source of truth for window state — can't be both minimized AND maximized
 export type WindowState = "normal" | "minimized" | "maximized";

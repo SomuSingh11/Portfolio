@@ -1,23 +1,26 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import projects from "@/data/projects";
 import ProjectDetail from "@/components/Projects/ProjectDetail";
 import { MoveLeft } from "lucide-react";
+import { getPublishedProjectBySlug, getPublishedProjects } from "@/lib/project-service";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
+// export const dynamic = "force-dynamic";
+
 // Generate static params for all projects
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const projects = await getPublishedProjects();
   return projects.map((p) => ({ slug: p.slug }));
 }
 
 // Dynamic OG metadata per project
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const project = await getPublishedProjectBySlug(slug);
   if (!project) return { title: "Project Not Found" };
 
   const firstImage = project.media[0];
@@ -46,7 +49,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const projects = await getPublishedProjects();
+  const project = projects.find((item) => item.slug === slug) ?? null;
   if (!project) notFound();
 
   return (
@@ -76,7 +80,7 @@ export default async function ProjectPage({ params }: Props) {
 
       {/* Project detail */}
       <main>
-        <ProjectDetail project={project} standalone />
+        <ProjectDetail project={project} relatedProjects={projects} standalone />
       </main>
 
       {/* Footer */}

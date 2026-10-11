@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
-import type { MediaItem, MediaType } from "@/data/projects";
+import type { MediaItem, MediaType } from "@/lib/project-service";
 
 interface MediaCarouselProps {
   items: MediaItem[];
